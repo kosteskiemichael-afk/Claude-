@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: nexa-ebay-connector
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    envVars:
+      - key: CONNECTOR_SECRET
+        generateValue: true
+      - key: EBAY_APP_ID
+        sync: false
+      - key: EBAY_CERT_ID
+        sync: false
+      - key: EBAY_RUNAME
+        value: Nexa_Manufactur-NexaManu-MyInve-ztpkd
+      - key: EBAY_REFRESH_TOKEN
+        sync: false
+      - key: EBAY_MARKETPLACE
+        value: EBAY_US
+      - key: PROTECTED_ITEM_IDS
+        value: "206531844850,206453290362,206595114694"
+      - key: PROTECTED_TITLE_KEYWORDS
+        value: "Baratza,Burr Holder"
