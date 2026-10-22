@@ -73,7 +73,7 @@ globalThis.fetch = async (url, opts = {}) => {
     if (q.includes("canon")) return json({ itemSummaries: [mk("a", "Canon AE-1 Battery Door Cover Replacement", 16.99), mk("b", "Battery Door for Canon AE-1 Program", 17.5), mk("c", "Canon AE-1 Program Camera Body door works", 80)] });
     return json({ itemSummaries: [] });
   }
-  if (u.pathname === "/buy/browse/v1/item/") return json({ items: u.searchParams.get("item_ids").split(",").map((id) => ({ itemId: id, estimatedAvailabilities: [{ estimatedSoldQuantity: { "v1|900|0": 573, "v1|901|0": 150, "v1|902|0": 191, "v1|903|0": 606, "v1|904|0": 3 }[id] }] })) });
+  if (u.pathname.startsWith("/buy/browse/v1/item/v1")) { const id = decodeURIComponent(u.pathname.split("/item/")[1]); return json({ itemId: id, estimatedAvailabilities: [{ estimatedSoldQuantity: { "v1|900|0": 573, "v1|901|0": 150, "v1|902|0": 191, "v1|903|0": 606, "v1|904|0": 3 }[id] }] }); }
   if (u.hostname === "api.printables.com") { const q = JSON.parse(opts.body).variables.q; return json({ data: { searchPrints2: { items: q.includes("bronco") || q.includes("ford") || q.includes("fuse") ? [{ id: "520786", name: "Ford Bronco Fuse Panel Cover Clip", license: { abbreviation: "CC-BY-SA" } }, { id: "1", name: "Ford fuse thing", license: { abbreviation: "CC-BY-NC" } }] : [] } } }); }
   if (u.pathname === "/sell/fulfillment/v1/order") return json({ orders: [
     { orderId: "o1", creationDate: iso(-1), orderFulfillmentStatus: "NOT_STARTED", lineItems: [{ legacyItemId: "206531844850", title: "Baratza Encore Burr Holder Ring", quantity: 2, lineItemFulfillmentInstructions: { shipByDate: iso(10) } }] },

@@ -116,7 +116,7 @@ export function tradingWarnings(resp: any): string[] {
 export async function rest(
   method: "GET" | "POST" | "PUT" | "DELETE",
   path: string,
-  opts: { query?: Record<string, string>; body?: unknown; app?: boolean } = {},
+  opts: { query?: Record<string, string>; body?: unknown; app?: boolean; timeoutMs?: number } = {},
 ): Promise<any> {
   const url = new URL(API_BASE + path);
   for (const [k, v] of Object.entries(opts.query || {})) url.searchParams.set(k, v);
@@ -128,6 +128,7 @@ export async function rest(
       "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE,
     },
     body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
+    signal: AbortSignal.timeout(opts.timeoutMs ?? 60000),
   });
   if (r.status === 204) return {};
   const text = await r.text();
