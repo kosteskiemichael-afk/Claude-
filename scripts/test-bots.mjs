@@ -74,7 +74,7 @@ globalThis.fetch = async (url, opts = {}) => {
     return json({ itemSummaries: [] });
   }
   if (u.pathname.startsWith("/buy/browse/v1/item/v1")) { const id = decodeURIComponent(u.pathname.split("/item/")[1]); return json({ itemId: id, estimatedAvailabilities: [{ estimatedSoldQuantity: { "v1|900|0": 573, "v1|901|0": 150, "v1|902|0": 191, "v1|903|0": 606, "v1|904|0": 3 }[id] }] }); }
-  if (u.hostname === "api.printables.com") { const q = JSON.parse(opts.body).variables.q; return json({ data: { searchPrints2: { items: q.includes("bronco") || q.includes("ford") || q.includes("fuse") ? [{ id: "520786", name: "Ford Bronco Fuse Panel Cover Clip", license: { abbreviation: "CC-BY-SA" } }, { id: "1", name: "Ford fuse thing", license: { abbreviation: "CC-BY-NC" } }] : [] } } }); }
+  if (u.hostname === "api.printables.com") { const q = JSON.parse(opts.body).variables.q; return json({ data: { searchPrints2: { items: q.includes("bronco") || q.includes("ford") || q.includes("fuse") ? [{ id: "520786", name: "Ford Bronco Fuse Panel Cover Clip", license: { abbreviation: "CC-BY-SA" } }, { id: "1", name: "Ford Bronco fuse panel clip NC", license: { abbreviation: "CC-BY-NC-SA" } }] : [] } } }); }
   if (u.pathname === "/sell/fulfillment/v1/order") return json({ orders: [
     { orderId: "o1", creationDate: iso(-1), orderFulfillmentStatus: "NOT_STARTED", lineItems: [{ legacyItemId: "206531844850", title: "Baratza Encore Burr Holder Ring", quantity: 2, lineItemFulfillmentInstructions: { shipByDate: iso(10) } }] },
     { orderId: "o2", creationDate: iso(-30), orderFulfillmentStatus: "NOT_STARTED", lineItems: [{ legacyItemId: "111", title: "Lasko Box Fan Replacement Feet Set of 2", quantity: 1, lineItemFulfillmentInstructions: { shipByDate: iso(-2) } }] },
@@ -120,6 +120,7 @@ check(fi.includes("Bronco") && fi.includes("573 sold") && fi.includes("printable
 check(fi.includes("2VPR") && fi.includes("NO FREE CAD"), "finder: proven seller without CAD listed separately");
 check(!fi.includes("Lasko Box Fan"), "finder: skips parts you already sell");
 check(!fi.includes("nobody buys"), "finder: ignores items under 100 sold");
+check(!fi.includes("NC"), "finder: never offers NonCommercial (NC) CAD files");
 const cfg = loadConfig();
 const fl = floorTotal(cfg, {});
 check(Math.abs(fl - (1.69 + 0.5 + 0.4) / (1 - 0.156 - 0.4)) < 1e-9, `profit floor = $${fl.toFixed(2)} for envelope items`);

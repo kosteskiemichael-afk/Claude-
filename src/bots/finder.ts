@@ -14,7 +14,8 @@ const tokens = (t: string) =>
   [...new Set(t.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 1 && !STOP.has(w)))];
 const overlap = (a: string[], b: string[]) => { const s = new Set(b); return a.filter((w) => s.has(w)).length; };
 
-const OK_LICENSE = /^(CC0|CC-BY|CC-BY-SA|CC-BY-ND|GPL|LGPL|BSD|MIT)/i;
+// Licenses that allow selling prints. Anything NonCommercial (NC) is rejected.
+const okLicense = (l: string) => !/NC/i.test(l) && /^(CC0|CC-BY|CC-BY-SA|CC-BY-ND|GPL|LGPL|AGPL|BSD|MIT)(\b|[- .\d]|$)/i.test(l.trim());
 
 async function searchEbay(cfg: BotConfig): Promise<Hit[]> {
   const mine = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
@@ -30,7 +31,7 @@ async function searchEbay(cfg: BotConfig): Promise<Hit[]> {
         if (kept >= 40) break;
         const title = String(it.title || "");
         const seller = String(it.seller?.username || "");
-        if (!/3d|printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
+        if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
         const legacy = String(it.legacyItemId || it.itemId?.split("|")[1] || "");
         if (!legacy || seen.has(legacy)) continue;
         seen.set(legacy, { id: it.itemId, legacy, title, seller, price: Number(it.price?.value || 0) });
@@ -72,8 +73,8 @@ async function findCad(h: Hit): Promise<Cad | null> {
   const tries = [t.slice(0, 4).join(" "), t.slice(0, 3).join(" "), t.slice(0, 2).join(" ")];
   for (const q of tries) {
     if (!q) continue;
-    const res = (await printables(q)).filter((x) => OK_LICENSE.test(x.license));
-    const best = res.find((x) => overlap(t.slice(0, 6), tokens(x.name)) >= 2);
+    const res = (await printables(q)).filter((x) => okLicense(x.license));
+    const best = res.find((x) => overlap(t.slice(0, 8), tokens(x.name)) >= Math.min(3, t.length));
     if (best) return { url: `https://www.printables.com/model/${best.id}`, name: best.name, license: best.license };
   }
   return null;
