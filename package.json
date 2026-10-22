@@ -7,7 +7,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "refresh-token": "node scripts/get-refresh-token.mjs"
+    "refresh-token": "node scripts/get-refresh-token.mjs",
+    "bots": "node dist/bots/run.js",
+    "test-bots": "npm run build && node scripts/test-bots.mjs"
   },
   "license": "ISC",
   "dependencies": {

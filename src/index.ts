@@ -5,6 +5,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createHash } from "node:crypto";
 import { registerTools } from "./tools.js";
+import { registerDashboard } from "./dashboard.js";
 import { API_BASE, SANDBOX, USER_SCOPES } from "./ebay.js";
 
 const SECRET = process.env.CONNECTOR_SECRET || "";
@@ -107,6 +108,8 @@ app.get("/auth/callback", async (req, res) => {
     res.status(500).type("text").send(`eBay sign-in failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 });
+
+registerDashboard(app, SECRET);
 
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });

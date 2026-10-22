@@ -96,3 +96,54 @@ Re-run step 3 and paste the new refresh token into Render > Environment.
 ## Changing protected listings
 Edit `PROTECTED_ITEM_IDS` (comma-separated item numbers) or
 `PROTECTED_TITLE_KEYWORDS` in Render > Environment, then redeploy.
+
+---
+
+## Store bots (run 3x a day on their own)
+
+A Render cron job (`nexa-store-bots`) runs five bots at 7am, 1pm and 7pm
+(Indiana time; 6am/noon/6pm in winter). Your burr holders are never changed by any bot.
+
+| Bot | What it does on its own | What it sends to your phone |
+|---|---|---|
+| Listing & inventory | Tops print-on-demand listings back up to 10 when they drop below 3, so they never go out of stock | Burr holder stock low (you restock those); each morning, listings with views but no sales |
+| Pricing & competition | For each item in `bots.config.json`: if a competitor is cheaper, goes 1¢ under them; if you're cheaper than everyone, raises to 1¢ under the cheapest. Never below your profit floor (40% after fees, label and material), never outside the item's min/max, never more than 10% per day; prices change only on the morning run so you don't start price wars | Every price change |
+| Marketing | Lowers every Promoted Listings ad to 2% (eBay's minimum) | Each ad lowered; a warning if a campaign uses eBay's dynamic rate |
+| Customer service | Never replies for you | New unread buyer messages, negative/neutral feedback, orders due within 18h or late |
+| Production | Builds the print queue from unshipped orders, soonest ship date first | Full queue every morning; new orders on later runs |
+
+You get a push only when something changed or needs you, plus a morning summary.
+
+### The business brain (Claude)
+With `ANTHROPIC_API_KEY` set, the bots get a brain:
+- **Prices every listing**, not just the ones in `bots.config.json`. Claude Haiku writes the right
+  eBay search for each part, then checks every competitor listing and keeps only true matches (same part,
+  same model; adjusts for pack size). It needs 2+ verified competitors before it touches a price.
+- **Won't cut prices on items already selling** (5+ sales in 30 days); it only raises those.
+- **Drafts a reply** to each new buyer message (Claude Sonnet) and puts it in your push. You paste and send.
+- **Morning "Today's moves"**: Claude Sonnet reads your whole store (sales, traffic, prices, stock) and
+  sends the 3–5 highest-profit actions for the day.
+
+The brain only advises; the hard limits (40% profit floor, 10% max move per run, burr holder lock) are
+enforced in code and the brain can't override them. Expected cost: about $1–3 a month in Claude API usage.
+Turn it off any time by setting `BRAIN` to `off`.
+
+### Phone alerts (2 minutes)
+1. Install the free **ntfy** app (App Store / Google Play).
+2. In Render > nexa-ebay-connector > Environment, copy the value of `NTFY_TOPIC` (Render generated it).
+3. In the app tap **+** and subscribe to that topic. Treat it like a password.
+
+### Adding an item to auto-pricing
+Add its item number to `pricing.rules` in `bots.config.json` with a search
+`query`, `must_include` words (so only true competitors count), and `min`/`max`.
+
+### Pause or test
+- Pause everything: Render > nexa-store-bots > **Suspend**.
+- Test without changing anything: set `DRY_RUN` to `1` and click **Trigger Run**.
+- Offline self-test: `npm run test-bots`.
+
+### Live dashboard
+Open `https://<your-service>.onrender.com/dashboard/<CONNECTOR_SECRET>` (same secret as your connector
+address). It shows every bot run, orders to ship, late shipments, low stock, ads above 2%, the print queue
+and the auto-priced items. It refreshes every minute and never changes anything. Bookmark it on your phone.
+On Render's free plan the first load after a quiet spell takes 30–60 seconds.

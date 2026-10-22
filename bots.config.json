@@ -1,0 +1,19 @@
+{
+  "run_hours_local": [7, 13, 19],
+  "inventory": { "restock_below": 3, "restock_to": 10 },
+  "marketing": { "target_ad_rate": 2.0, "add_unpromoted": false },
+  "pricing": {
+    "min_margin": 0.4,
+    "max_step_pct": 0.1,
+    "rules": {
+      "206527145323": { "note": "Cuisinart SM-50 gear: competitors at $20", "query": "cuisinart sm-50 worm gear", "must_include": ["cuisinart", "sm-50"], "min": 11.69, "max": 19.99 },
+      "206554815693": { "note": "Technics tape deck gear: competitors at $15.26", "query": "technics tape deck drive gear", "must_include": ["technics", "gear"], "min": 10.99, "max": 16.99 },
+      "206460157900": { "note": "Breville main gear: printed competitor $16.49", "query": "breville main drive gear", "must_include": ["breville", "gear"], "exclude": ["genuine", "oem", "sub gear", "and sub"], "min": 14.99, "max": 24.99 },
+      "206451166902": { "note": "GE Opal ice maker gear", "query": "opal nugget ice maker gear", "must_include": ["opal", "gear"], "min": 11.99, "max": 16.99 },
+      "206544156256": { "note": "Bell & Howell 16mm worm gear", "query": "bell howell 16mm projector worm gear", "must_include": ["bell", "howell", "worm"], "min": 34.99, "max": 49.99 },
+      "206422015354": { "note": "Minn Kota Ultrex shaft clips", "query": "minn kota ultrex shaft clips", "must_include": ["minn kota", "clip"], "min": 11.99, "max": 16.99 },
+      "206453370757": { "note": "Yamaha WaveRunner lid lock", "query": "yamaha waverunner glove box lid lock", "must_include": ["yamaha", "lid"], "min": 12.99, "max": 18.99 },
+      "206621942166": { "note": "Mac floppy eject gear 4-pack", "query": "macintosh floppy eject gear", "must_include": ["floppy", "eject", "4x"], "min": 6.99, "max": 11.99 }
+    }
+  }
+}
