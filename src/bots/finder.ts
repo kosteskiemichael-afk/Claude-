@@ -126,7 +126,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
       title: h.title, seller: h.seller, sold: h.sold, price: h.price,
       ebay_url: `https://www.ebay.com/itm/${h.legacy}`,
       cad_url: cad?.url || "", cad_license: cad?.license || "", cad_name: cad?.name || "",
-      status: cad ? "Has sellable CAD" : "No free CAD",
+      status: cad ? (brainOn() ? "Sellable CAD (verified)" : "Possible CAD - check") : "No free CAD",
     }));
     try {
       const resp = await fetch(hook, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rows }), signal: AbortSignal.timeout(30000), redirect: "follow" });
@@ -137,7 +137,10 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
 
   const line = (h: Hit) => `"${short(h.title, 70)}" by ${h.seller}: ${h.sold} sold @ ${money(h.price)}`;
   const parts: string[] = [];
-  if (verified.length) parts.push("WITH SELLABLE CAD:\n" + verified.slice(0, 10).map((x) => `• ${line(x.h)}\n   CAD: ${x.cad.url} (${x.cad.license}) – ${short(x.cad.name, 50)}`).join("\n"));
+  const cadHead = brainOn()
+    ? "WITH SELLABLE CAD (Claude checked it's the same part):\n"
+    : "POSSIBLE SELLABLE CAD (keyword match only: open the link and confirm it's the same part):\n";
+  if (verified.length) parts.push(cadHead + verified.slice(0, 10).map((x) => `• ${line(x.h)}\n   CAD: ${x.cad.url} (${x.cad.license}) – ${short(x.cad.name, 50)}`).join("\n"));
   if (noCad.length) parts.push("PROVEN SELLERS, NO FREE CAD (model it yourself):\n" + noCad.slice(0, 6).map((h) => `• ${line(h)}`).join("\n"));
   if (cadErrors) parts.push(`(CAD search failed for ${cadErrors} item(s); check Printables by hand.)`);
   r.info.unshift("🔎 PRODUCT IDEAS THIS WEEK\n" + parts.join("\n\n"));
