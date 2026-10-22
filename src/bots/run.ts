@@ -112,7 +112,7 @@ export async function runBots(opts: { only?: string[] } = {}) {
   if (r.urgent.length) sections.push("NEEDS YOU:\n• " + r.urgent.join("\n• "));
   if (r.changes.length) sections.push(`BOTS DID (${r.changes.length}):\n• ` + r.changes.slice(0, 25).join("\n• ") +
     (r.changes.length > 25 ? `\n• …and ${r.changes.length - 25} more` : ""));
-  if (r.info.length && (firstRunOfDay || r.urgent.length || r.changes.length)) sections.push(r.info.join("\n\n"));
+  if (r.info.length && (firstRunOfDay || only.length > 0 || r.urgent.length || r.changes.length)) sections.push(r.info.join("\n\n"));
 
   if (brainOn()) {
     const u = brainUsage();
@@ -120,7 +120,7 @@ export async function runBots(opts: { only?: string[] } = {}) {
   }
   const shouldPush = r.urgent.length > 0 || r.changes.length > 0 || firstRunOfDay || only.length > 0;
   if (shouldPush) {
-    const title = r.urgent.length ? `Nexa: ${r.urgent.length} thing(s) need you${tag}` : `Nexa store update${tag}`;
+    const title = r.urgent.length ? `Nexa: ${r.urgent.length} thing(s) need you${tag}` : only.includes("finder") ? `Nexa product ideas${tag}` : `Nexa store update${tag}`;
     await push(title, sections.join("\n\n") || "All quiet.", r.urgent.length > 0);
   } else {
     console.log("Nothing to report this run.");
