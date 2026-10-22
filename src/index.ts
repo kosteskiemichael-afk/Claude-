@@ -6,6 +6,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { createHash } from "node:crypto";
 import { registerTools } from "./tools.js";
 import { registerDashboard } from "./dashboard.js";
+import { runBots } from "./bots/run.js";
 import { API_BASE, SANDBOX, USER_SCOPES } from "./ebay.js";
 
 const SECRET = process.env.CONNECTOR_SECRET || "";
@@ -110,6 +111,21 @@ app.get("/auth/callback", async (req, res) => {
 });
 
 registerDashboard(app, SECRET);
+
+// Bot runs: the Render cron job (or the dashboard's Run now button) POSTs here.
+let botsRunning = false;
+app.post(`/bots/run/${SECRET}`, async (_req, res) => {
+  if (botsRunning) { res.status(409).json({ ok: false, error: "A bot run is already in progress." }); return; }
+  botsRunning = true;
+  const started = Date.now();
+  try {
+    const r = await runBots();
+    res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length });
+  } catch (e) {
+    console.error("Bot run failed", e);
+    res.status(500).json({ ok: false, error: e instanceof Error ? e.message : String(e) });
+  } finally { botsRunning = false; }
+});
 
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });

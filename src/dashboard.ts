@@ -85,6 +85,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;p
 <div class="k ${above.length ? "bad" : "ok"}"><b>${above.length}</b><span>ads above ${cfg.marketing.target_ad_rate}%</span></div>
 <div class="k"><b>${Object.keys(cfg.pricing.rules).length}${process.env.ANTHROPIC_API_KEY ? "+🧠" : ""}</b><span>items auto-priced</span></div>
 </div>
+<form method="post" action="/bots/run/${secret}" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Running… (up to 2 min)'" style="margin:0 0 14px"><button style="font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer">▶ Run bots now</button></form>
 <section><h2>Bot activity</h2>${runs.length ? runs.slice(0, 15).map((r) => `<div class="run${r.urgent ? " u" : ""}"><h3>${esc(r.title)} <time>${fmt(r.time)}</time></h3><pre>${esc(r.message)}</pre></div>`).join("") : `<p class="empty">No bot runs yet. They'll show up here after the first run (7am, 1pm, 7pm).</p>`}</section>
 <section><h2>Print queue</h2>${queue.size ? `<table>${[...queue.entries()].map(([t, q]) => `<tr><td>${q}×</td><td>${esc(t)}</td></tr>`).join("")}</table>` : `<p class="empty">Nothing to print.</p>`}</section>
 <section><h2>Auto-priced items</h2><div class="scroll"><table><tr><th>Listing</th><th>Price now</th><th>Allowed range</th><th>Ad rate</th></tr>${ruleRows}</table></div></section>

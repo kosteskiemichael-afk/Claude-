@@ -25,33 +25,16 @@ services:
       - key: NTFY_TOPIC
         generateValue: true
 
-  # Store bots: run 3x a day (7am, 1pm, 7pm Indiana time during daylight saving;
-  # 6am, noon, 6pm in winter). Render cron times are UTC.
+  # Store bots: a tiny cron job that wakes the connector 3x a day and tells it to
+  # run the bots (7am, 1pm, 7pm Indiana time in summer; 6am/noon/6pm in winter).
+  # The eBay keys stay on the connector; this job only needs CONNECTOR_SECRET.
   - type: cron
     name: nexa-store-bots
     runtime: node
     plan: starter
     schedule: "0 11,17,23 * * *"
-    buildCommand: npm install --include=dev && npm run build
-    startCommand: npm run bots
+    buildCommand: echo ready
+    startCommand: curl -fsS --retry 4 --retry-delay 30 --retry-all-errors --max-time 600 -X POST "https://nexa-ebay-connector.onrender.com/bots/run/$CONNECTOR_SECRET"
     envVars:
-      - key: EBAY_APP_ID
-        fromService: { type: web, name: nexa-ebay-connector, envVarKey: EBAY_APP_ID }
-      - key: EBAY_CERT_ID
-        fromService: { type: web, name: nexa-ebay-connector, envVarKey: EBAY_CERT_ID }
-      - key: EBAY_REFRESH_TOKEN
-        fromService: { type: web, name: nexa-ebay-connector, envVarKey: EBAY_REFRESH_TOKEN }
-      - key: EBAY_MARKETPLACE
-        value: EBAY_US
-      - key: PROTECTED_ITEM_IDS
-        value: "206531844850,206453290362,206595114694,206612334348"
-      - key: PROTECTED_TITLE_KEYWORDS
-        value: "Baratza,Burr Holder"
-      - key: NTFY_TOPIC
-        fromService: { type: web, name: nexa-ebay-connector, envVarKey: NTFY_TOPIC }
-      - key: DRY_RUN
-        value: "0"
-      # The business brain (Claude). Paste your key from console.anthropic.com
-      # in Render > nexa-store-bots > Environment. Never put it in this file.
-      - key: ANTHROPIC_API_KEY
-        sync: false
+      - key: CONNECTOR_SECRET
+        fromService: { type: web, name: nexa-ebay-connector, envVarKey: CONNECTOR_SECRET }
