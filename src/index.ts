@@ -114,12 +114,13 @@ registerDashboard(app, SECRET);
 
 // Bot runs: the Render cron job (or the dashboard's Run now button) POSTs here.
 let botsRunning = false;
-app.post(`/bots/run/${SECRET}`, async (_req, res) => {
+app.post(`/bots/run/${SECRET}`, async (req, res) => {
   if (botsRunning) { res.status(409).json({ ok: false, error: "A bot run is already in progress." }); return; }
   botsRunning = true;
   const started = Date.now();
   try {
-    const r = await runBots();
+    const only = String(req.query.only || "").split(",").map((x) => x.trim()).filter(Boolean);
+    const r = await runBots({ only });
     res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length });
   } catch (e) {
     console.error("Bot run failed", e);

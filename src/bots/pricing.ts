@@ -86,16 +86,31 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   const changes: { item_id: string; title: string; price: number }[] = [];
   const sold30 = (id: string) => traffic?.get(id)?.sold ?? 0;
 
+  // Price-action logic, tuned for profit:
+  //  - RAISE when you're cheaper than every true competitor (to 1¢ under the cheapest).
+  //  - RAISE 3%/day while a listing is selling fast (5+ in 30 days) and nobody undercuts you.
+  //  - CUT only when a listing has had 0 sales in 30 days and a competitor is cheaper.
+  //  - Otherwise HOLD. A listing that sells at its price doesn't need a cut.
   const apply = (l: Listing, rule: PriceRule, comps: Competitor[], tag: string) => {
-    let d = decidePrice(cfg, rule, l, comps);
-    if (!d) return;
-    // Smart guard: a listing that's already selling well doesn't need a price cut.
-    if (d.price < l.price && sold30(l.item_id) >= 5) {
-      r.info.push(`Held price on ${short(l.title, 30)}: ${sold30(l.item_id)} sold in 30 days, no need to cut (${d.reason}).`);
-      return;
+    const s30 = sold30(l.item_id);
+    const d = decidePrice(cfg, rule, l, comps);
+    if (d && d.price < l.price) {
+      if (!traffic || s30 > 0) {
+        if (s30 > 0) r.info.push(`Held ${short(l.title, 30)} at ${money(l.price)}: ${s30} sold in 30 days (${d.reason}).`);
+        return;
+      }
     }
-    changes.push({ item_id: l.item_id, title: l.title, price: d.price });
-    r.changes.push(`${tag}Price ${money(l.price)} → ${money(d.price)} (${d.reason}): ${short(l.title)}`);
+    let target = d?.price;
+    let reason = d?.reason || "";
+    if (!d && s30 >= 5 && traffic) {
+      const lowest = comps.length ? Math.min(...comps.map((c) => c.total)) - l.shipping_cost - cfg.pricing.undercut : Infinity;
+      const cap = Math.min(rule.max ?? l.price * 1.25, lowest);
+      const up = Math.round(Math.min(l.price * 1.03, cap) * 100) / 100;
+      if (up - l.price >= cfg.pricing.min_change) { target = up; reason = `selling fast: ${s30} sold in 30 days`; }
+    }
+    if (target === undefined) return;
+    changes.push({ item_id: l.item_id, title: l.title, price: target });
+    r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}): ${short(l.title)}`);
   };
 
   // 1) Items with hand-written rules.

@@ -10,6 +10,7 @@ import { push } from "./notify.js";
 import { pricingBot } from "./pricing.js";
 import { productionBot } from "./production.js";
 import { serviceBot } from "./service.js";
+import { finderBot } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
 function localHour(tz: string, d = new Date()): number {
@@ -58,9 +59,9 @@ async function step(name: string, r: Report, fn: () => Promise<void> | void) {
   }
 }
 
-export async function runBots() {
+export async function runBots(opts: { only?: string[] } = {}) {
   const cfg = loadConfig();
-  const only = (process.env.BOTS || "").split(",").map((s) => s.trim()).filter(Boolean);
+  const only = opts.only?.length ? opts.only : (process.env.BOTS || "").split(",").map((s) => s.trim()).filter(Boolean);
   const on = (b: string) => (!only.length || only.includes(b)) && (cfg as any)[b]?.enabled !== false;
   const { since, firstRunOfDay } = windowStart(cfg.run_hours_local, cfg.timezone);
   const r = newReport();
@@ -74,6 +75,9 @@ export async function runBots() {
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
   if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r));
   if (on("service")) await step("Customer service", r, () => serviceBot(cfg, since, unshipped, r));
+  const weekday = new Date().toLocaleDateString("en-US", { weekday: "short", timeZone: cfg.timezone });
+  const finderDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][cfg.finder.day] === weekday;
+  if (on("finder") && (only.includes("finder") || (firstRunOfDay && finderDay))) await step("Product finder", r, () => finderBot(cfg, listings, r));
   if (on("production")) await step("Production", r, () => productionBot(unshipped, since, firstRunOfDay, r));
 
   // Morning: the brain reads the whole store and picks today's best moves.
@@ -114,7 +118,7 @@ export async function runBots() {
     const u = brainUsage();
     console.log(`Brain usage this run: ${u.input_tokens} in / ${u.output_tokens} out tokens`);
   }
-  const shouldPush = r.urgent.length > 0 || r.changes.length > 0 || firstRunOfDay;
+  const shouldPush = r.urgent.length > 0 || r.changes.length > 0 || firstRunOfDay || only.length > 0;
   if (shouldPush) {
     const title = r.urgent.length ? `Nexa: ${r.urgent.length} thing(s) need you${tag}` : `Nexa store update${tag}`;
     await push(title, sections.join("\n\n") || "All quiet.", r.urgent.length > 0);

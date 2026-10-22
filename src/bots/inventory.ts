@@ -6,12 +6,15 @@ export async function inventoryBot(cfg: BotConfig, listings: Listing[], r: Repor
   const { restock_below, restock_to } = cfg.inventory;
   const restock: { item_id: string; title: string; quantity: number }[] = [];
 
+  const never = new Set((cfg.inventory.never_restock || []).map(String));
   for (const l of listings) {
     if (l.quantity_available >= restock_below) continue;
+    // Sold out (0) is treated as your choice: the bots never restock it.
     if (l.protected) {
       r.urgent.push(`Burr holder stock low (${l.quantity_available} left): ${short(l.title)}. Restock it yourself; the bots never touch it.`);
       continue;
     }
+    if (l.quantity_available === 0 || never.has(l.item_id)) continue;
     if (l.has_variations) {
       r.info.push(`Low stock on a variation listing, restock by hand: ${short(l.title)}`);
       continue;

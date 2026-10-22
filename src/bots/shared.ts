@@ -20,7 +20,7 @@ export type BotConfig = {
   run_hours_local: number[];
   dry_run: boolean;
   my_seller_ids: string[];
-  inventory: { enabled: boolean; restock_below: number; restock_to: number };
+  inventory: { enabled: boolean; restock_below: number; restock_to: number; never_restock: string[] };
   pricing: {
     enabled: boolean;
     fee_rate: number;          // eBay final value fee + ad + processing, as a fraction
@@ -38,6 +38,7 @@ export type BotConfig = {
   marketing: { enabled: boolean; target_ad_rate: number; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
   production: { enabled: boolean };
+  finder: { enabled: boolean; day: number; min_sold: number; queries: string[] };
 };
 
 const DEFAULTS: BotConfig = {
@@ -45,7 +46,7 @@ const DEFAULTS: BotConfig = {
   run_hours_local: [7, 13, 19],
   dry_run: false,
   my_seller_ids: ["nexamfgco"],
-  inventory: { enabled: true, restock_below: 3, restock_to: 10 },
+  inventory: { enabled: true, restock_below: 3, restock_to: 10, never_restock: [] },
   pricing: {
     enabled: true,
     fee_rate: 0.156, // 13.6% final value fee (US, most categories) + 2% ad
@@ -63,6 +64,17 @@ const DEFAULTS: BotConfig = {
   marketing: { enabled: true, target_ad_rate: 2.0, add_unpromoted: false },
   service: { enabled: true, ship_warning_hours: 18 },
   production: { enabled: true },
+  finder: {
+    enabled: true,
+    day: 1, // Monday morning
+    min_sold: 100,
+    queries: [
+      "3d printed replacement part", "3d printed replacement gear", "3d printed replacement knob",
+      "3d printed replacement clip", "3d printed battery door", "3d printed replacement cover",
+      "3d printed replacement handle", "3d printed replacement cap", "3d printed replacement latch",
+      "3d printed replacement bracket", "3d printed replacement hinge", "3d printed obsolete part",
+    ],
+  },
 };
 
 function merge<T>(base: T, over: any): T {

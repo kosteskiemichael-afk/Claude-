@@ -106,10 +106,11 @@ A Render cron job (`nexa-store-bots`) runs five bots at 7am, 1pm and 7pm
 
 | Bot | What it does on its own | What it sends to your phone |
 |---|---|---|
-| Listing & inventory | Tops print-on-demand listings back up to 10 when they drop below 3, so they never go out of stock | Burr holder stock low (you restock those); each morning, listings with views but no sales |
-| Pricing & competition | For each item in `bots.config.json`: if a competitor is cheaper, goes 1¢ under them; if you're cheaper than everyone, raises to 1¢ under the cheapest. Never below your profit floor (40% after fees, label and material), never outside the item's min/max, never more than 10% per day; prices change only on the morning run so you don't start price wars | Every price change |
+| Listing & inventory | Tops print-on-demand listings back up to 10 when they drop below 3. Listings you set to 0 (sold out) are left alone, and anything in `inventory.never_restock` is never touched | Burr holder stock low (you restock those); each morning, listings with views but no sales |
+| Pricing & competition | Every morning, for each item in `bots.config.json` (and every listing when the brain is on): raises to 1¢ under the cheapest true competitor when you're cheaper; raises 3%/day while an item sells fast (5+ in 30 days) and nobody undercuts you; cuts only items with 0 sales in 30 days when a competitor is cheaper; otherwise holds. Never below your profit floor (40% after fees, label and material), never outside the item's min/max, never more than 10% per day; prices change only on the morning run so you don't start price wars | Every price change |
 | Marketing | Lowers every Promoted Listings ad to 2% (eBay's minimum) | Each ad lowered; a warning if a campaign uses eBay's dynamic rate |
 | Customer service | Never replies for you | New unread buyer messages, negative/neutral feedback, orders due within 18h or late |
+| Product finder (Mondays) | Searches eBay for 3D-printed parts with 100+ sold that you don't sell yet, finds a CAD file you can legally sell (CC0/CC BY/CC BY-SA/GPL; never NC) and sends each idea with listing title, seller, sold count, price and CAD link. Run it any time with **Find new products now** on the dashboard | The weekly idea list |
 | Production | Builds the print queue from unshipped orders, soonest ship date first | Full queue every morning; new orders on later runs |
 
 You get a push only when something changed or needs you, plus a morning summary.
