@@ -68,14 +68,46 @@ async function printables(query: string): Promise<{ id: string; name: string; li
   return (j.data?.searchPrints2?.items || []).map((i: any) => ({ id: String(i.id), name: String(i.name), license: String(i.license?.abbreviation || "") }));
 }
 
+// Thingiverse (optional): needs a free app token from thingiverse.com/developers in THINGIVERSE_TOKEN.
+async function thingiverse(query: string): Promise<{ id: string; name: string; license: string }[]> {
+  const tok = process.env.THINGIVERSE_TOKEN;
+  if (!tok) return [];
+  const h = { Authorization: `Bearer ${tok}` };
+  const r = await fetch(`https://api.thingiverse.com/search/${encodeURIComponent(query)}?type=things&per_page=8`, { headers: h, signal: AbortSignal.timeout(15000) });
+  if (!r.ok) return [];
+  const j: any = await r.json();
+  const hits = (j.hits || j || []).slice(0, 8);
+  const out: { id: string; name: string; license: string }[] = [];
+  for (const t of hits) {
+    try {
+      const d: any = await (await fetch(`https://api.thingiverse.com/things/${t.id}`, { headers: h, signal: AbortSignal.timeout(15000) })).json();
+      // Thingiverse license names look like "Creative Commons - Attribution - Share Alike".
+      const L = String(d.license || "");
+      const abbr = /public domain|cc0/i.test(L) ? "CC0"
+        : /non-?commercial/i.test(L) ? "CC-BY-NC"
+        : /no derivatives/i.test(L) ? "CC-BY-ND"
+        : /share alike/i.test(L) ? "CC-BY-SA"
+        : /attribution/i.test(L) ? "CC-BY"
+        : /gnu|gpl/i.test(L) ? "GPL" : /bsd/i.test(L) ? "BSD" : L;
+      out.push({ id: `tv:${t.id}`, name: String(d.name || t.name || ""), license: abbr });
+    } catch { /* skip */ }
+  }
+  return out;
+}
+
 async function findCad(h: Hit): Promise<Cad | null> {
   const t = tokens(h.title);
   const tries = [t.slice(0, 4).join(" "), t.slice(0, 3).join(" "), t.slice(0, 2).join(" ")];
   for (const q of tries) {
     if (!q) continue;
-    const res = (await printables(q)).filter((x) => okLicense(x.license));
+    const pr = await printables(q).catch(() => []);
+    const tv = await thingiverse(q).catch(() => []);
+    const res = [...pr, ...tv].filter((x) => okLicense(x.license));
     const best = res.find((x) => overlap(t.slice(0, 8), tokens(x.name)) >= Math.min(3, t.length));
-    if (best) return { url: `https://www.printables.com/model/${best.id}`, name: best.name, license: best.license };
+    if (best) {
+      const url = best.id.startsWith("tv:") ? `https://www.thingiverse.com/thing:${best.id.slice(3)}` : `https://www.printables.com/model/${best.id}`;
+      return { url, name: best.name, license: best.license };
+    }
   }
   return null;
 }

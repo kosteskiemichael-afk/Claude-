@@ -148,3 +148,10 @@ Open `https://<your-service>.onrender.com/dashboard/<CONNECTOR_SECRET>` (same se
 address). It shows every bot run, orders to ship, late shipments, low stock, ads above 2%, the print queue
 and the auto-priced items. It refreshes every minute and never changes anything. Bookmark it on your phone.
 On Render's free plan the first load after a quiet spell takes 30–60 seconds.
+
+### Product ideas in Google Sheets
+Every finder run adds new ideas to the **Nexa Product Ideas** sheet (tab "Product Ideas") through the Apps Script in
+`sheets/ProductIdeas.gs` (its web app URL is in Render as `SHEETS_WEBHOOK_URL`). Existing rows only get their sold count refreshed.
+CAD search covers Printables, plus Thingiverse when `THINGIVERSE_TOKEN` is set (free app token from thingiverse.com/developers).
+Only licenses that allow selling prints are used (CC0, CC BY, CC BY-SA, CC BY-ND, GPL, BSD); NonCommercial files are never offered.
+With `ANTHROPIC_API_KEY` set, Claude confirms each CAD file is the same part; without it, matches are marked "Possible CAD - check".
