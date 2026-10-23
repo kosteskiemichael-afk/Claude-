@@ -108,7 +108,7 @@ async function buildData() {
   // Merge board + sheet, dedupe by eBay link (board entries win), newest first, with profit math.
   const seenUrl = new Set<string>();
   const p = cfg.pricing;
-  const productList = [...finds, ...boardIdeas(), ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
+  const productList = [...boardIdeas(), ...finds, ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
     .map((x, i) => ({ x, i })).sort((a, b) => b.x.found.localeCompare(a.x.found) || a.i - b.i).map(({ x }) => {
       const profit = x.price ? x.price * (1 - p.fee_rate) - p.per_order_fee - p.default_label_cost - p.default_material_cost : 0;
       return { ...x, theirRevenue: Math.round(x.sold * x.price), profit: Math.round(profit * 100) / 100, margin: x.price ? Math.round(profit / x.price * 100) : 0 };
