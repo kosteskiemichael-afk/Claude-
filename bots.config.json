@@ -14,6 +14,8 @@
   },
   "marketing": {
     "target_ad_rate": 2.0,
+    "max_ad_rate": 5.0,
+    "ad_rates": {},
     "add_unpromoted": false
   },
   "pricing": {

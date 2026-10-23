@@ -35,7 +35,7 @@ export type BotConfig = {
     once_per_day: boolean;     // reprice only on the morning run (avoids price wars)
     rules: Record<string, PriceRule>;
   };
-  marketing: { enabled: boolean; target_ad_rate: number; add_unpromoted: boolean };
+  marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
   production: { enabled: boolean };
   finder: { enabled: boolean; day: number; min_sold: number; queries: string[] };
@@ -61,7 +61,7 @@ const DEFAULTS: BotConfig = {
     once_per_day: true,
     rules: {},
   },
-  marketing: { enabled: true, target_ad_rate: 2.0, add_unpromoted: false },
+  marketing: { enabled: true, target_ad_rate: 2.0, max_ad_rate: 5.0, ad_rates: {}, add_unpromoted: false },
   service: { enabled: true, ship_warning_hours: 18 },
   production: { enabled: true },
   finder: {

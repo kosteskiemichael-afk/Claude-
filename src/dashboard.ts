@@ -42,7 +42,7 @@ export function registerDashboard(app: Express, secret: string) {
     ]);
     const tz = "America/Indianapolis";
     const fmt = (t: number) => new Date(t).toLocaleString("en-US", { timeZone: tz, weekday: "short", hour: "numeric", minute: "2-digit" });
-    const above = [...ads.entries()].filter(([id, r]) => r > cfg.marketing.target_ad_rate + 0.001 && !listings.find((l) => l.item_id === id)?.protected);
+    const above = [...ads.entries()].filter(([id, r]) => r > (cfg.marketing.max_ad_rate ?? 5) + 0.001 && !listings.find((l) => l.item_id === id)?.protected);
     const lowStock = listings.filter((l) => l.quantity_available < cfg.inventory.restock_below);
     const late = unshipped.filter((o) => o.ship_by && Date.parse(o.ship_by) < Date.now());
     const byId = new Map(listings.map((l) => [l.item_id, l]));
@@ -82,7 +82,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;p
 <div class="k ${unshipped.length ? "" : "ok"}"><b>${unshipped.length}</b><span>orders to ship</span></div>
 <div class="k ${late.length ? "bad" : "ok"}"><b>${late.length}</b><span>late shipments</span></div>
 <div class="k ${lowStock.length ? "bad" : "ok"}"><b>${lowStock.length}</b><span>low stock</span></div>
-<div class="k ${above.length ? "bad" : "ok"}"><b>${above.length}</b><span>ads above ${cfg.marketing.target_ad_rate}%</span></div>
+<div class="k ${above.length ? "bad" : "ok"}"><b>${above.length}</b><span>ads above ${cfg.marketing.max_ad_rate ?? 5}%</span></div>
 <div class="k"><b>${Object.keys(cfg.pricing.rules).length}${process.env.ANTHROPIC_API_KEY ? "+🧠" : ""}</b><span>items auto-priced</span></div>
 </div>
 <form method="post" action="/bots/run/${secret}" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Running… (up to 2 min)'" style="margin:0 0 14px"><button style="font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer">▶ Run bots now</button></form>
