@@ -35,14 +35,24 @@ const TZ = "America/Indianapolis";
 const hourIn = (d = new Date()) => Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: TZ }).format(d));
 const dayKey = (t: number) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(t));
 
+// Each source has its own refresh rate: orders every 20s (live sales), the heavier eBay calls every 60s.
+const memo = new Map<string, { at: number; p: Promise<any> }>();
+function cached<T>(key: string, ttl: number, fn: () => Promise<T>, fallback: T): Promise<T> {
+  const hit = memo.get(key);
+  if (hit && Date.now() - hit.at < ttl) return hit.p;
+  const p = fn().catch(() => (hit ? hit.p : fallback));
+  memo.set(key, { at: Date.now(), p });
+  return p;
+}
+
 async function buildData() {
   const cfg = loadConfig();
   const [runs, listings, unshipped, month, ads] = await Promise.all([
-    botRuns().catch(() => [] as Run[]),
-    activeListings().catch(() => []),
-    recentOrders(30, true).catch(() => []),
-    recentOrders(30, false).catch(() => []),
-    adRates().catch(() => new Map<string, number>()),
+    cached("runs", 60_000, botRuns, [] as Run[]),
+    cached("listings", 60_000, activeListings, []),
+    cached("unshipped", 20_000, () => recentOrders(30, true), []),
+    cached("month", 20_000, () => recentOrders(30, false), []),
+    cached("ads", 120_000, adRates, new Map<string, number>()),
   ]);
   const now = Date.now();
   const cap = cfg.marketing.max_ad_rate ?? 5;
@@ -67,6 +77,12 @@ async function buildData() {
     if (now - t < 7 * 86400_000) { orders7++; rev7 += o.total; }
     o.items.forEach((it) => units.set(it.title, (units.get(it.title) || 0) + it.quantity));
   }
+  const today = dayKey(now);
+  const todays = month.filter((o) => dayKey(Date.parse(o.created)) === today);
+  const recent = [...month].sort((a, b) => Date.parse(b.created) - Date.parse(a.created)).slice(0, 25).map((o) => ({
+    id: o.order_id, time: Date.parse(o.created), total: o.total, shipped: o.status === "FULFILLED",
+    items: o.items.map((i) => ({ title: i.title, qty: i.quantity })),
+  }));
   const top = [...units.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([title, n]) => ({ title, units: n }));
 
   const queue = new Map<string, number>();
@@ -107,7 +123,7 @@ async function buildData() {
     now, dry: cfg.dry_run, nextRunAt, nextRunLabel: `${nextH % 12 || 12}${nextH < 12 ? "AM" : "PM"}`,
     lastRunAt: lastRun?.time ?? null,
     kpis: { listings: listings.length, unshipped: unshipped.length, late: late.length, lowStock: lowStock.length, above: above.length, cap },
-    sales: { orders7, rev7, orders30: month.length, rev30, days, top },
+    sales: { ordersToday: todays.length, revToday: todays.reduce((a, o) => a + o.total, 0), orders7, rev7, orders30: month.length, rev30, days, top, recent },
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
@@ -119,14 +135,11 @@ async function buildData() {
   };
 }
 
-let cache: { at: number; data: any } | null = null;
-let building: Promise<any> | null = null;
 async function getData(force = false) {
-  if (!force && cache && Date.now() - cache.at < 60_000) return cache.data;
-  if (!building) building = buildData().then((d) => { cache = { at: Date.now(), data: d }; return d; }).finally(() => { building = null; });
-  return building;
+  if (force) memo.clear();
+  return buildData();
 }
-export function invalidateDashboard() { cache = null; }
+export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); }
 
 export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false) {
   app.get(`/dashboard/${secret}/data`, async (req, res) => {
@@ -216,6 +229,15 @@ td.m{font-family:"JetBrains Mono";white-space:nowrap}.t2{max-width:340px;white-s
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:rgba(8,14,26,.95);border:1px solid var(--cy);box-shadow:var(--glow);padding:12px 18px;border-radius:12px;font:600 13px "JetBrains Mono";transition:transform .3s;z-index:9;max-width:calc(100% - 32px)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .scan{height:2px;background:linear-gradient(90deg,transparent,var(--cy),transparent);position:absolute;left:0;right:0;top:0;animation:scan 3s linear infinite;opacity:.0}.running .scan{opacity:1}
+.live{margin-bottom:14px}.ticker{display:grid;gap:6px;max-height:320px;overflow:auto;padding-right:6px}
+.sale{display:grid;grid-template-columns:90px 1fr auto 92px;gap:12px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(56,243,255,.03);font-size:13px}
+.sale .amt{font:700 15px "JetBrains Mono";color:var(--ok);text-shadow:0 0 12px rgba(93,255,168,.35)}.sale .what{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sale .st{font:600 10.5px "JetBrains Mono";letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid rgba(255,201,74,.5);color:var(--warn)}.sale .st.ok{border-color:rgba(93,255,168,.4);color:var(--ok)}
+.sale time{font:500 11px "JetBrains Mono";color:var(--mute);text-align:right}
+.sale.new{animation:newsale 2.5s ease-out;border-color:var(--ok)}
+.live.flash{box-shadow:0 0 0 1px var(--ok),0 0 40px rgba(93,255,168,.35)}
+@keyframes newsale{0%{background:rgba(93,255,168,.35);transform:scale(1.02)}100%{background:rgba(56,243,255,.03);transform:none}}
+@media (max-width:560px){.sale{grid-template-columns:76px 1fr;row-gap:4px}.sale .st{justify-self:start}.sale time{text-align:left}}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
 @media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.hud{width:100%}.btn{flex:1}}
@@ -236,6 +258,7 @@ td.m{font-family:"JetBrains Mono";white-space:nowrap}.t2{max-width:340px;white-s
   <section class="panel"><div class="scan"></div><h2>Bot fleet <small id="lastrun"></small></h2><div class="bots" id="bots"></div></section>
   <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
 </div>
+<section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
 <div class="grid three">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
   <section class="panel ideas"><h2>Product radar <small id="ideatime"></small></h2><div id="ideas"></div></section>
@@ -249,7 +272,9 @@ const S="__SECRET__";const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
-let D=null,open=new Set();
+let D=null,open=new Set(),seen=null;
+function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[880,1320].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,a.currentTime+i*.14);g.gain.exponentialRampToValueAtTime(.25,a.currentTime+i*.14+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+i*.14+.35);o.connect(g);g.connect(a.destination);o.start(a.currentTime+i*.14);o.stop(a.currentTime+i*.14+.4)})}catch(e){}}
+try{document.addEventListener("DOMContentLoaded",()=>{const c=document.getElementById("chime");c.checked=localStorage.getItem("nexaChime")==="1";c.onchange=()=>{try{localStorage.setItem("nexaChime",c.checked?"1":"0")}catch(e){};if(c.checked)chime()}})}catch(e){}
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),5000)}
 function tick(){const n=new Date();$("clock").textContent=n.toLocaleTimeString("en-US",{hour12:false});
  if(D){const s=Math.max(0,Math.round((D.nextRunAt-Date.now())/1000));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;$("next").textContent=D.nextRunLabel+" · T-"+(h?h+"h ":"")+String(m).padStart(2,"0")+"m "+String(x).padStart(2,"0")+"s"}}
@@ -261,7 +286,12 @@ function render(){
  $("sysdot").className="dot"+(D.running?" busy":k.late?" bad":k.lowStock||k.above?" warn":"");
  $("sys").textContent=D.running?"BOTS RUNNING":D.dry?"TEST MODE":k.late?"ATTENTION NEEDED":(k.lowStock||k.above)?"MONITORING":"ALL SYSTEMS NOMINAL";
  document.getElementById("app").classList.toggle("running",!!D.running);
- const K=[["Revenue 7d",money(s.rev7),"cy"],["Orders 7d",s.orders7,"cy"],["To ship",k.unshipped,k.unshipped?"":"ok"],["Late",k.late,k.late?"bad":"ok"],["Low stock",k.lowStock,k.lowStock?"warn":"ok"],["Live listings",k.listings,""]];
+ const K=[["Sales today",money(s.revToday),"cy"],["Orders today",s.ordersToday,"cy"],["Revenue 7d",money(s.rev7),""],["To ship",k.unshipped,k.unshipped?"":"ok"],["Late",k.late,k.late?"bad":"ok"],["Low stock",k.lowStock,k.lowStock?"warn":"ok"]];
+ const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?"just now":m<60?m+"m ago":m<1440?Math.floor(m/60)+"h "+(m%60)+"m ago":fmtT(t)};
+ const fresh=new Set(s.recent.filter(o=>seen&&!seen.has(o.id)).map(o=>o.id));
+ $("ticker").innerHTML=s.recent.length?s.recent.map(o=>'<div class="sale'+(fresh.has(o.id)?" new":"")+'"><span class="amt">'+money(o.total)+'</span><span class="what">'+o.items.map(i=>(i.qty>1?i.qty+"× ":"")+esc(i.title)).join(" + ")+'</span><span class="st '+(o.shipped?"ok":"")+'">'+(o.shipped?"shipped":"to ship")+'</span><time>'+ago(o.time)+'</time></div>').join(""):'<p class="empty">No orders in the last 30 days.</p>';
+ if(fresh.size){const f=s.recent.find(o=>fresh.has(o.id));toast("💰 New sale · "+money(f.total)+" · "+f.items[0].title.slice(0,50));if($("chime").checked)chime();$("livep").classList.add("flash");setTimeout(()=>$("livep").classList.remove("flash"),2500)}
+ seen=new Set(s.recent.map(o=>o.id));
  $("kpis").innerHTML=K.map(([l,v,c])=>'<div class="panel k '+c+'"><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>').join("");
  $("bots").innerHTML=D.bots.map(b=>'<div class="bot '+b.state+'"><div class="top"><span class="ic">'+esc(b.icon)+'</span><span class="n">'+esc(b.name)+'</span><span class="dot '+b.state+'"></span></div><div class="ln">'+esc(b.line)+'</div><div class="dt">'+esc(b.detail)+'</div></div>').join("");
  $("lastrun").textContent=D.lastRunAt?"last report "+fmtT(D.lastRunAt):"waiting for first scheduled run";
@@ -289,5 +319,5 @@ async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;b
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
 $("find").onclick=e=>run("finder",e.currentTarget,"Scanning eBay…");
-load();setInterval(()=>load(false),30000);
+load();setInterval(()=>load(false),20000);
 </script></body></html>`;
