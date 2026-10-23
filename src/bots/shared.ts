@@ -40,7 +40,7 @@ export type BotConfig = {
   marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; boost_sellers_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
   production: { enabled: boolean };
-  finder: { enabled: boolean; day: number; min_sold: number; queries: string[] };
+  finder: { enabled: boolean; day: number; min_sold: number; queries_per_run?: number; queries: string[] };
 };
 
 const DEFAULTS: BotConfig = {
@@ -70,13 +70,31 @@ const DEFAULTS: BotConfig = {
   production: { enabled: true },
   finder: {
     enabled: true,
-    day: 1, // Monday morning
+    day: -1, // -1 = every morning (0-6 = one weekday only)
     min_sold: 100,
+    // A big pool of searches; each run uses the next batch of queries_per_run, rotating daily,
+    // so every run looks somewhere new without getting slow.
+    queries_per_run: 14,
     queries: [
       "3d printed replacement part", "3d printed replacement gear", "3d printed replacement knob",
       "3d printed replacement clip", "3d printed battery door", "3d printed replacement cover",
       "3d printed replacement handle", "3d printed replacement cap", "3d printed replacement latch",
       "3d printed replacement bracket", "3d printed replacement hinge", "3d printed obsolete part",
+      "3d printed car interior part", "3d printed truck replacement part", "3d printed console part",
+      "3d printed cup holder", "3d printed dash vent clip", "3d printed jeep part",
+      "3d printed boat part", "3d printed kayak part", "3d printed rv camper part",
+      "3d printed motorcycle part", "3d printed atv part", "3d printed golf cart part",
+      "3d printed appliance part", "3d printed dishwasher part", "3d printed refrigerator part",
+      "3d printed washer dryer part", "3d printed microwave part", "3d printed vacuum part",
+      "3d printed coffee maker part", "3d printed blender part", "3d printed mixer part",
+      "3d printed power tool part", "3d printed miter saw part", "3d printed table saw part",
+      "3d printed lawn mower part", "3d printed snow blower part", "3d printed pressure washer part",
+      "3d printed grill part", "3d printed pool part", "3d printed sprinkler part",
+      "3d printed camera part", "3d printed radio part", "3d printed turntable part",
+      "3d printed game console part", "3d printed remote battery cover", "3d printed headphone part",
+      "3d printed furniture part", "3d printed window blind part", "3d printed door part",
+      "3d printed toy replacement part", "3d printed stroller part", "3d printed bike part",
+      "3d printed fishing reel part", "3d printed gun cleaning part", "3d printed sewing machine part",
     ],
   },
 };
@@ -179,6 +197,7 @@ export type Order = {
   status: string;
   ship_by?: string;
   buyer?: string;
+  total: number;
   items: { item_id: string; title: string; quantity: number }[];
 };
 
@@ -202,6 +221,7 @@ export async function recentOrders(days: number, onlyUnshipped: boolean): Promis
         status: o.orderFulfillmentStatus,
         ship_by: shipBy,
         buyer: o.buyer?.username,
+        total: Number(o.pricingSummary?.total?.value || 0),
         items: (o.lineItems || []).map((li: any) => ({
           item_id: String(li.legacyItemId), title: String(li.title || ""), quantity: Number(li.quantity || 1),
         })),

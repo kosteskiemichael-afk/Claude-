@@ -17,10 +17,19 @@ const overlap = (a: string[], b: string[]) => { const s = new Set(b); return a.f
 // Licenses that allow selling prints. Anything NonCommercial (NC) is rejected.
 const okLicense = (l: string) => !/NC/i.test(l) && /^(CC0|CC-BY|CC-BY-SA|CC-BY-ND|GPL|LGPL|AGPL|BSD|MIT)(\b|[- .\d]|$)/i.test(l.trim());
 
+/** The next batch of searches from the pool, rotating once a day. */
+export function todaysQueries(cfg: BotConfig, day = Math.floor(Date.now() / 86400_000)): string[] {
+  const all = cfg.finder.queries;
+  const n = Math.min(all.length, cfg.finder.queries_per_run || all.length);
+  const batches = Math.ceil(all.length / n);
+  const start = (day % batches) * n;
+  return all.slice(start, start + n);
+}
+
 async function searchEbay(cfg: BotConfig): Promise<Hit[]> {
   const mine = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
   const seen = new Map<string, Hit>();
-  for (const q of cfg.finder.queries) {
+  for (const q of todaysQueries(cfg)) {
     try {
       const j = await rest("GET", "/buy/browse/v1/item_summary/search", {
         app: true,
@@ -28,7 +37,7 @@ async function searchEbay(cfg: BotConfig): Promise<Hit[]> {
       });
       let kept = 0;
       for (const it of j.itemSummaries || []) {
-        if (kept >= 40) break;
+        if (kept >= 30) break;
         const title = String(it.title || "");
         const seller = String(it.seller?.username || "");
         if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
@@ -121,7 +130,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   console.log(`Finder: checking sold counts on ${hits.length} new-to-you listings`);
   await addSoldCounts(hits);
   let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
-  if (!top.length) { r.info.push("🔎 Product finder: no new 100+ sold printed parts this week."); return; }
+  if (!top.length) { r.info.push(`🔎 Product finder: no new ${cfg.finder.min_sold}+ sold printed parts in today's searches (${todaysQueries(cfg).slice(0, 3).join(", ")}…).`); return; }
 
   console.log(`Finder: ${top.length} with ${cfg.finder.min_sold}+ sold; checking CAD`);
   const withCad: { h: Hit; cad: Cad }[] = [];
@@ -175,5 +184,5 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   if (verified.length) parts.push(cadHead + verified.slice(0, 10).map((x) => `• ${line(x.h)}\n   CAD: ${x.cad.url} (${x.cad.license}) – ${short(x.cad.name, 50)}`).join("\n"));
   if (noCad.length) parts.push("PROVEN SELLERS, NO FREE CAD (model it yourself):\n" + noCad.slice(0, 6).map((h) => `• ${line(h)}`).join("\n"));
   if (cadErrors) parts.push(`(CAD search failed for ${cadErrors} item(s); check Printables by hand.)`);
-  r.info.unshift("🔎 PRODUCT IDEAS THIS WEEK\n" + parts.join("\n\n"));
+  r.info.unshift("🔎 PRODUCT IDEAS\n" + parts.join("\n\n"));
 }

@@ -110,7 +110,7 @@ A Render cron job (`nexa-store-bots`) runs five bots at 7am, 1pm and 7pm
 | Pricing & competition | Every morning, for each item in `bots.config.json` (and every listing when the brain is on): raises to 1¢ under the cheapest true competitor when you're cheaper; raises 3%/day while an item sells fast (5+ in 30 days) and nobody undercuts you; cuts only items with 0 sales in 30 days when a competitor is cheaper; otherwise holds. Never below your profit floor (40% after fees, label and material), never outside the item's min/max, never more than 10% per day; prices change only on the morning run so you don't start price wars | Every price change |
 | Marketing | Keeps your own ad rates. Ads above `max_ad_rate` (5%) are capped; listings that sold in the last 30 days are raised to `boost_sellers_rate` (4%); listings in `marketing.ad_rates` get exactly that rate | Each change listed; a warning if a campaign uses eBay's dynamic rate |
 | Customer service | Never replies for you | New unread buyer messages, negative/neutral feedback, orders due within 18h or late |
-| Product finder (Mondays) | Searches eBay for 3D-printed parts with 100+ sold that you don't sell yet, finds a CAD file you can legally sell (CC0/CC BY/CC BY-SA/GPL; never NC) and sends each idea with listing title, seller, sold count, price and CAD link. Run it any time with **Find new products now** on the dashboard | The weekly idea list |
+| Product finder (every morning) | Searches eBay for 3D-printed parts with 100+ sold that you don't sell yet, finds a CAD file you can legally sell (CC0/CC BY/CC BY-SA/GPL; never NC) and sends each idea with listing title, seller, sold count, price and CAD link. Run it any time with **Find new products now** on the dashboard | The idea list (a different batch of ~14 searches each day from a pool of 57) |
 | Production | Builds the print queue from unshipped orders, soonest ship date first | Full queue every morning; new orders on later runs |
 
 You get a push only when something changed or needs you, plus a morning summary.
@@ -145,8 +145,10 @@ Add its item number to `pricing.rules` in `bots.config.json` with a search
 
 ### Live dashboard
 Open `https://<your-service>.onrender.com/dashboard/<CONNECTOR_SECRET>` (same secret as your connector
-address). It shows every bot run, orders to ship, late shipments, low stock, ads above 5%, the print queue
-and the auto-priced items. It refreshes every minute and never changes anything. Bookmark it on your phone.
+address). "Nexa Command" shows the status of every bot, 7- and 30-day sales with a daily chart and top
+sellers, the live activity feed (last 12 hours of bot reports), the latest product ideas, the print queue and
+the price watch table. It updates itself every 30 seconds; the Run bots / Find products buttons start a run
+right from the page. Bookmark it on your phone.
 On Render's free plan the first load after a quiet spell takes 30–60 seconds.
 
 ### Product ideas in Google Sheets
