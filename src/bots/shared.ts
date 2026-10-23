@@ -25,6 +25,7 @@ export type BotConfig = {
     enabled: boolean;
     fee_rate: number;          // eBay final value fee + ad + processing, as a fraction
     per_order_fee: number;     // eBay's fixed per-order fee
+    cooldown_days?: number;    // raises and big cuts at most once every N days per listing
     small_cut_max?: number;    // $ cut always allowed to beat a cheaper competitor, even on selling listings
     min_margin: number;        // profit floor as a fraction of the sale price
     default_label_cost: number;
@@ -53,6 +54,7 @@ const DEFAULTS: BotConfig = {
     fee_rate: 0.156, // 13.6% final value fee (US, most categories) + 2% ad
     per_order_fee: 0.4,
     small_cut_max: 1.0,
+    cooldown_days: 5,
     min_margin: 0.4,
     default_label_cost: 1.69,
     default_material_cost: 0.5,

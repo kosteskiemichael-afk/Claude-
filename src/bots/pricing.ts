@@ -92,12 +92,18 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   //  - CUT to 1¢ under a cheaper competitor when the cut is small (≤ small_cut_max), even if it's selling.
   //  - Bigger cuts only when a listing has had 0 sales in 30 days.
   //  - Otherwise HOLD. A listing that sells at its price doesn't need a cut.
+  // Cooldown: each listing gets its own "price day" once every cooldown_days (no stored state needed).
+  // Raises and big cuts wait for that day; matching a cheaper competitor happens any day.
+  const cd = Math.max(1, cfg.pricing.cooldown_days ?? 5);
+  const today = Math.floor(Date.now() / 86400_000);
+  const myDay = (id: string) => cd === 1 || [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 9973, 0) % cd === today % cd;
   const apply = (l: Listing, rule: PriceRule, comps: Competitor[], tag: string) => {
     const s30 = sold30(l.item_id);
     const d = decidePrice(cfg, rule, l, comps);
     if (d && d.price < l.price) {
       // Sales mode: small cuts (a few cents up to small_cut_max) to beat a cheaper competitor always go through.
       const small = l.price - d.price <= (cfg.pricing.small_cut_max ?? 0);
+      if (!small && !myDay(l.item_id)) return;
       if (!small && (!traffic || s30 > 0)) {
         if (s30 > 0) r.info.push(`Held ${short(l.title, 30)} at ${money(l.price)}: ${s30} sold in 30 days (${d.reason}).`);
         return;
@@ -112,6 +118,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       if (up - l.price >= cfg.pricing.min_change) { target = up; reason = `selling fast: ${s30} sold in 30 days`; }
     }
     if (target === undefined) return;
+    if (target > l.price && !myDay(l.item_id)) return; // raises wait for this listing's price day
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}): ${short(l.title)}`);
   };

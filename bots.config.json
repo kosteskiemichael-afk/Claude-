@@ -22,6 +22,7 @@
   "pricing": {
     "min_margin": 0.4,
     "small_cut_max": 1.0,
+    "cooldown_days": 5,
     "max_step_pct": 0.1,
     "rules": {
       "206527145323": {
