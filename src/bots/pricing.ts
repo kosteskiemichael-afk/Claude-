@@ -89,13 +89,16 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   // Price-action logic, tuned for profit:
   //  - RAISE when you're cheaper than every true competitor (to 1¢ under the cheapest).
   //  - RAISE 3%/day while a listing is selling fast (5+ in 30 days) and nobody undercuts you.
-  //  - CUT only when a listing has had 0 sales in 30 days and a competitor is cheaper.
+  //  - CUT to 1¢ under a cheaper competitor when the cut is small (≤ small_cut_max), even if it's selling.
+  //  - Bigger cuts only when a listing has had 0 sales in 30 days.
   //  - Otherwise HOLD. A listing that sells at its price doesn't need a cut.
   const apply = (l: Listing, rule: PriceRule, comps: Competitor[], tag: string) => {
     const s30 = sold30(l.item_id);
     const d = decidePrice(cfg, rule, l, comps);
     if (d && d.price < l.price) {
-      if (!traffic || s30 > 0) {
+      // Sales mode: small cuts (a few cents up to small_cut_max) to beat a cheaper competitor always go through.
+      const small = l.price - d.price <= (cfg.pricing.small_cut_max ?? 0);
+      if (!small && (!traffic || s30 > 0)) {
         if (s30 > 0) r.info.push(`Held ${short(l.title, 30)} at ${money(l.price)}: ${s30} sold in 30 days (${d.reason}).`);
         return;
       }

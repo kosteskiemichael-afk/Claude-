@@ -1,13 +1,16 @@
 // Marketing bot: caps Promoted Listings ad rates. It never lowers an ad you set
 // at or below max_ad_rate (default 5%). Ads above the cap are brought down to it.
-// Per-listing rates in marketing.ad_rates are set exactly. Burr holders are never touched.
+// Listings that sold in the last 30 days are raised to boost_sellers_rate (4%) for more
+// visibility. Per-listing rates in marketing.ad_rates are set exactly. Burr holders are never touched.
 import { rest } from "../ebay.js";
 import { BotConfig, Listing, Report, short } from "./shared.js";
+import type { Traffic } from "./inventory.js";
 
-export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Report) {
+export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   const target = cfg.marketing.target_ad_rate;
   const cap = cfg.marketing.max_ad_rate ?? 5;
   const fixed = cfg.marketing.ad_rates || {};
+  const boost = Math.min(cfg.marketing.boost_sellers_rate ?? 0, cap);
   const byId = new Map(listings.map((l) => [l.item_id, l]));
   const j = await rest("GET", "/sell/marketing/v1/ad_campaign", { query: { limit: "100" } });
   const campaigns = (j.campaigns || []).filter(
@@ -36,7 +39,9 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
       if (!l || l.protected) continue;
       const rate = Number(ad.bidPercentage);
       if (!isFinite(rate)) continue;
-      const want = fixed[id] !== undefined ? Number(fixed[id]) : rate > cap + 0.001 ? cap : rate;
+      const selling = (traffic?.get(id)?.sold ?? 0) > 0;
+      // Your fixed rate wins; else cap at max; else raise listings that sold in the last 30 days to the boost rate.
+      const want = fixed[id] !== undefined ? Number(fixed[id]) : rate > cap + 0.001 ? cap : selling && rate < boost - 0.001 ? boost : rate;
       if (Math.abs(want - rate) < 0.001) continue;
       if (!cfg.dry_run) {
         try {

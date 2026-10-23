@@ -25,6 +25,7 @@ export type BotConfig = {
     enabled: boolean;
     fee_rate: number;          // eBay final value fee + ad + processing, as a fraction
     per_order_fee: number;     // eBay's fixed per-order fee
+    small_cut_max?: number;    // $ cut always allowed to beat a cheaper competitor, even on selling listings
     min_margin: number;        // profit floor as a fraction of the sale price
     default_label_cost: number;
     default_material_cost: number;
@@ -35,7 +36,7 @@ export type BotConfig = {
     once_per_day: boolean;     // reprice only on the morning run (avoids price wars)
     rules: Record<string, PriceRule>;
   };
-  marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
+  marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; boost_sellers_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
   production: { enabled: boolean };
   finder: { enabled: boolean; day: number; min_sold: number; queries: string[] };
@@ -51,6 +52,7 @@ const DEFAULTS: BotConfig = {
     enabled: true,
     fee_rate: 0.156, // 13.6% final value fee (US, most categories) + 2% ad
     per_order_fee: 0.4,
+    small_cut_max: 1.0,
     min_margin: 0.4,
     default_label_cost: 1.69,
     default_material_cost: 0.5,
@@ -61,7 +63,7 @@ const DEFAULTS: BotConfig = {
     once_per_day: true,
     rules: {},
   },
-  marketing: { enabled: true, target_ad_rate: 2.0, max_ad_rate: 5.0, ad_rates: {}, add_unpromoted: false },
+  marketing: { enabled: true, target_ad_rate: 2.0, max_ad_rate: 5.0, boost_sellers_rate: 4.0, ad_rates: {}, add_unpromoted: false },
   service: { enabled: true, ship_warning_hours: 18 },
   production: { enabled: true },
   finder: {

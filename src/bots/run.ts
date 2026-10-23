@@ -73,7 +73,7 @@ export async function runBots(opts: { only?: string[] } = {}) {
   const traffic = await trafficMap().catch(() => undefined);
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
-  if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r));
+  if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("service")) await step("Customer service", r, () => serviceBot(cfg, since, unshipped, r));
   const weekday = new Date().toLocaleDateString("en-US", { weekday: "short", timeZone: cfg.timezone });
   const finderDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][cfg.finder.day] === weekday;

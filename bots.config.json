@@ -15,11 +15,13 @@
   "marketing": {
     "target_ad_rate": 2.0,
     "max_ad_rate": 5.0,
+    "boost_sellers_rate": 4.0,
     "ad_rates": {},
     "add_unpromoted": false
   },
   "pricing": {
     "min_margin": 0.4,
+    "small_cut_max": 1.0,
     "max_step_pct": 0.1,
     "rules": {
       "206527145323": {
