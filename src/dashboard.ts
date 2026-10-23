@@ -5,7 +5,7 @@ import type { Express } from "express";
 import { existsSync, readFileSync } from "node:fs";
 import { rest } from "./ebay.js";
 import { activeListings, loadConfig, recentOrders } from "./bots/shared.js";
-import { todaysQueries } from "./bots/finder.js";
+import { finds, todaysQueries } from "./bots/finder.js";
 
 type Run = { time: number; title: string; message: string; urgent: boolean };
 
@@ -108,7 +108,7 @@ async function buildData() {
   // Merge board + sheet, dedupe by eBay link (board entries win), newest first, with profit math.
   const seenUrl = new Set<string>();
   const p = cfg.pricing;
-  const productList = [...boardIdeas(), ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
+  const productList = [...finds, ...boardIdeas(), ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
     .map((x, i) => ({ x, i })).sort((a, b) => b.x.found.localeCompare(a.x.found) || a.i - b.i).map(({ x }) => {
       const profit = x.price ? x.price * (1 - p.fee_rate) - p.per_order_fee - p.default_label_cost - p.default_material_cost : 0;
       return { ...x, theirRevenue: Math.round(x.sold * x.price), profit: Math.round(profit * 100) / 100, margin: x.price ? Math.round(profit / x.price * 100) : 0 };
@@ -401,7 +401,7 @@ const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric"
 let D=null,open=new Set(),seen=null;
 function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[880,1320].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,a.currentTime+i*.14);g.gain.exponentialRampToValueAtTime(.25,a.currentTime+i*.14+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+i*.14+.35);o.connect(g);g.connect(a.destination);o.start(a.currentTime+i*.14);o.stop(a.currentTime+i*.14+.4)})}catch(e){}}
 try{document.addEventListener("DOMContentLoaded",()=>{const c=document.getElementById("chime");c.checked=localStorage.getItem("nexaChime")==="1";c.onchange=()=>{try{localStorage.setItem("nexaChime",c.checked?"1":"0")}catch(e){};if(c.checked)chime()}})}catch(e){}
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),5000)}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),12000)}
 function tick(){const n=new Date();$("clock").textContent=n.toLocaleTimeString("en-US",{hour12:false});
  if(D){const s=Math.max(0,Math.round((D.nextRunAt-Date.now())/1000));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;$("next").textContent=D.nextRunLabel+" · T-"+(h?h+"h ":"")+String(m).padStart(2,"0")+"m "+String(x).padStart(2,"0")+"s"}}
 setInterval(tick,1000);
@@ -456,9 +456,9 @@ function render(){
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}
 async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;btn.textContent=label;document.getElementById("app").classList.add("running");
  try{const r=await fetch("/bots/run/"+S+(only?"?only="+only:""),{method:"POST"});const j=await r.json();
-  toast(j.ok?("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"):("Not run: "+(j.error||r.status)))}catch(e){toast("Run failed: "+e.message)}
+  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?("Searched "+j.finder.searched.length+" categories ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with "+"100+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
-$("find").onclick=e=>run("finder",e.currentTarget,"Scanning eBay…");
+$("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");
 load();setInterval(()=>load(false),20000);
 </script></body></html>`;

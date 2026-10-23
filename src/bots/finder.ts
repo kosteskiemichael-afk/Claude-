@@ -26,10 +26,26 @@ export function todaysQueries(cfg: BotConfig, day = Math.floor(Date.now() / 8640
   return all.slice(start, start + n);
 }
 
-async function searchEbay(cfg: BotConfig): Promise<Hit[]> {
+// Each Find-products click moves on to the next batch of searches, so every click looks somewhere new.
+let clickBatch: number | null = null;
+export function nextQueries(cfg: BotConfig, manual: boolean): string[] {
+  const all = cfg.finder.queries;
+  const n = Math.min(all.length, cfg.finder.queries_per_run || all.length);
+  const batches = Math.ceil(all.length / n);
+  const day = Math.floor(Date.now() / 86400_000);
+  if (!manual) return todaysQueries(cfg, day);
+  clickBatch = ((clickBatch ?? day % batches) + 1) % batches;
+  return all.slice(clickBatch * n, clickBatch * n + n);
+}
+
+// Ideas found since the service started, newest first. The dashboard shows these on the product board.
+export type FoundIdea = { found: string; title: string; seller: string; sold: number; price: number; ebay: string; cad: string; license: string; cadName: string; status: string; decision: string };
+export const finds: FoundIdea[] = [];
+
+async function searchEbay(cfg: BotConfig, queries: string[]): Promise<Hit[]> {
   const mine = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
   const seen = new Map<string, Hit>();
-  for (const q of todaysQueries(cfg)) {
+  for (const q of queries) {
     try {
       const j = await rest("GET", "/buy/browse/v1/item_summary/search", {
         app: true,
@@ -121,16 +137,21 @@ async function findCad(h: Hit): Promise<Cad | null> {
   return null;
 }
 
-export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report) {
+export type FinderSummary = { searched: string[]; checked: number; found: number; fresh: number };
+export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report, manual = false): Promise<FinderSummary> {
   const myTokens = myListings.map((l) => tokens(l.title));
-  let hits = await searchEbay(cfg);
+  const queries = nextQueries(cfg, manual);
+  const summary: FinderSummary = { searched: queries, checked: 0, found: 0, fresh: 0 };
+  (r as any).finder = summary;
+  let hits = await searchEbay(cfg, queries);
   console.log(`Finder: ${hits.length} printed listings found`);
   // Skip parts you already sell.
   hits = hits.filter((h) => { const t = tokens(h.title).slice(0, 6); return !myTokens.some((m) => overlap(t, m) >= Math.min(4, t.length)); });
   console.log(`Finder: checking sold counts on ${hits.length} new-to-you listings`);
+  summary.checked = hits.length;
   await addSoldCounts(hits);
   let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
-  if (!top.length) { r.info.push(`🔎 Product finder: no new ${cfg.finder.min_sold}+ sold printed parts in today's searches (${todaysQueries(cfg).slice(0, 3).join(", ")}…).`); return; }
+  if (!top.length) { r.info.push(`🔎 Product finder: checked ${hits.length} printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
 
   console.log(`Finder: ${top.length} with ${cfg.finder.min_sold}+ sold; checking CAD`);
   const withCad: { h: Hit; cad: Cad }[] = [];
@@ -155,6 +176,23 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
       noCad.push(...withCad.filter((_, i) => !(res.keep || []).includes(i)).map((x) => x.h));
     } catch { /* keep unverified list */ }
   }
+
+  // Put every idea on the dashboard's product board right away.
+  const today = new Date().toISOString().slice(0, 10);
+  const known = new Set(finds.map((f) => f.ebay));
+  const ideas: FoundIdea[] = [
+    ...verified.map((x) => ({ h: x.h, cad: x.cad as Cad | null })),
+    ...noCad.map((h) => ({ h, cad: null as Cad | null })),
+  ].map(({ h, cad }) => ({
+    found: today, title: h.title, seller: h.seller, sold: h.sold || 0, price: h.price,
+    ebay: `https://www.ebay.com/itm/${h.legacy}`, cad: cad?.url || "", license: cad?.license || "", cadName: cad?.name || "",
+    status: cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD - needs custom design",
+    decision: "",
+  }));
+  summary.found = ideas.length;
+  summary.fresh = ideas.filter((i) => !known.has(i.ebay)).length;
+  for (const i of ideas.reverse()) { const k = finds.findIndex((f) => f.ebay === i.ebay); if (k >= 0) finds.splice(k, 1); finds.unshift(i); }
+  finds.splice(200);
 
   // Log every idea to your Google Sheet (via the Apps Script web app in SHEETS_WEBHOOK_URL).
   const hook = process.env.SHEETS_WEBHOOK_URL;
@@ -185,4 +223,5 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   if (noCad.length) parts.push("PROVEN SELLERS, NO FREE CAD (model it yourself):\n" + noCad.slice(0, 6).map((h) => `• ${line(h)}`).join("\n"));
   if (cadErrors) parts.push(`(CAD search failed for ${cadErrors} item(s); check Printables by hand.)`);
   r.info.unshift("🔎 PRODUCT IDEAS\n" + parts.join("\n\n"));
+  return summary;
 }

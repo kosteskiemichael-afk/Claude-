@@ -121,7 +121,7 @@ app.post(`/bots/run/${SECRET}`, async (req, res) => {
   try {
     const only = String(req.query.only || "").split(",").map((x) => x.trim()).filter(Boolean);
     const r = await runBots({ only });
-    res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length });
+    res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length, finder: (r as any).finder || null });
   } catch (e) {
     console.error("Bot run failed", e);
     res.status(500).json({ ok: false, error: e instanceof Error ? e.message : String(e) });
