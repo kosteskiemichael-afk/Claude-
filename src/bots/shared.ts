@@ -198,15 +198,15 @@ export type Order = {
   ship_by?: string;
   buyer?: string;
   total: number;
-  items: { item_id: string; title: string; quantity: number }[];
+  items: { item_id: string; title: string; quantity: number; total?: number }[];
 };
 
-export async function recentOrders(days: number, onlyUnshipped: boolean): Promise<Order[]> {
+export async function recentOrders(days: number, onlyUnshipped: boolean, maxOrders = 1000): Promise<Order[]> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
   let filter = `creationdate:[${since}..]`;
   if (onlyUnshipped) filter += ",orderfulfillmentstatus:{NOT_STARTED|IN_PROGRESS}";
   const out: Order[] = [];
-  for (let offset = 0; offset < 1000; offset += 200) {
+  for (let offset = 0; offset < maxOrders; offset += 200) {
     const j = await rest("GET", "/sell/fulfillment/v1/order", {
       query: { filter, limit: "200", offset: String(offset) },
     });
@@ -223,7 +223,7 @@ export async function recentOrders(days: number, onlyUnshipped: boolean): Promis
         buyer: o.buyer?.username,
         total: Number(o.pricingSummary?.total?.value || 0),
         items: (o.lineItems || []).map((li: any) => ({
-          item_id: String(li.legacyItemId), title: String(li.title || ""), quantity: Number(li.quantity || 1),
+          item_id: String(li.legacyItemId), title: String(li.title || ""), quantity: Number(li.quantity || 1), total: Number(li.total?.value ?? li.lineItemCost?.value ?? 0),
         })),
       });
     }

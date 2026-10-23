@@ -21,7 +21,7 @@ export async function findCompetitors(cfg: BotConfig, rule: PriceRule, minWordHi
   const mine = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
   const must = (rule.must_include || []).map((w) => w.toLowerCase());
   const bad = (rule.exclude || []).map((w) => w.toLowerCase());
-  const out: Competitor[] = [];
+  const out: (Competitor & { id?: string; printed?: boolean })[] = [];
   for (const it of j.itemSummaries || []) {
     const seller = String(it.seller?.username || "").toLowerCase();
     const title = String(it.title || "");
@@ -34,9 +34,27 @@ export async function findCompetitors(cfg: BotConfig, rule: PriceRule, minWordHi
     if (!isFinite(price) || it.price?.currency !== "USD") continue;
     const ships = (it.shippingOptions || []).map((s: any) => Number(s.shippingCost?.value ?? 0)).filter(isFinite);
     const ship = ships.length ? Math.min(...ships) : 0;
-    out.push({ seller, title, total: price + ship });
+    if (NOT_PRINTED.test(title)) continue; // clearly an OEM / metal / molded part, not a printed one
+    out.push({ seller, title, total: price + ship, id: it.itemId, printed: PRINTED.test(title) });
   }
-  return out;
+  return confirmPrinted(out);
+}
+
+// Only compare against other 3D-printed parts. The title usually says so; if it doesn't,
+// read the listing's description and keep it only if it mentions 3D printing.
+const PRINTED = /3[\s-]?d[\s-]?print|\b3d\b|printed|\b(petg|pla|abs|asa|tpu|nylon)\b|fdm|additive/i;
+const NOT_PRINTED = /not 3d printed|injection[\s-]?mold|\bgenuine\b|factory original|original equipment|die[\s-]?cast|\b(brass|aluminum|aluminium|steel|metal) gear/i;
+async function confirmPrinted(list: (Competitor & { id?: string; printed?: boolean })[]): Promise<Competitor[]> {
+  const unsure = list.filter((c) => !c.printed && c.id).slice(0, 20);
+  const check = async (c: Competitor & { id?: string; printed?: boolean }) => {
+    try {
+      const d = await rest("GET", `/buy/browse/v1/item/${encodeURIComponent(c.id!)}`, { app: true, timeoutMs: 10000 });
+      const text = [d.shortDescription, d.description, ...(d.localizedAspects || []).map((a: any) => `${a.name} ${a.value}`)].join(" ").replace(/<[^>]+>/g, " ");
+      c.printed = PRINTED.test(text) && !NOT_PRINTED.test(text);
+    } catch { c.printed = false; } // can't confirm: leave it out
+  };
+  for (let i = 0; i < unsure.length; i += 5) await Promise.all(unsure.slice(i, i + 5).map(check));
+  return list.filter((c) => c.printed).map(({ seller, title, total }) => ({ seller, title, total }));
 }
 
 /** Lowest total price (item + shipping) that still makes min_margin profit. */

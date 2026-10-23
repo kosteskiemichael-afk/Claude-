@@ -2,6 +2,7 @@
 // The page is a static shell; it pulls /dashboard/<secret>/data every 30 seconds and redraws.
 // Read-only, except the two Run buttons, which call the same run endpoint the cron job uses.
 import type { Express } from "express";
+import { existsSync, readFileSync } from "node:fs";
 import { rest } from "./ebay.js";
 import { activeListings, loadConfig, recentOrders } from "./bots/shared.js";
 import { todaysQueries } from "./bots/finder.js";
@@ -61,6 +62,22 @@ async function sheetIdeas(): Promise<{ ok: boolean; ideas: Idea[] }> {
   return { ok: true, ideas };
 }
 
+// Product board: products.json (ideas Claude adds) merged with the Google Sheet (ideas the finder adds).
+function boardIdeas(): Idea[] {
+  const path = process.env.PRODUCTS_FILE || "products.json";
+  if (!existsSync(path)) return [];
+  try {
+    const j = JSON.parse(readFileSync(path, "utf8"));
+    return (j.products || []).map((x: any) => ({
+      found: String(x.added || ""), title: String(x.title || ""), seller: String(x.seller || ""), sold: Number(x.sold || 0), price: Number(x.price || 0),
+      ebay: String(x.ebay || ""), cad: String(x.cad || ""), license: String(x.license || ""), cadName: String(x.cad_name || ""), status: String(x.status || ""), decision: String(x.note || ""),
+    }));
+  } catch { return []; }
+}
+
+// All-time sales (eBay's order API keeps about 2 years of history).
+async function allTimeOrders() { return recentOrders(729, false, 20000); }
+
 const TZ = "America/Indianapolis";
 const hourIn = (d = new Date()) => Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: TZ }).format(d));
 const dayKey = (t: number) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(t));
@@ -84,7 +101,37 @@ async function buildData() {
     cached("month", 20_000, () => recentOrders(30, false), []),
     cached("ads", 120_000, adRates, new Map<string, number>()),
   ]);
-  const sheet = await cached("sheet", 180_000, sheetIdeas, { ok: false, ideas: [] as Idea[] });
+  const [sheet, all] = await Promise.all([
+    cached("sheet", 180_000, sheetIdeas, { ok: false, ideas: [] as Idea[] }),
+    cached("alltime", 600_000, allTimeOrders, [] as Awaited<ReturnType<typeof allTimeOrders>>),
+  ]);
+  // Merge board + sheet, dedupe by eBay link (board entries win), newest first, with profit math.
+  const seenUrl = new Set<string>();
+  const p = cfg.pricing;
+  const productList = [...boardIdeas(), ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
+    .map((x, i) => ({ x, i })).sort((a, b) => b.x.found.localeCompare(a.x.found) || a.i - b.i).map(({ x }) => {
+      const profit = x.price ? x.price * (1 - p.fee_rate) - p.per_order_fee - p.default_label_cost - p.default_material_cost : 0;
+      return { ...x, theirRevenue: Math.round(x.sold * x.price), profit: Math.round(profit * 100) / 100, margin: x.price ? Math.round(profit / x.price * 100) : 0 };
+    });
+
+  // All-time numbers.
+  const months = new Map<string, { m: string; orders: number; rev: number }>();
+  const itemAll = new Map<string, { title: string; units: number; rev: number }>();
+  let allRev = 0, allUnits = 0, first = Infinity;
+  for (const o of all) {
+    const t = Date.parse(o.created); first = Math.min(first, t);
+    const m = dayKey(t).slice(0, 7);
+    const e = months.get(m) || { m, orders: 0, rev: 0 }; e.orders++; e.rev += o.total; months.set(m, e);
+    allRev += o.total;
+    for (const it of o.items) {
+      allUnits += it.quantity;
+      const r = itemAll.get(it.item_id) || { title: it.title, units: 0, rev: 0 };
+      r.units += it.quantity; r.rev += it.total || 0; itemAll.set(it.item_id, r);
+    }
+  }
+  const monthList = [...months.values()].sort((a, b) => a.m.localeCompare(b.m));
+  const best = monthList.reduce((b, x) => (!b || x.rev > b.rev ? x : b), null as null | { m: string; orders: number; rev: number });
+  const activeMonths = Math.max(1, monthList.length);
   const now = Date.now();
   const cap = cfg.marketing.max_ad_rate ?? 5;
   const byId = new Map(listings.map((l) => [l.item_id, l]));
@@ -158,7 +205,13 @@ async function buildData() {
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
-    products: { ok: sheet.ok, total: sheet.ideas.length, list: sheet.ideas.slice(0, 24) },
+    products: { ok: sheet.ok, total: productList.length, list: productList.slice(0, 40) },
+    allTime: {
+      rev: allRev, orders: all.length, units: allUnits, first: isFinite(first) ? first : null,
+      avgOrder: all.length ? allRev / all.length : 0, perMonth: allRev / activeMonths,
+      best, months: monthList, listingsSold: itemAll.size,
+      top: [...itemAll.values()].sort((a, b) => b.rev - a.rev || b.units - a.units).slice(0, 12),
+    },
     queue: [...queue.entries()].map(([title, qty]) => ({ title, qty })).sort((a, b) => b.qty - a.qty),
     pricing: Object.entries(cfg.pricing.rules).map(([id, rule]) => {
       const l = byId.get(id);
@@ -171,7 +224,7 @@ async function getData(force = false) {
   if (force) memo.clear();
   return buildData();
 }
-export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); memo.delete("sheet"); }
+export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); memo.delete("sheet"); memo.delete("alltime"); }
 
 export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false) {
   app.get(`/dashboard/${secret}/data`, async (req, res) => {
@@ -287,6 +340,20 @@ td.m{font-family:var(--fm);white-space:nowrap;color:var(--ink)}.t2{max-width:360
 .tagc.ok{border-color:rgba(59,224,138,.4);color:var(--ok)}.tagc.warn{border-color:rgba(242,178,58,.45);color:var(--warn)}.tagc.bad{border-color:rgba(232,54,43,.5);color:#ff6a60}
 #pcount a{color:#7d9bff}
 input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
+#allp{margin-bottom:28px}.atk{grid-template-columns:repeat(6,1fr);margin-bottom:22px}.atk .k .v{font-size:clamp(20px,2vw,30px)}
+.atwrap{display:grid;grid-template-columns:1fr 1.1fr;gap:28px}.sub2{font:500 10px var(--fm);letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.chart.tall{height:200px}.mlabels{display:flex;font:500 10px var(--fm);color:var(--mute);margin-top:6px}.mlabels span{text-align:center;white-space:nowrap}
+.track2{height:2px;background:var(--line2)}.track2 i{display:block;height:100%;background:var(--cy)}
+.prod .ph{display:flex;justify-content:space-between;font:500 10px var(--fm);color:var(--mute2);letter-spacing:.1em}.prod .pn{color:var(--cy)}
+.prod .pt{color:var(--ink);font:500 14.5px/1.4 var(--fd)}
+.pnums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.pnums div{background:var(--panel);padding:8px 8px 7px}.pnums b{display:block;font:500 15px var(--fd);letter-spacing:-.01em;color:var(--ink)}.pnums span{font:500 9px var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.pnums b.g{color:var(--ok)}.pnums b.y{color:var(--warn)}.pnums b.r{color:#ff6a60}
+.pseller{font-size:12px;color:var(--mute)}.pseller b{color:var(--ink2);font-weight:500}.lic{font:500 10px var(--fm);border:1px solid var(--line2);padding:1px 6px;border-radius:2px;color:var(--ink2);margin-left:4px}
+.pbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pb{font:500 12.5px var(--fd);text-align:center;padding:9px 10px;border-radius:2px;text-decoration:none;border:1px solid var(--line2);color:var(--ink)}
+.pb.eb:hover{border-color:var(--ink2)}.pb.cd{background:var(--cy);border-color:var(--cy);color:#fff}.pb.cd:hover{background:#4672ff}.pb.no{color:var(--mute);border-style:dashed}
+@media (max-width:1100px){.atk{grid-template-columns:repeat(3,1fr)}.atwrap{grid-template-columns:1fr}}
+@media (max-width:640px){.atk{grid-template-columns:repeat(2,1fr)}.pnums{grid-template-columns:repeat(2,1fr)}}
 @keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes mq{to{transform:translateX(-50%)}}
 @keyframes newsale{0%{background:rgba(59,224,138,.18)}100%{background:var(--panel2)}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
@@ -312,8 +379,12 @@ input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
   <section class="panel"><div class="scan"></div><h2>Bot fleet <small id="lastrun"></small></h2><div class="bots" id="bots"></div></section>
   <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
 </div>
+<section class="panel" id="allp"><div class="scan"></div><h2>All-time sales <small id="since"></small></h2>
+<div class="grid atk" id="atk"></div>
+<div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
+<div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
-<section class="panel" id="prodp"><h2>Newest products found <small id="pcount"></small></h2><div class="prods" id="prods"></div></section>
+<section class="panel" id="prodp"><h2>Product board · newest finds <small id="pcount"></small></h2><div class="prods" id="prods"></div></section>
 <div class="grid three">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
   <section class="panel ideas"><h2>Product radar <small id="ideatime"></small></h2><div id="ideas"></div></section>
@@ -364,9 +435,18 @@ function render(){
  document.querySelectorAll(".ev .h").forEach(h=>h.onclick=()=>{const e=h.parentNode;e.classList.toggle("open");e.classList.contains("open")?open.add(e.dataset.id):open.delete(e.dataset.id)});
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Every idea also goes to your Google Sheet.</p>'}
- const P=D.products;$("pcount").innerHTML=P.ok?P.total+' ideas in your <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1XcaTgUL3kKqtAOCAiwyH63Ub2Sl76jmiXxJXuBdZRrA/edit">Google Sheet</a>':"";
+ const P=D.products;$("pcount").innerHTML=P.total+' ideas'+(P.ok?' · synced with your <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1XcaTgUL3kKqtAOCAiwyH63Ub2Sl76jmiXxJXuBdZRrA/edit">Google Sheet</a>':' · share the sheet (anyone with link → viewer) to add the finder\'s new rows automatically');
  const cls=st=>/same part/i.test(st)?"ok":/no free cad/i.test(st)?"bad":"warn";
- $("prods").innerHTML=!P.ok?'<p class="empty">Can\'t read your Product Ideas sheet yet. In the sheet: Share → General access → “Anyone with the link” → Viewer. Ideas from the last scan still show under Product radar below.</p>':P.list.length?P.list.map(x=>'<div class="prod"><div class="pt"><a target="_blank" rel="noopener" href="'+esc(x.ebay)+'">'+esc(x.title)+'</a></div><div class="pm"><span><b>'+esc(x.sold)+'</b> sold</span><span><b>'+money(x.price)+'</b></span><span>by '+esc(x.seller)+'</span><span class="fd">'+esc(x.found)+'</span></div><div class="pc">'+(x.cad?'<a class="cad" target="_blank" rel="noopener" href="'+esc(x.cad)+'">⬇ CAD · '+esc(x.license)+'</a><span class="cn">'+esc(x.cadName)+'</span>':'<span class="cn">No free CAD: model it yourself</span>')+'</div><div class="ps"><span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>'+(x.decision?'<span class="tagc">'+esc(x.decision)+'</span>':'')+'</div></div>').join(""):'<p class="empty">No ideas yet. Hit “Find products”.</p>';
+ const n0=v=>Number(v||0).toLocaleString("en-US");
+ $("prods").innerHTML=P.list.length?P.list.map((x,i)=>'<div class="prod"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span></div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':'<span class="pb no">No free CAD: design it</span>')+'</div><div class="ps"><span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>'+(x.decision?'<span class="tagc">'+esc(x.decision)+'</span>':'')+'</div></div>').join(""):'<p class="empty">No ideas yet. Hit “Find products”.</p>';
+ const A=D.allTime;$("since").textContent=A.first?"since "+new Date(A.first).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"";
+ const AK=[["Total revenue",money(A.rev)],["Total orders",n0(A.orders)],["Units sold",n0(A.units)],["Avg order",money(A.avgOrder)],["Avg per month",money(A.perMonth)],["Best month",A.best?money(A.best.rev)+" · "+A.best.m:"—"]];
+ $("atk").innerHTML=AK.map(([l,v],i)=>'<div class="panel k"><span class="idx">0'+(i+1)+'</span><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>').join("");
+ const mm=A.months,mmax=Math.max(1,...mm.map(x=>x.rev)),mw=600/Math.max(1,mm.length);
+ $("mchart").innerHTML='<line x1="0" y1="170" x2="600" y2="170" stroke="#28313F"/>'+mm.map((x,i)=>{const h=Math.round(x.rev/mmax*150);return '<rect x="'+(i*mw+mw*.15)+'" y="'+(170-h)+'" width="'+(mw*.7)+'" height="'+h+'" fill="'+(A.best&&x.m===A.best.m?"#3BE08A":"#2F62FF")+'"><title>'+esc(x.m)+": "+money(x.rev)+" · "+x.orders+' orders</title></rect>'}).join("");
+ const step=Math.ceil(mm.length/8);$("mlabels").innerHTML=mm.map((x,i)=>'<span style="width:'+(100/mm.length)+'%">'+(i%step===0?esc(new Date(x.m+"-15").toLocaleDateString("en-US",{month:"short",year:"2-digit"})):"")+'</span>').join("");
+ const tr=Math.max(1,...A.top.map(t=>t.rev));
+ $("attop").innerHTML='<tr><th>#</th><th>Listing</th><th>Units</th><th>Revenue</th><th></th></tr>'+A.top.map((t,i)=>'<tr><td class="m">'+(i+1)+'</td><td class="t2">'+esc(t.title)+'</td><td class="m">'+n0(t.units)+'</td><td class="m">'+money(t.rev)+'</td><td style="width:90px"><div class="track2"><i style="width:'+(t.rev/tr*100)+'%"></i></div></td></tr>').join("");
  const qu=D.queue.reduce((a,q)=>a+q.qty,0);$("qcount").textContent=qu?qu+" parts":"";
  $("queue").innerHTML=D.queue.length?D.queue.map(q=>'<div class="q"><b>'+q.qty+'×</b><span>'+esc(q.title)+'</span></div>').join(""):'<p class="empty">Queue clear. Nothing to print.</p>';
  $("price").innerHTML='<tr><th>Listing</th><th>Price</th><th>Range</th><th>Position</th><th>Ad</th><th>Stock</th></tr>'+D.pricing.map(p=>{const lo=p.min??(p.price?p.price*.8:0),hi=p.max??(p.price?p.price*1.2:1);const pos=p.price==null?50:Math.max(0,Math.min(100,(p.price-lo)/((hi-lo)||1)*100));

@@ -59,10 +59,10 @@ globalThis.fetch = async (url, opts = {}) => {
   }
   if (u.pathname === "/buy/browse/v1/item_summary/search") {
     const q = u.searchParams.get("q");
-    const mk = (seller, title, price, ship = 0) => ({ seller: { username: seller }, title, price: { value: String(price), currency: "USD" }, shippingOptions: [{ shippingCost: { value: String(ship) } }] });
+    const mk = (seller, title, price, ship = 0) => ({ itemId: "v1|c-" + seller + "|0", seller: { username: seller }, title, price: { value: String(price), currency: "USD" }, shippingOptions: [{ shippingCost: { value: String(ship) } }] });
     if (q.includes("feet")) return json({ itemSummaries: [
       mk("3dmountlab", "LASKO Box Fan Replacement Feet SET OF 2", 8.29), mk("nexamfgco", "Lasko feet", 10.25),
-      mk("junk", "Lasko feet broken lot", 1.0), mk("other", "Lasko Fan Feet", 9.5), mk("x", "Honeywell fan feet", 5)] });
+      mk("junk", "Lasko feet broken lot", 1.0), mk("other", "Lasko Fan Feet", 9.5), mk("cheapoem", "Lasko Box Fan Feet Set", 6.0), mk("x", "Honeywell fan feet", 5)] });
     if (q.includes("knob")) return json({ itemSummaries: [mk("ulovemydeals", "3D Printed Replacement Knob for Lasko Space Heater", 12.95), mk("y", "Lasko knob", 13.5)] });
     if (q.startsWith("3d printed")) return json({ itemSummaries: [
       { itemId: "v1|900|0", legacyItemId: "900", title: "1987-1991 Ford Bronco F150 Fuse panel Clips 4 qty. 3D printed", seller: { username: "little3d" }, price: { value: "13.49" } },
@@ -72,6 +72,11 @@ globalThis.fetch = async (url, opts = {}) => {
       { itemId: "v1|904|0", legacyItemId: "904", title: "3D printed widget nobody buys", seller: { username: "z" }, price: { value: "5" } }] });
     if (q.includes("canon")) return json({ itemSummaries: [mk("a", "Canon AE-1 Battery Door Cover Replacement", 16.99), mk("b", "Battery Door for Canon AE-1 Program", 17.5), mk("c", "Canon AE-1 Program Camera Body door works", 80)] });
     return json({ itemSummaries: [] });
+  }
+  if (u.pathname.includes("/buy/browse/v1/item/v1%7Cc-")) {
+    const who = decodeURIComponent(u.pathname).split("|c-")[1].split("|")[0];
+    const desc = { "3dmountlab": "Printed in tough PETG on our FDM printers.", other: "Genuine factory original injection molded feet.", cheapoem: "Brand new original part.", x: "Fan feet.", a: "3D printed in PLA+.", b: "Printed replacement, PETG.", c: "Used camera body." }[who] || "";
+    return json({ itemId: "c", shortDescription: desc });
   }
   if (u.pathname.startsWith("/buy/browse/v1/item/v1")) { const id = decodeURIComponent(u.pathname.split("/item/")[1]); return json({ itemId: id, estimatedAvailabilities: [{ estimatedSoldQuantity: { "v1|900|0": 573, "v1|901|0": 150, "v1|902|0": 191, "v1|903|0": 606, "v1|904|0": 3 }[id] }] }); }
   if (u.hostname === "api.printables.com") { const q = JSON.parse(opts.body).variables.q; return json({ data: { searchPrints2: { items: q.includes("bronco") || q.includes("ford") || q.includes("fuse") ? [{ id: "520786", name: "Ford Bronco Fuse Panel Cover Clip", license: { abbreviation: "CC-BY-SA" } }, { id: "1", name: "Ford Bronco fuse panel clip NC", license: { abbreviation: "CC-BY-NC-SA" } }] : [] } } }); }
@@ -104,6 +109,7 @@ check(!all.includes("206531844850") && !all.includes("206453290362"), "burr hold
 check(all.includes("<ItemID>111</ItemID><Quantity>10</Quantity>"), "low-stock Lasko feet restocked to 10");
 check(!all.includes("<ItemID>333</ItemID><Quantity>"), "sold-out (qty 0) Canon door left sold out");
 check(r.urgent.some((u) => u.includes("Burr holder stock low")), "burr holder low stock alerts you instead");
+check(!all.includes("<StartPrice>5.99</StartPrice>") && !all.includes("<StartPrice>6.27</StartPrice>"), "non-3D-printed competitor ($6 'original part') ignored");
 check(all.includes("<ItemID>111</ItemID><StartPrice>9.23</StartPrice>"), "Lasko feet lowered max 10% step toward $8.28 (10.25 → 9.23)");
 check(all.includes("<ItemID>222</ItemID><StartPrice>10.99</StartPrice>"), "Lasko knob RAISED toward competitor (9.99 → 10.99 capped step)");
 check(writes.filter((w) => w[0] === "ADRATE").length === 1 && all.includes('5.0') && !all.includes('2.0\\"'), "only the 8.5% ad capped to 5%; 5% and 2% ads kept as set");
