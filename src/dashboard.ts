@@ -277,7 +277,7 @@ h1{font:600 17px var(--fd);letter-spacing:-.01em;margin:0;color:var(--ink)}h1 sp
 .hero h2.big em{font-style:normal;font-weight:400;color:var(--mute)}
 .spec{font:500 11px var(--fm);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:2}.spec b{color:var(--ink);font-weight:500}
 .grid{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
-.kpis{grid-template-columns:repeat(6,1fr);margin-bottom:28px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:28px}
 .panel{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:22px;overflow:hidden}
 .grid>.panel{border:0;border-radius:0}
 .k{padding:20px 22px}.k .v{font:500 clamp(26px,2.8vw,40px)/1.1 var(--fd);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
@@ -379,7 +379,7 @@ input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
   <section class="panel"><div class="scan"></div><h2>Bot fleet <small id="lastrun"></small></h2><div class="bots" id="bots"></div></section>
   <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
 </div>
-<section class="panel" id="allp"><div class="scan"></div><h2>All-time sales <small id="since"></small></h2>
+<section class="panel" id="allp"><div class="scan"></div><h2>Total sales ever <small id="since"></small></h2>
 <div class="grid atk" id="atk"></div>
 <div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
 <div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
@@ -412,14 +412,14 @@ function render(){
  $("sysdot").className="dot"+(D.running?" busy":k.late?" bad":k.lowStock||k.above?" warn":"");
  $("sys").textContent=D.running?"BOTS RUNNING":D.dry?"TEST MODE":k.late?"ATTENTION NEEDED":(k.lowStock||k.above)?"MONITORING":"ALL SYSTEMS NOMINAL";
  document.getElementById("app").classList.toggle("running",!!D.running);
- const K=[["Sales today",money(s.revToday),"cy"],["Orders today",s.ordersToday,"cy"],["Revenue 7d",money(s.rev7),""],["To ship",k.unshipped,k.unshipped?"":"ok"],["Late",k.late,k.late?"bad":"ok"],["Low stock",k.lowStock,k.lowStock?"warn":"ok"]];
+ const K=[["Total sales ever",money(D.allTime.rev),"cy"],["Sales today",money(s.revToday),"cy"],["Orders today",s.ordersToday,""],["Revenue 7d",money(s.rev7),""],["To ship",k.unshipped,k.unshipped?"":"ok"],["Late",k.late,k.late?"bad":"ok"],["Low stock",k.lowStock,k.lowStock?"warn":"ok"]].filter(x=>x[0]!=="Late"||k.late);
  const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?"just now":m<60?m+"m ago":m<1440?Math.floor(m/60)+"h "+(m%60)+"m ago":fmtT(t)};
  const fresh=new Set(s.recent.filter(o=>seen&&!seen.has(o.id)).map(o=>o.id));
  $("ticker").innerHTML=s.recent.length?s.recent.map(o=>'<div class="sale'+(fresh.has(o.id)?" new":"")+'"><span class="amt">'+money(o.total)+'</span><span class="what">'+o.items.map(i=>(i.qty>1?i.qty+"× ":"")+esc(i.title)).join(" + ")+'</span><span class="st '+(o.shipped?"ok":"")+'">'+(o.shipped?"shipped":"to ship")+'</span><time>'+ago(o.time)+'</time></div>').join(""):'<p class="empty">No orders in the last 30 days.</p>';
  if(fresh.size){const f=s.recent.find(o=>fresh.has(o.id));toast("💰 New sale · "+money(f.total)+" · "+f.items[0].title.slice(0,50));if($("chime").checked)chime();$("livep").classList.add("flash");setTimeout(()=>$("livep").classList.remove("flash"),2500)}
  seen=new Set(s.recent.map(o=>o.id));
  $("kpis").innerHTML=K.map(([l,v,c],i)=>'<div class="panel k '+c+'"><span class="idx">0'+(i+1)+'</span><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>').join("");
- const M=["Sales today "+money(s.revToday),s.ordersToday+" orders today",money(s.rev7)+" last 7 days",money(s.rev30)+" last 30 days",k.unshipped+" to ship",k.late+" late",k.listings+" live listings",(D.products&&D.products.total||0)+" product ideas","Ads capped at "+k.cap+"%","Next run "+D.nextRunLabel];
+ const M=["Total sales ever "+money(D.allTime.rev),"Sales today "+money(s.revToday),s.ordersToday+" orders today",money(s.rev7)+" last 7 days",money(s.rev30)+" last 30 days",k.unshipped+" to ship",k.late+" late",k.listings+" live listings",(D.products&&D.products.total||0)+" product ideas","Ads capped at "+k.cap+"%","Next run "+D.nextRunLabel];
  $("mq").innerHTML=[...M,...M].map(x=>'<span>'+esc(x)+'</span>').join("");
  $("spec").textContent=$("sys").textContent;
  $("bots").innerHTML=D.bots.map(b=>'<div class="bot '+b.state+'"><div class="top"><span class="ic">'+esc(b.icon)+'</span><span class="n">'+esc(b.name)+'</span><span class="dot '+b.state+'"></span></div><div class="ln">'+esc(b.line)+'</div><div class="dt">'+esc(b.detail)+'</div></div>').join("");
@@ -440,7 +440,7 @@ function render(){
  const n0=v=>Number(v||0).toLocaleString("en-US");
  $("prods").innerHTML=P.list.length?P.list.map((x,i)=>'<div class="prod"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span></div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':'<span class="pb no">No free CAD: design it</span>')+'</div><div class="ps"><span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>'+(x.decision?'<span class="tagc">'+esc(x.decision)+'</span>':'')+'</div></div>').join(""):'<p class="empty">No products yet. Hit “Find products” and they’ll list here.</p>';
  const A=D.allTime;$("since").textContent=A.first?"since "+new Date(A.first).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"";
- const AK=[["Total revenue",money(A.rev)],["Total orders",n0(A.orders)],["Units sold",n0(A.units)],["Avg order",money(A.avgOrder)],["Avg per month",money(A.perMonth)],["Best month",A.best?money(A.best.rev)+" · "+A.best.m:"—"]];
+ const AK=[["Total sales ever",money(A.rev)],["Total orders ever",n0(A.orders)],["Units sold",n0(A.units)],["Avg order",money(A.avgOrder)],["Avg per month",money(A.perMonth)],["Best month",A.best?money(A.best.rev)+" · "+A.best.m:"—"]];
  $("atk").innerHTML=AK.map(([l,v],i)=>'<div class="panel k"><span class="idx">0'+(i+1)+'</span><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>').join("");
  const mm=A.months,mmax=Math.max(1,...mm.map(x=>x.rev)),mw=600/Math.max(1,mm.length);
  $("mchart").innerHTML='<line x1="0" y1="170" x2="600" y2="170" stroke="#28313F"/>'+mm.map((x,i)=>{const h=Math.round(x.rev/mmax*150);return '<rect x="'+(i*mw+mw*.15)+'" y="'+(170-h)+'" width="'+(mw*.7)+'" height="'+h+'" fill="'+(A.best&&x.m===A.best.m?"#3BE08A":"#2F62FF")+'"><title>'+esc(x.m)+": "+money(x.rev)+" · "+x.orders+' orders</title></rect>'}).join("");
