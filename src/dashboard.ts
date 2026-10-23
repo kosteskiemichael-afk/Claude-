@@ -31,6 +31,36 @@ async function adRates(): Promise<Map<string, number>> {
   return m;
 }
 
+// Newest product ideas, read from the "Product Ideas" Google Sheet (needs link sharing: anyone with the link can view).
+const SHEET_ID = process.env.SHEET_ID || "1XcaTgUL3kKqtAOCAiwyH63Ub2Sl76jmiXxJXuBdZRrA";
+type Idea = { found: string; title: string; seller: string; sold: number; price: number; ebay: string; cad: string; license: string; cadName: string; status: string; decision: string };
+function parseCsv(t: string): string[][] {
+  const rows: string[][] = []; let row: string[] = [], cell = "", q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; }
+    else if (c !== "\r") cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+async function sheetIdeas(): Promise<{ ok: boolean; ideas: Idea[] }> {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Product Ideas")}`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(15000), redirect: "follow" });
+  const t = await r.text();
+  if (!r.ok || /^\s*</.test(t)) return { ok: false, ideas: [] }; // private sheet returns a sign-in page
+  const rows = parseCsv(t).slice(1).filter((x) => x[1]);
+  const ideas = rows.map((x, i) => ({ i, idea: {
+    found: x[0] || "", title: x[1] || "", seller: x[2] || "", sold: Number(x[3] || 0), price: Number(x[4] || 0),
+    ebay: x[5] || "", cad: x[6] || "", license: x[7] || "", cadName: x[8] || "", status: x[9] || "", decision: x[10] || "" } }))
+    .sort((a, b) => b.idea.found.localeCompare(a.idea.found) || b.i - a.i) // newest first; later rows are newer
+    .map((x) => x.idea);
+  return { ok: true, ideas };
+}
+
 const TZ = "America/Indianapolis";
 const hourIn = (d = new Date()) => Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: TZ }).format(d));
 const dayKey = (t: number) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(t));
@@ -54,6 +84,7 @@ async function buildData() {
     cached("month", 20_000, () => recentOrders(30, false), []),
     cached("ads", 120_000, adRates, new Map<string, number>()),
   ]);
+  const sheet = await cached("sheet", 180_000, sheetIdeas, { ok: false, ideas: [] as Idea[] });
   const now = Date.now();
   const cap = cfg.marketing.max_ad_rate ?? 5;
   const byId = new Map(listings.map((l) => [l.item_id, l]));
@@ -127,6 +158,7 @@ async function buildData() {
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
+    products: { ok: sheet.ok, total: sheet.ideas.length, list: sheet.ideas.slice(0, 24) },
     queue: [...queue.entries()].map(([title, qty]) => ({ title, qty })).sort((a, b) => b.qty - a.qty),
     pricing: Object.entries(cfg.pricing.rules).map(([id, rule]) => {
       const l = byId.get(id);
@@ -139,7 +171,7 @@ async function getData(force = false) {
   if (force) memo.clear();
   return buildData();
 }
-export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); }
+export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); memo.delete("sheet"); }
 
 export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false) {
   app.get(`/dashboard/${secret}/data`, async (req, res) => {
@@ -238,6 +270,14 @@ td.m{font-family:"JetBrains Mono";white-space:nowrap}.t2{max-width:340px;white-s
 .live.flash{box-shadow:0 0 0 1px var(--ok),0 0 40px rgba(93,255,168,.35)}
 @keyframes newsale{0%{background:rgba(93,255,168,.35);transform:scale(1.02)}100%{background:rgba(56,243,255,.03);transform:none}}
 @media (max-width:560px){.sale{grid-template-columns:76px 1fr;row-gap:4px}.sale .st{justify-self:start}.sale time{text-align:left}}
+#prodp{margin-bottom:14px}.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;max-height:560px;overflow:auto;padding-right:6px}
+.prod{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(160deg,rgba(255,63,216,.07),transparent 55%);display:grid;gap:8px}
+.prod .pt a{color:var(--ink);text-decoration:none;font-weight:600;font-size:13.5px;line-height:1.35}.prod .pt a:hover{color:var(--cy)}
+.prod .pm{display:flex;gap:12px;flex-wrap:wrap;font:500 12px "JetBrains Mono";color:var(--mute)}.prod .pm b{color:var(--ok)}.prod .fd{margin-left:auto}
+.prod .pc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}.prod .cad{font:700 11px "JetBrains Mono";color:var(--bg);background:var(--cy);padding:4px 9px;border-radius:7px;text-decoration:none;box-shadow:var(--glow)}
+.prod .cn{color:var(--mute)}.tagc{font:600 10.5px "JetBrains Mono";padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--ink);margin-right:6px}
+.tagc.ok{border-color:rgba(93,255,168,.45);color:var(--ok)}.tagc.warn{border-color:rgba(255,201,74,.5);color:var(--warn)}.tagc.bad{border-color:rgba(255,77,109,.5);color:var(--bad)}
+#pcount a{color:var(--cy)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
 @media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.hud{width:100%}.btn{flex:1}}
@@ -259,6 +299,7 @@ td.m{font-family:"JetBrains Mono";white-space:nowrap}.t2{max-width:340px;white-s
   <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
 </div>
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
+<section class="panel" id="prodp"><h2>Newest products found <small id="pcount"></small></h2><div class="prods" id="prods"></div></section>
 <div class="grid three">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
   <section class="panel ideas"><h2>Product radar <small id="ideatime"></small></h2><div id="ideas"></div></section>
@@ -306,6 +347,9 @@ function render(){
  document.querySelectorAll(".ev .h").forEach(h=>h.onclick=()=>{const e=h.parentNode;e.classList.toggle("open");e.classList.contains("open")?open.add(e.dataset.id):open.delete(e.dataset.id)});
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Every idea also goes to your Google Sheet.</p>'}
+ const P=D.products;$("pcount").innerHTML=P.ok?P.total+' ideas in your <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1XcaTgUL3kKqtAOCAiwyH63Ub2Sl76jmiXxJXuBdZRrA/edit">Google Sheet</a>':"";
+ const cls=st=>/same part/i.test(st)?"ok":/no free cad/i.test(st)?"bad":"warn";
+ $("prods").innerHTML=!P.ok?'<p class="empty">Can\'t read your Product Ideas sheet yet. In the sheet: Share → General access → “Anyone with the link” → Viewer. Ideas from the last scan still show under Product radar below.</p>':P.list.length?P.list.map(x=>'<div class="prod"><div class="pt"><a target="_blank" rel="noopener" href="'+esc(x.ebay)+'">'+esc(x.title)+'</a></div><div class="pm"><span><b>'+esc(x.sold)+'</b> sold</span><span><b>'+money(x.price)+'</b></span><span>by '+esc(x.seller)+'</span><span class="fd">'+esc(x.found)+'</span></div><div class="pc">'+(x.cad?'<a class="cad" target="_blank" rel="noopener" href="'+esc(x.cad)+'">⬇ CAD · '+esc(x.license)+'</a><span class="cn">'+esc(x.cadName)+'</span>':'<span class="cn">No free CAD: model it yourself</span>')+'</div><div class="ps"><span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>'+(x.decision?'<span class="tagc">'+esc(x.decision)+'</span>':'')+'</div></div>').join(""):'<p class="empty">No ideas yet. Hit “Find products”.</p>';
  const qu=D.queue.reduce((a,q)=>a+q.qty,0);$("qcount").textContent=qu?qu+" parts":"";
  $("queue").innerHTML=D.queue.length?D.queue.map(q=>'<div class="q"><b>'+q.qty+'×</b><span>'+esc(q.title)+'</span></div>').join(""):'<p class="empty">Queue clear. Nothing to print.</p>';
  $("price").innerHTML='<tr><th>Listing</th><th>Price</th><th>Range</th><th>Position</th><th>Ad</th><th>Stock</th></tr>'+D.pricing.map(p=>{const lo=p.min??(p.price?p.price*.8:0),hi=p.max??(p.price?p.price*1.2:1);const pos=p.price==null?50:Math.max(0,Math.min(100,(p.price-lo)/((hi-lo)||1)*100));
