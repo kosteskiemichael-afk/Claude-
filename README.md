@@ -151,7 +151,7 @@ the price watch table. It updates itself every 30 seconds; the Run bots / Find p
 right from the page. Bookmark it on your phone.
 On Render's free plan the first load after a quiet spell takes 30–60 seconds.
 
-### Product ideas in Google Sheets
+### Product store (Google Apps Script)
 Every finder run adds new ideas to the **Nexa Product Ideas** sheet (tab "Product Ideas") through the Apps Script in
 `sheets/ProductIdeas.gs` (its web app URL is in Render as `SHEETS_WEBHOOK_URL`). Existing rows only get their sold count refreshed.
 CAD search covers Printables, plus Thingiverse when `THINGIVERSE_TOKEN` is set (free app token from thingiverse.com/developers).

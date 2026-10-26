@@ -32,35 +32,29 @@ async function adRates(): Promise<Map<string, number>> {
   return m;
 }
 
-// Newest product ideas, read from the "Product Ideas" Google Sheet (needs link sharing: anyone with the link can view).
-const SHEET_ID = process.env.SHEET_ID || "1XcaTgUL3kKqtAOCAiwyH63Ub2Sl76jmiXxJXuBdZRrA";
+// Permanent product store: the Apps Script web app in SHEETS_WEBHOOK_URL (it saves every find, and your
+// "Added it" / "Not interested" choices). The dashboard reads and writes it; nobody has to open the sheet.
 type Idea = { found: string; title: string; seller: string; sold: number; price: number; ebay: string; cad: string; license: string; cadName: string; status: string; decision: string };
-function parseCsv(t: string): string[][] {
-  const rows: string[][] = []; let row: string[] = [], cell = "", q = false;
-  for (let i = 0; i < t.length; i++) {
-    const c = t[i];
-    if (q) { if (c === '"') { if (t[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
-    else if (c === '"') q = true;
-    else if (c === ",") { row.push(cell); cell = ""; }
-    else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; }
-    else if (c !== "\r") cell += c;
-  }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-  return rows;
+async function hook(body: unknown): Promise<any> {
+  const url = process.env.SHEETS_WEBHOOK_URL;
+  if (!url) throw new Error("SHEETS_WEBHOOK_URL not set");
+  const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(20000), redirect: "follow" });
+  const t = await r.text();
+  try { return JSON.parse(t); } catch { throw new Error(`store replied ${r.status}: ${t.slice(0, 80)}`); }
 }
 async function sheetIdeas(): Promise<{ ok: boolean; ideas: Idea[] }> {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Product Ideas")}`;
-  const r = await fetch(url, { signal: AbortSignal.timeout(15000), redirect: "follow" });
-  const t = await r.text();
-  if (!r.ok || /^\s*</.test(t)) return { ok: false, ideas: [] }; // private sheet returns a sign-in page
-  const rows = parseCsv(t).slice(1).filter((x) => x[1]);
-  const ideas = rows.map((x, i) => ({ i, idea: {
-    found: x[0] || "", title: x[1] || "", seller: x[2] || "", sold: Number(x[3] || 0), price: Number(x[4] || 0),
-    ebay: x[5] || "", cad: x[6] || "", license: x[7] || "", cadName: x[8] || "", status: x[9] || "", decision: x[10] || "" } }))
-    .sort((a, b) => b.idea.found.localeCompare(a.idea.found) || b.i - a.i) // newest first; later rows are newer
-    .map((x) => x.idea);
+  const j = await hook({ action: "list" });
+  if (!j.ok) return { ok: false, ideas: [] };
+  const ideas = (j.rows || []).filter((x: any) => x.title).map((x: any, i: number) => ({ i, idea: {
+    found: x.found || "", title: x.title, seller: x.seller || "", sold: Number(x.sold || 0), price: Number(x.price || 0),
+    ebay: x.ebay_url || "", cad: x.cad_url || "", license: x.cad_license || "", cadName: x.cad_name || "", status: x.status || "", decision: x.decision || "" } }))
+    .sort((a: any, b: any) => b.idea.found.localeCompare(a.idea.found) || b.i - a.i)
+    .map((x: any) => x.idea as Idea);
   return { ok: true, ideas };
 }
+// Choices made on this server since it started (applied instantly, before the store round-trip shows them).
+const localDecisions = new Map<string, string>();
+const HIDDEN = (d: string) => /^(added|dismissed)/i.test(d || "");
 
 // Product board: products.json (ideas Claude adds) merged with the Google Sheet (ideas the finder adds).
 function boardIdeas(): Idea[] {
@@ -108,11 +102,17 @@ async function buildData() {
   // Merge board + sheet, dedupe by eBay link (board entries win), newest first, with profit math.
   const seenUrl = new Set<string>();
   const p = cfg.pricing;
-  const productList = [...boardIdeas(), ...finds, ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
+  const decided = new Map<string, string>(sheet.ideas.filter((x) => x.decision).map((x) => [x.ebay, x.decision] as [string, string]));
+  for (const [k, v] of localDecisions) decided.set(k, v);
+  const allProducts = [...boardIdeas(), ...finds, ...sheet.ideas].filter((x) => { const k = x.ebay || x.title; if (seenUrl.has(k)) return false; seenUrl.add(k); return true; })
+    .map((x) => ({ ...x, decision: decided.get(x.ebay) ?? x.decision }));
+  const withNumbers = (list: typeof allProducts) => list
     .map((x, i) => ({ x, i })).sort((a, b) => b.x.found.localeCompare(a.x.found) || a.i - b.i).map(({ x }) => {
       const profit = x.price ? x.price * (1 - p.fee_rate) - p.per_order_fee - p.default_label_cost - p.default_material_cost : 0;
       return { ...x, theirRevenue: Math.round(x.sold * x.price), profit: Math.round(profit * 100) / 100, margin: x.price ? Math.round(profit / x.price * 100) : 0 };
     });
+  const productList = withNumbers(allProducts.filter((x) => !HIDDEN(x.decision)));
+  const hiddenList = withNumbers(allProducts.filter((x) => HIDDEN(x.decision)));
 
   // All-time numbers.
   const months = new Map<string, { m: string; orders: number; rev: number }>();
@@ -205,7 +205,7 @@ async function buildData() {
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
-    products: { ok: sheet.ok, total: productList.length, list: productList.slice(0, 40) },
+    products: { ok: sheet.ok, total: productList.length, list: productList.slice(0, 60), hidden: hiddenList.slice(0, 60), hiddenCount: hiddenList.length },
     allTime: {
       rev: allRev, orders: all.length, units: allUnits, first: isFinite(first) ? first : null,
       avgOrder: all.length ? allRev / all.length : 0, perMonth: allRev / activeMonths,
@@ -227,6 +227,20 @@ async function getData(force = false) {
 export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); memo.delete("sheet"); memo.delete("alltime"); }
 
 export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false) {
+  // X button on a product: "added" (you listed it) or "dismissed" (not interested); "" restores it.
+  app.post(`/dashboard/${secret}/decide`, async (req, res) => {
+    try {
+      const b = (req.body && typeof req.body === "object" ? req.body : {}) as any;
+      const ebay = String(b.ebay || ""); const decision = String(b.decision || "");
+      if (!ebay) throw new Error("missing listing");
+      localDecisions.set(ebay, decision);
+      const p = b.row || {};
+      const j = await hook({ action: "decide", ebay_url: ebay, decision: decision ? `${decision} ${new Date().toISOString().slice(0, 10)}` : "",
+        row: { found: p.found, title: p.title, seller: p.seller, sold: p.sold, price: p.price, ebay_url: ebay, cad_url: p.cad, cad_license: p.license, cad_name: p.cadName, status: p.status } });
+      memo.delete("sheet");
+      res.json({ ok: !!j.ok, error: j.error });
+    } catch (e) { res.status(500).json({ ok: false, error: e instanceof Error ? e.message : String(e) }); }
+  });
   app.get(`/dashboard/${secret}/data`, async (req, res) => {
     try {
       const d = await getData(req.query.fresh === "1");
@@ -354,6 +368,14 @@ input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
 .pb.eb:hover{border-color:var(--ink2)}.pb.cd{background:var(--cy);border-color:var(--cy);color:#fff}.pb.cd:hover{background:#4672ff}.pb.no{color:var(--mute);border-style:dashed}
 @media (max-width:1100px){.atk{grid-template-columns:repeat(3,1fr)}.atwrap{grid-template-columns:1fr}}
 @media (max-width:640px){.atk{grid-template-columns:repeat(2,1fr)}.pnums{grid-template-columns:repeat(2,1fr)}}
+.prod{position:relative}.px{margin-left:10px;background:none;border:1px solid var(--line2);color:var(--mute);width:24px;height:24px;border-radius:2px;cursor:pointer;font-size:12px;line-height:1}
+.px:hover{color:var(--ink);border-color:var(--ink2);background:rgba(232,54,43,.12)}.prod .ph{align-items:center}
+.pask{display:none;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);padding:10px;border:1px dashed var(--line2)}
+.prod.asking .pask{display:flex}.prod.asking .pbtns{display:none}
+.pb.ok2{border-color:rgba(59,224,138,.5);color:var(--ok);background:none;cursor:pointer;flex:1}.pb.no2{border-color:rgba(232,54,43,.5);color:#ff6a60;background:none;cursor:pointer;flex:1}
+.pb.ok2:hover{background:rgba(59,224,138,.1)}.pb.no2:hover{background:rgba(232,54,43,.1)}
+.lnk{background:none;border:0;color:#7d9bff;cursor:pointer;font:inherit;padding:0;text-decoration:underline;text-underline-offset:3px}
+h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppercase}
 @keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes mq{to{transform:translateX(-50%)}}
 @keyframes newsale{0%{background:rgba(59,224,138,.18)}100%{background:var(--panel2)}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
@@ -398,7 +420,16 @@ const S="__SECRET__";const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
-let D=null,open=new Set(),seen=null;
+let D=null,open=new Set(),seen=null,showHidden=false,CUR=[];
+async function decide(x,d){if(!x)return;const P=D.products;
+ // move it locally right away, then save
+ if(d){P.list=P.list.filter(y=>y.ebay!==x.ebay);x.decision=d;P.hidden=[x,...P.hidden.filter(y=>y.ebay!==x.ebay)];P.hiddenCount=P.hidden.length;P.total=P.list.length}
+ else{P.hidden=P.hidden.filter(y=>y.ebay!==x.ebay);x.decision="";P.list=[x,...P.list];P.hiddenCount=P.hidden.length;P.total=P.list.length}
+ render();
+ try{const r=await fetch("/dashboard/"+S+"/decide",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ebay:x.ebay,decision:d,row:x})});const j=await r.json();if(!j.ok)throw new Error(j.error||r.status);
+  toastUndo(d==="added"?"Marked as added: hidden from the list":d==="dismissed"?"Not interested: hidden for good":"Restored to the list",d?()=>decide(x,""):null)}
+ catch(e){toast("Couldn't save that choice: "+e.message)}}
+function toastUndo(m,undo){const t=$("toast");t.innerHTML=esc(m)+(undo?' <button class="lnk" id="undo">undo</button>':'');t.classList.add("on");if(undo)$("undo").onclick=()=>{t.classList.remove("on");undo()};clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),8000)}
 function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[880,1320].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,a.currentTime+i*.14);g.gain.exponentialRampToValueAtTime(.25,a.currentTime+i*.14+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+i*.14+.35);o.connect(g);g.connect(a.destination);o.start(a.currentTime+i*.14);o.stop(a.currentTime+i*.14+.4)})}catch(e){}}
 try{document.addEventListener("DOMContentLoaded",()=>{const c=document.getElementById("chime");c.checked=localStorage.getItem("nexaChime")==="1";c.onchange=()=>{try{localStorage.setItem("nexaChime",c.checked?"1":"0")}catch(e){};if(c.checked)chime()}})}catch(e){}
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),12000)}
@@ -435,10 +466,16 @@ function render(){
  document.querySelectorAll(".ev .h").forEach(h=>h.onclick=()=>{const e=h.parentNode;e.classList.toggle("open");e.classList.contains("open")?open.add(e.dataset.id):open.delete(e.dataset.id)});
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Results list under Products found.</p>'}
- const P=D.products;$("pcount").textContent=P.total+" products · newest first";
+ const P=D.products,PL=showHidden?P.hidden:P.list;CUR=PL;
+ $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button>';
+ $("hidtog").onclick=()=>{showHidden=!showHidden;render()};
  const cls=st=>/same part/i.test(st)?"ok":/no free cad/i.test(st)?"bad":"warn";
  const n0=v=>Number(v||0).toLocaleString("en-US");
- $("prods").innerHTML=P.list.length?P.list.map((x,i)=>'<div class="prod"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span></div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':'<span class="pb no">No free CAD: design it</span>')+'</div><div class="ps"><span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>'+(x.decision?'<span class="tagc">'+esc(x.decision)+'</span>':'')+'</div></div>').join(""):'<p class="empty">No products yet. Hit “Find products” and they’ll list here.</p>';
+ $("prods").innerHTML=PL.length?PL.map((x,i)=>'<div class="prod" data-i="'+i+'"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span>'+(showHidden?'':'<button class="px" title="Hide: added it / not interested" data-x="'+i+'">✕</button>')+'</div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':'<span class="pb no">No free CAD: design it</span>')+'</div><div class="pask"><span>Hide this product:</span><button class="pb ok2" data-d="added" data-i="'+i+'">✓ Added it</button><button class="pb no2" data-d="dismissed" data-i="'+i+'">✕ Not interested</button><button class="lnk" data-c="'+i+'">cancel</button></div><div class="ps">'+(showHidden?'<span class="tagc '+(/^added/i.test(x.decision)?"ok":"bad")+'">'+esc(/^added/i.test(x.decision)?"added it":"not interested")+'</span><button class="lnk" data-r="'+i+'">restore</button>':'<span class="tagc '+cls(x.status)+'">'+esc(x.status||"new")+'</span>')+'</div></div>').join(""):'<p class="empty">'+(showHidden?"Nothing hidden.":"No products yet. Hit “Find products” and they’ll list here.")+'</p>';
+ document.querySelectorAll("#prods [data-x]").forEach(b=>b.onclick=()=>b.closest(".prod").classList.add("asking"));
+ document.querySelectorAll("#prods [data-c]").forEach(b=>b.onclick=()=>b.closest(".prod").classList.remove("asking"));
+ document.querySelectorAll("#prods [data-d]").forEach(b=>b.onclick=()=>decide(CUR[+b.dataset.i],b.dataset.d));
+ document.querySelectorAll("#prods [data-r]").forEach(b=>b.onclick=()=>decide(CUR[+b.dataset.r],""));
  const A=D.allTime;$("since").textContent=A.first?"since "+new Date(A.first).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"";
  const AK=[["Total sales ever",money(A.rev)],["Total orders ever",n0(A.orders)],["Units sold",n0(A.units)],["Avg order",money(A.avgOrder)],["Avg per month",money(A.perMonth)],["Best month",A.best?money(A.best.rev)+" · "+A.best.m:"—"]];
  $("atk").innerHTML=AK.map(([l,v],i)=>'<div class="panel k"><span class="idx">0'+(i+1)+'</span><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>').join("");
