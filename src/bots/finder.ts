@@ -186,7 +186,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   ].map(({ h, cad }) => ({
     found: today, title: h.title, seller: h.seller, sold: h.sold || 0, price: h.price,
     ebay: `https://www.ebay.com/itm/${h.legacy}`, cad: cad?.url || "", license: cad?.license || "", cadName: cad?.name || "",
-    status: cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD - needs custom design",
+    status: cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD found - check paid",
     decision: "",
   }));
   summary.found = ideas.length;
