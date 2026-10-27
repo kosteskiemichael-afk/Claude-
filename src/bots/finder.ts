@@ -5,6 +5,10 @@
 //   competitors  mines the whole catalog of proven 3D-print sellers
 //   categories   sweeps eBay's categories that hold the most 3D-printed parts
 //   cadfirst     starts from sellable CAD files on Printables, then checks eBay demand for them
+//   gears        gears, brackets, mounts, hinges, latches, bushings, pulleys
+//   autoboat     car / truck / boat / marine / powersports / tractor parts, by make
+//   premium      parts for expensive equipment (espresso machines, Vitamix, Dyson, Sub-Zero, Festool, Bose...)
+// Toys, collectibles, decor, firearm parts and printer accessories are filtered out everywhere.
 import { rest } from "../ebay.js";
 import { askJson, brainOn, FAST_MODEL } from "./brain.js";
 import { storeCall, storedLinks } from "../store.js";
@@ -49,6 +53,9 @@ export type FoundIdea = { found: string; title: string; seller: string; sold: nu
 export const finds: FoundIdea[] = [];
 
 const BROWSE = "/buy/browse/v1/item_summary/search";
+// Not what Nexa sells: toys/collectibles, decor/crafts, firearm parts (eBay restricted), printer accessories.
+export const JUNK = /\b(toys?|hasbro|kenner|mattel|lego|star wars|gi ?joe|action figures?|figurines?|funko|barbie|hot wheels|nerf|dolls?|playsets?|cosplay|props?|miniatures?|warhammer|dnd|keychains?|ornaments?|decor|vases?|planters?|fidget|statue|halloween|christmas|pokemon|transformers?|he-?man|vintage kenner|gun|pistol|rifle|glock|walther|kel-?tec|sig sauer|ar-?15|ar15|ak-?47|holsters?|mag well|suppressor|ender ?3|bambu|prusa|creality|3d printer parts?|filament|sd card)\b/i;
+export const JUNK_CATEGORY = /\b(toys|collectibles|dolls|action figures|crafts|art|home d[eé]cor|holiday|guns|firearms?|hunting|airsoft|video games|3d printers?|3d printing)\b/i;
 const BASE_FILTER = "buyingOptions:{FIXED_PRICE},itemLocationCountry:US,conditions:{NEW}";
 /** Run Browse searches and keep 3D-printed listings from other sellers. */
 async function collect(cfg: BotConfig, searches: { q: string; filter?: string; category?: string; keep?: number; must?: (title: string) => boolean }[]): Promise<Hit[]> {
@@ -65,6 +72,8 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
         const title = String(it.title || "");
         const seller = String(it.seller?.username || "");
         if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
+        if (JUNK.test(title) || JUNK_CATEGORY.test(String(it.categories?.map((c: any) => c.categoryName).join(" ") || ""))) continue;
+        if (Number(it.price?.value || 0) < (cfg.finder.min_price ?? 0)) continue;
         if (sch.must && !sch.must(title)) continue;
         const legacy = String(it.legacyItemId || it.itemId?.split("|")[1] || "");
         if (!legacy || seen.has(legacy)) continue;
@@ -77,9 +86,51 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
 }
 
 // ---------- the four strategies ----------
-export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst";
+export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium";
 export const STRATEGY_NAMES: Record<Strategy, string> = {
   keywords: "Keyword bot", competitors: "Competitor bot", categories: "Category bot", cadfirst: "CAD-first bot",
+  gears: "Gears & Brackets bot", autoboat: "Auto & Boat bot", premium: "Premium Equipment bot",
+};
+
+// Focused search pools for the three specialist bots.
+const POOLS: Record<"gears" | "autoboat" | "premium", string[]> = {
+  gears: [
+    "worm gear", "drive gear", "replacement gear", "gear set", "spur gear replacement", "gearbox gear", "motor gear", "pinion gear",
+    "timing gear", "transmission gear", "nylon gear replacement", "helical gear", "bevel gear", "planetary gear", "idler gear",
+    "actuator gear", "seat motor gear", "window regulator gear", "door lock actuator gear", "power mirror gear", "throttle body gear",
+    "mixer gear", "stand mixer worm gear", "blender drive gear", "juicer gear", "bread machine gear", "garage door opener gear",
+    "gate opener gear", "ice maker gear", "coffee grinder gear", "meat grinder gear", "pasta maker gear", "projector gear",
+    "tape deck gear", "turntable gear", "vcr gear", "printer gear", "camera lens gear", "clock gear", "fishing reel gear",
+    "lawn mower drive gear", "snow blower gear", "winch gear", "boat trim gear", "pump gear", "sprinkler gear",
+    "bracket replacement", "mounting bracket", "motor mount bracket", "hinge replacement", "latch replacement", "lid hinge",
+    "door hinge replacement", "bushing replacement", "pulley replacement", "sprocket replacement", "cam replacement", "lever replacement",
+    "knob shaft replacement", "spacer replacement", "clip replacement", "retainer clip", "guide rail replacement", "roller replacement",
+  ],
+  autoboat: [
+    "toyota part", "lexus part", "ford part", "chevy part", "gmc part", "dodge ram part", "jeep part", "honda part", "acura part",
+    "nissan part", "infiniti part", "subaru part", "mazda part", "bmw part", "mercedes part", "audi part", "volkswagen part",
+    "porsche part", "land rover part", "volvo part", "tesla part", "corvette part", "mustang part", "camaro part", "f150 part",
+    "silverado part", "tacoma part", "tundra part", "4runner part", "wrangler part", "bronco part", "miata part", "mr2 part",
+    "car interior trim clip", "car console part", "car vent clip", "car door handle", "sunroof part", "seat track part",
+    "headlight adjuster", "tailgate part", "truck bed part", "classic car part", "obsolete car part",
+    "boat part", "marine part", "boat hatch latch", "boat cleat", "boat hinge", "boat console part", "pontoon part",
+    "yamaha waverunner part", "sea doo part", "jet ski part", "mercury outboard part", "yamaha outboard part",
+    "johnson evinrude part", "minn kota part", "trolling motor part", "bayliner part", "sailboat part", "kayak part",
+    "rv part", "camper part", "motorcycle part", "harley davidson part", "atv part", "polaris part", "can am part",
+    "snowmobile part", "golf cart part", "tractor part", "john deere part", "kubota part", "zero turn mower part",
+  ],
+  premium: [
+    "breville part", "delonghi part", "jura part", "saeco part", "gaggia part", "rancilio part", "rocket espresso part",
+    "nespresso part", "vitamix part", "kitchenaid part", "thermomix part", "cuisinart part", "ninja part", "dyson part",
+    "miele part", "bosch part", "sub zero part", "wolf range part", "viking range part", "thermador part", "ge profile part",
+    "samsung refrigerator part", "lg refrigerator part", "whirlpool part", "frigidaire part", "maytag part", "speed queen part",
+    "bose part", "bang olufsen part", "mcintosh part", "marantz part", "technics part", "pioneer part", "sonos part",
+    "peloton part", "nordictrack part", "bowflex part", "concept2 part", "festool part", "dewalt part", "milwaukee part",
+    "makita part", "bosch tool part", "snap-on part", "stihl part", "husqvarna part", "echo part", "ego power part",
+    "traeger part", "weber grill part", "big green egg part", "blackstone part", "roomba part", "shark vacuum part",
+    "herman miller part", "steelcase part", "leica part", "hasselblad part", "nikon part", "canon part", "generator part",
+    "pool pump part", "hot tub part", "pentair part", "hayward part", "rheem part", "honeywell part", "nest thermostat part",
+  ],
 };
 type Gathered = { hits: Hit[]; searched: string[]; presetCad: Map<string, Cad> };
 const counters: Record<string, number> = {};
@@ -116,7 +167,7 @@ async function gatherCategories(cfg: BotConfig): Promise<Gathered> {
         }
       } catch { /* ignore */ }
     }
-    catCache = { at: Date.now(), cats: [...m.values()].sort((a, b) => b.n - a.n).slice(0, 36) };
+    catCache = { at: Date.now(), cats: [...m.values()].filter((c) => !JUNK_CATEGORY.test(c.name)).sort((a, b) => b.n - a.n).slice(0, 36) };
   }
   const cats = catCache.cats;
   if (!cats.length) return { hits: [], searched: [], presetCad: new Map() };
@@ -151,17 +202,26 @@ async function gatherCadFirst(cfg: BotConfig): Promise<Gathered> {
   return { hits: [...all.values()], searched: pick.map((q) => `Printables: ${q}`), presetCad };
 }
 
+async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium"): Promise<Gathered> {
+  const pool = POOLS[key], per = 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
+  const pick = pool.filter((_, i) => i % batches === k).map((q) => "3d printed " + q);
+  return { hits: await collect(cfg, pick.map((q) => ({ q }))), searched: pick, presetCad: new Map() };
+}
+
 async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered> {
   const queries = nextQueries(cfg, manual);
   return { hits: await collect(cfg, queries.map((q) => ({ q }))), searched: queries, presetCad: new Map() };
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["keywords", "competitors", "categories", "cadfirst"];
+const ORDER: Strategy[] = ["gears", "autoboat", "premium", "keywords", "competitors", "gears", "autoboat", "premium", "categories", "cadfirst"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return ORDER[1 + (day % 3)]; }
-export const DEEP_PLAN: Strategy[] = ["keywords", "competitors", "categories", "cadfirst", "keywords", "competitors", "categories", "cadfirst", "keywords", "keywords", "keywords", "keywords", "keywords"];
+const FOCUS: Strategy[] = ["gears", "autoboat", "premium"];
+const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
+export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
+export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
+export const DEEP_PLAN: Strategy[] = ["gears", "autoboat", "premium", "competitors", "gears", "autoboat", "premium", "keywords", "categories", "cadfirst", "gears", "autoboat", "premium", "gears", "autoboat", "premium"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
@@ -239,6 +299,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   const g = strategy === "competitors" ? await gatherCompetitors(cfg)
     : strategy === "categories" ? await gatherCategories(cfg)
     : strategy === "cadfirst" ? await gatherCadFirst(cfg)
+    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" ? await gatherPool(cfg, strategy)
     : await gatherKeywords(cfg, manual);
   const queries = g.searched;
   const botName = STRATEGY_NAMES[strategy];

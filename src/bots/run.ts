@@ -10,7 +10,7 @@ import { push } from "./notify.js";
 import { pricingBot } from "./pricing.js";
 import { productionBot } from "./production.js";
 import { serviceBot } from "./service.js";
-import { finderBot, morningExtra, nextStrategy, Strategy } from "./finder.js";
+import { finderBot, morningExtra, morningFocus, nextStrategy, Strategy } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
 function localHour(tz: string, d = new Date()): number {
@@ -80,7 +80,7 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   if (on("finder") && (only.includes("finder") || (firstRunOfDay && finderDay))) await step("Product finder", r, async () => {
     if (opts.strategy) { await finderBot(cfg, listings, r, true, opts.strategy); return; }
     if (only.includes("finder")) { await finderBot(cfg, listings, r, true, nextStrategy()); return; }
-    await finderBot(cfg, listings, r, false, "keywords"); // morning: keyword bot + one of the other three
+    await finderBot(cfg, listings, r, false, morningFocus()); // morning: one specialist bot + one of the others
     const first = (r as any).finder;
     await finderBot(cfg, listings, r, false, morningExtra());
     const second = (r as any).finder;

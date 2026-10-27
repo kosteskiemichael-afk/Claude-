@@ -133,7 +133,7 @@ app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
       } catch (e) { console.error("Deep scan batch failed", e); }
       deep.done = k + 1; invalidateDashboard();
     }
-    await push("Nexa deep scan done", `All 4 finder bots ran: checked ${deep.checked} new printed listings, ${deep.found} new products added to your dashboard.`, false).catch(() => {});
+    await push("Nexa deep scan done", `All 7 finder bots ran: checked ${deep.checked} new printed listings, ${deep.found} new products added to your dashboard.`, false).catch(() => {});
   } finally { deep.running = false; deep.finished = Date.now(); botsRunning = false; invalidateDashboard(); }
 });
 

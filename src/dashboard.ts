@@ -5,7 +5,7 @@ import type { Express } from "express";
 import { existsSync, readFileSync } from "node:fs";
 import { rest } from "./ebay.js";
 import { activeListings, loadConfig, recentOrders } from "./bots/shared.js";
-import { finds, todaysQueries } from "./bots/finder.js";
+import { finds, JUNK, todaysQueries } from "./bots/finder.js";
 import { storeCall } from "./store.js";
 
 type Run = { time: number; title: string; message: string; urgent: boolean };
@@ -106,7 +106,7 @@ async function buildData() {
       const profit = x.price ? x.price * (1 - p.fee_rate) - p.per_order_fee - p.default_label_cost - p.default_material_cost : 0;
       return { ...x, theirRevenue: Math.round(x.sold * x.price), profit: Math.round(profit * 100) / 100, margin: x.price ? Math.round(profit / x.price * 100) : 0 };
     });
-  const productList = withNumbers(allProducts.filter((x) => !HIDDEN(x.decision)));
+  const productList = withNumbers(allProducts.filter((x) => !HIDDEN(x.decision) && !JUNK.test(x.title))); // no toys / gun parts
   const hiddenList = withNumbers(allProducts.filter((x) => HIDDEN(x.decision)));
 
   // All-time numbers.
@@ -185,9 +185,9 @@ async function buildData() {
       line: `${unshipped.length} to ship · ${late.length} late`, detail: "Watches buyer messages, feedback and ship-by dates." },
     { name: "Production", icon: "▣", state: queueUnits ? "busy" : "ok",
       line: `${queueUnits} part${queueUnits === 1 ? "" : "s"} in print queue`, detail: "Builds the print list from unshipped orders." },
-    { name: "Product finders ×4", icon: "✦", state: "ok",
+    { name: "Product finders ×7", icon: "✦", state: "ok",
       line: lastFinder ? `last scan ${new Date(lastFinder.time).toLocaleString("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" })}` : "scans every morning",
-      detail: "Keyword, Competitor, Category and CAD-first bots. Each Find-products tap runs the next one; Deep scan runs all four." },
+      detail: "Gears & Brackets, Auto & Boat, Premium Equipment, Keyword, Competitor, Category, CAD-first. No toys or gun parts. Each tap runs the next bot; Deep scan runs them all." },
     { name: "AI brain", icon: "⬡", state: brain ? "ok" : "off",
       line: brain ? "online · daily brief + reply drafts" : "offline (add ANTHROPIC_API_KEY)", detail: "Verifies competitors and CAD matches, writes the morning plan." },
   ];

@@ -40,7 +40,7 @@ export type BotConfig = {
   marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; boost_sellers_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
   production: { enabled: boolean };
-  finder: { enabled: boolean; day: number; min_sold: number; queries_per_run?: number; queries: string[] };
+  finder: { enabled: boolean; day: number; min_sold: number; min_price?: number; queries_per_run?: number; queries: string[] };
 };
 
 const DEFAULTS: BotConfig = {
@@ -72,6 +72,7 @@ const DEFAULTS: BotConfig = {
     enabled: true,
     day: -1, // -1 = every morning (0-6 = one weekday only)
     min_sold: 50,
+    min_price: 8, // skip trinkets: proof listings must sell for at least this much
     // A big pool of searches; each run uses the next batch of queries_per_run, rotating daily,
     // so every run looks somewhere new without getting slow.
     queries_per_run: 20,
@@ -93,8 +94,8 @@ const DEFAULTS: BotConfig = {
       "3d printed camera part", "3d printed radio part", "3d printed turntable part",
       "3d printed game console part", "3d printed remote battery cover", "3d printed headphone part",
       "3d printed furniture part", "3d printed window blind part", "3d printed door part",
-      "3d printed toy replacement part", "3d printed stroller part", "3d printed bike part",
-      "3d printed fishing reel part", "3d printed gun cleaning part", "3d printed sewing machine part",
+      "3d printed stroller part", "3d printed bike part",
+      "3d printed fishing reel part", "3d printed sewing machine part",
       "3d printed knob replacement appliance", "3d printed oven knob", "3d printed stove knob", "3d printed dryer knob",
       "3d printed washing machine knob", "3d printed air fryer part", "3d printed ice maker part", "3d printed water filter cap",
       "3d printed thermostat cover", "3d printed light switch part", "3d printed ceiling fan part", "3d printed lamp part",
@@ -109,8 +110,8 @@ const DEFAULTS: BotConfig = {
       "3d printed truck bed part", "3d printed tractor part", "3d printed marine part", "3d printed outboard part",
       "3d printed trolling motor part", "3d printed camper part", "3d printed audio equipment part", "3d printed cassette deck part",
       "3d printed vcr part", "3d printed projector part", "3d printed printer part", "3d printed keyboard part",
-      "3d printed controller part", "3d printed drone part", "3d printed rc car part", "3d printed vintage toy part",
-      "3d printed model train part", "3d printed pinball part", "3d printed arcade part", "3d printed medical equipment part",
+      
+      "3d printed pinball part", "3d printed arcade part", "3d printed medical equipment part",
       "3d printed wheelchair part", "3d printed walker part", "3d printed baby gate part", "3d printed high chair part",
       "3d printed pet feeder part", "3d printed aquarium part", "3d printed treadmill part", "3d printed exercise bike part",
     ],

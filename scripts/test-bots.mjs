@@ -128,6 +128,13 @@ check(fi.includes("2VPR") && fi.includes("NO FREE CAD"), "finder: proven seller 
 check(!fi.includes("Lasko Box Fan"), "finder: skips parts you already sell");
 check(!fi.includes("nobody buys"), "finder: ignores items under 100 sold");
 check(!fi.includes("NC"), "finder: never offers NonCommercial (NC) CAD files");
+{
+  const { JUNK, JUNK_CATEGORY } = await import("../dist/bots/finder.js");
+  const junk = ["GI Joe Jeep 7000 reproduction 3D Printed", "Vintage Star Wars Kenner 1983 Speeder Bike Handle", "Walther PPK Finger Grip Extension 3D Printed", "creality ender 3 v2 neo parts SD card"];
+  const good = ["Cuisinart SM-50 Worm Gear Replacement 3D Printed", "Yamaha WaveRunner Glove Box Lid Lock 3D printed", "DeWalt drill trigger switch housing 3D printed", "Breville BES870 drip tray bracket 3D printed", "Ford F150 seat motor gear 3d printed"];
+  check(junk.every((t) => JUNK.test(t)) && good.every((t) => !JUNK.test(t)), "finder: toys / gun parts / printer accessories filtered, real parts kept");
+  check(!JUNK_CATEGORY.test("eBay Motors Parts & Accessories Car & Truck Parts") && JUNK_CATEGORY.test("Toys & Hobbies Action Figures"), "finder: category filter keeps auto parts, drops toys");
+}
 for (const st of ["competitors", "categories", "cadfirst"]) {
   const rr = await runBots({ only: ["finder"], silent: true, strategy: st });
   check(!rr.urgent.some((u) => u.includes("bot error")) && rr.finder && rr.finder.bot, `finder: ${st} bot runs cleanly (${rr.finder?.bot}, ${rr.finder?.searched.length} searches)`);
