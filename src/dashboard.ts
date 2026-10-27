@@ -185,9 +185,9 @@ async function buildData() {
       line: `${unshipped.length} to ship · ${late.length} late`, detail: "Watches buyer messages, feedback and ship-by dates." },
     { name: "Production", icon: "▣", state: queueUnits ? "busy" : "ok",
       line: `${queueUnits} part${queueUnits === 1 ? "" : "s"} in print queue`, detail: "Builds the print list from unshipped orders." },
-    { name: "Product finder", icon: "✦", state: "ok",
+    { name: "Product finders ×4", icon: "✦", state: "ok",
       line: lastFinder ? `last scan ${new Date(lastFinder.time).toLocaleString("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" })}` : "scans every morning",
-      detail: `Today: ${todaysQueries(cfg).slice(0, 4).join(" · ")}…` },
+      detail: "Keyword, Competitor, Category and CAD-first bots. Each Find-products tap runs the next one; Deep scan runs all four." },
     { name: "AI brain", icon: "⬡", state: brain ? "ok" : "off",
       line: brain ? "online · daily brief + reply drafts" : "offline (add ANTHROPIC_API_KEY)", detail: "Verifies competitors and CAD matches, writes the morning plan." },
   ];
@@ -474,7 +474,7 @@ function render(){
  document.querySelectorAll(".ev .h").forEach(h=>h.onclick=()=>{const e=h.parentNode;e.classList.toggle("open");e.classList.contains("open")?open.add(e.dataset.id):open.delete(e.dataset.id)});
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Results list under Products found.</p>'}
- const DP=D.deep;$("deepbar").innerHTML=DP&&(DP.running||Date.now()-DP.finished<600000)&&DP.total?'<div class="dtrack"><i style="width:'+Math.round(DP.done/DP.total*100)+'%"></i></div><span>'+(DP.running?"Deep scan running: batch "+DP.done+" of "+DP.total+" done":"Deep scan finished")+" · "+DP.checked+" new listings checked · "+DP.found+" new products added"+(DP.running?" · new products appear below as they're found":"")+'</span>':"";
+ const DP=D.deep;$("deepbar").innerHTML=DP&&(DP.running||Date.now()-DP.finished<600000)&&DP.total?'<div class="dtrack"><i style="width:'+Math.round(DP.done/DP.total*100)+'%"></i></div><span>'+(DP.running?"Deep scan running: batch "+DP.done+" of "+DP.total+" done"+(DP.bot?" · now: "+DP.bot:""):"Deep scan finished")+" · "+DP.checked+" new listings checked · "+DP.found+" new products added"+(DP.running?" · new products appear below as they're found":"")+'</span>':"";
  $("deep").disabled=!!D.running;$("deep").textContent=DP&&DP.running?"Scanning… "+DP.done+"/"+DP.total:"Deep scan";
  const P=D.products,PL=showHidden?P.hidden:P.list;CUR=PL;
  $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button>';
@@ -504,7 +504,7 @@ function render(){
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}
 async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;btn.textContent=label;document.getElementById("app").classList.add("running");
  try{const r=await fetch("/bots/run/"+S+(only?"?only="+only:""),{method:"POST"});const j=await r.json();
-  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?("Searched "+j.finder.searched.length+" categories ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
+  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?((j.finder.bot?j.finder.bot+": ":"")+"searched "+j.finder.searched.length+" (""+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
 $("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");

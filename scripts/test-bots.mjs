@@ -128,6 +128,10 @@ check(fi.includes("2VPR") && fi.includes("NO FREE CAD"), "finder: proven seller 
 check(!fi.includes("Lasko Box Fan"), "finder: skips parts you already sell");
 check(!fi.includes("nobody buys"), "finder: ignores items under 100 sold");
 check(!fi.includes("NC"), "finder: never offers NonCommercial (NC) CAD files");
+for (const st of ["competitors", "categories", "cadfirst"]) {
+  const rr = await runBots({ only: ["finder"], silent: true, strategy: st });
+  check(!rr.urgent.some((u) => u.includes("bot error")) && rr.finder && rr.finder.bot, `finder: ${st} bot runs cleanly (${rr.finder?.bot}, ${rr.finder?.searched.length} searches)`);
+}
 const cfg = loadConfig();
 const fl = floorTotal(cfg, {});
 check(Math.abs(fl - (1.69 + 0.5 + 0.4) / (1 - 0.156 - 0.4)) < 1e-9, `profit floor = $${fl.toFixed(2)} for envelope items`);

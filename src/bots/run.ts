@@ -10,7 +10,7 @@ import { push } from "./notify.js";
 import { pricingBot } from "./pricing.js";
 import { productionBot } from "./production.js";
 import { serviceBot } from "./service.js";
-import { finderBot } from "./finder.js";
+import { finderBot, morningExtra, nextStrategy, Strategy } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
 function localHour(tz: string, d = new Date()): number {
@@ -59,7 +59,7 @@ async function step(name: string, r: Report, fn: () => Promise<void> | void) {
   }
 }
 
-export async function runBots(opts: { only?: string[]; silent?: boolean } = {}) {
+export async function runBots(opts: { only?: string[]; silent?: boolean; strategy?: Strategy } = {}) {
   const cfg = loadConfig();
   const only = opts.only?.length ? opts.only : (process.env.BOTS || "").split(",").map((s) => s.trim()).filter(Boolean);
   const on = (b: string) => (!only.length || only.includes(b)) && (cfg as any)[b]?.enabled !== false;
@@ -77,7 +77,15 @@ export async function runBots(opts: { only?: string[]; silent?: boolean } = {}) 
   if (on("service")) await step("Customer service", r, () => serviceBot(cfg, since, unshipped, r));
   const weekday = new Date().toLocaleDateString("en-US", { weekday: "short", timeZone: cfg.timezone });
   const finderDay = cfg.finder.day < 0 || ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][cfg.finder.day] === weekday; // -1 = every day
-  if (on("finder") && (only.includes("finder") || (firstRunOfDay && finderDay))) await step("Product finder", r, async () => { await finderBot(cfg, listings, r, only.includes("finder")); });
+  if (on("finder") && (only.includes("finder") || (firstRunOfDay && finderDay))) await step("Product finder", r, async () => {
+    if (opts.strategy) { await finderBot(cfg, listings, r, true, opts.strategy); return; }
+    if (only.includes("finder")) { await finderBot(cfg, listings, r, true, nextStrategy()); return; }
+    await finderBot(cfg, listings, r, false, "keywords"); // morning: keyword bot + one of the other three
+    const first = (r as any).finder;
+    await finderBot(cfg, listings, r, false, morningExtra());
+    const second = (r as any).finder;
+    (r as any).finder = { bot: `${first.bot} + ${second.bot}`, searched: [...first.searched, ...second.searched], checked: first.checked + second.checked, found: first.found + second.found, fresh: first.fresh + second.fresh };
+  });
   if (on("production")) await step("Production", r, () => productionBot(unshipped, since, firstRunOfDay, r));
 
   // Morning: the brain reads the whole store and picks today's best moves.
