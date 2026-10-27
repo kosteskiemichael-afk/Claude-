@@ -139,5 +139,15 @@ const d = decidePrice(cfg, { query: "", min: 0 }, { item_id: "9", title: "x", pr
 check(d === null || d.price >= fl, "never prices below profit floor even if competitor is cheaper");
 const w = windowStart([7, 13, 19], "America/Indianapolis", new Date("2026-10-21T11:00:00Z"));
 check(w.firstRunOfDay && Math.round((Date.parse("2026-10-21T11:00:00Z") - w.since) / 36e5 * 10) / 10 === 12.5, "7am run looks back 12.5h to last night's run");
+// The dashboard page script must parse (a syntax error there blanks the whole page).
+{
+  const { registerDashboard } = await import("../dist/dashboard.js");
+  let html = "";
+  const fakeApp = { get: (path, fn) => { if (path === "/dashboard/x") fn({}, { set() { return this; }, type() { return this; }, send(h) { html = h; } }); }, post() {} };
+  registerDashboard(fakeApp, "x");
+  const js = html.split("<script>")[1]?.split("</script>")[0] || "";
+  let ok = true; try { new Function(js); } catch (e) { ok = false; console.log("  page script error:", e.message); }
+  check(js.length > 1000 && ok, "dashboard page script parses");
+}
 console.log(fail ? `\n${fail} FAILED` : "\nALL PASSED");
 process.exit(fail ? 1 : 0);
