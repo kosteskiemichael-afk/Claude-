@@ -7,6 +7,7 @@ process.env.BOT_CONFIG_FILE = "/nonexistent";
 process.env.ANTHROPIC_API_KEY = "test-key";
 const brainCalls = [];
 process.env.BOT_CONFIG = JSON.stringify({
+  finder: { day: 9 }, // only the explicit finder run below scans (it skips listings already found)
   pricing: { once_per_day: false, cooldown_days: 1, rules: {
     "111": { query: "lasko box fan feet", must_include: ["lasko", "feet"], min: 6.99, max: 12.99 },
     "222": { query: "lasko heater knob", must_include: ["lasko", "knob"], min: 7.99 },

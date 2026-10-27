@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { rest } from "./ebay.js";
 import { activeListings, loadConfig, recentOrders } from "./bots/shared.js";
 import { finds, todaysQueries } from "./bots/finder.js";
+import { storeCall } from "./store.js";
 
 type Run = { time: number; title: string; message: string; urgent: boolean };
 
@@ -35,13 +36,7 @@ async function adRates(): Promise<Map<string, number>> {
 // Permanent product store: the Apps Script web app in SHEETS_WEBHOOK_URL (it saves every find, and your
 // "Added it" / "Not interested" choices). The dashboard reads and writes it; nobody has to open the sheet.
 type Idea = { found: string; title: string; seller: string; sold: number; price: number; ebay: string; cad: string; license: string; cadName: string; status: string; decision: string };
-async function hook(body: unknown): Promise<any> {
-  const url = process.env.SHEETS_WEBHOOK_URL;
-  if (!url) throw new Error("SHEETS_WEBHOOK_URL not set");
-  const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(20000), redirect: "follow" });
-  const t = await r.text();
-  try { return JSON.parse(t); } catch { throw new Error(`store replied ${r.status}: ${t.slice(0, 80)}`); }
-}
+const hook = storeCall;
 async function sheetIdeas(): Promise<{ ok: boolean; ideas: Idea[] }> {
   const j = await hook({ action: "list" });
   if (!j.ok) return { ok: false, ideas: [] };

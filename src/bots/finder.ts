@@ -4,6 +4,7 @@
 // Each idea comes with the exact eBay listing, seller, sold count and CAD link.
 import { rest } from "../ebay.js";
 import { askJson, brainOn, FAST_MODEL } from "./brain.js";
+import { storedLinks } from "../store.js";
 import { BotConfig, Listing, Report, money, short } from "./shared.js";
 
 type Hit = { id: string; legacy: string; title: string; seller: string; price: number; sold?: number };
@@ -17,25 +18,26 @@ const overlap = (a: string[], b: string[]) => { const s = new Set(b); return a.f
 // Licenses that allow selling prints. Anything NonCommercial (NC) is rejected.
 const okLicense = (l: string) => !/NC/i.test(l) && /^(CC0|CC-BY|CC-BY-SA|CC-BY-ND|GPL|LGPL|AGPL|BSD|MIT)(\b|[- .\d]|$)/i.test(l.trim());
 
-/** The next batch of searches from the pool, rotating once a day. */
-export function todaysQueries(cfg: BotConfig, day = Math.floor(Date.now() / 86400_000)): string[] {
+/** Split the search pool into even batches; batch k takes every k-th search, so each batch mixes categories. */
+function batchOf(cfg: BotConfig, k: number): string[] {
   const all = cfg.finder.queries;
-  const n = Math.min(all.length, cfg.finder.queries_per_run || all.length);
-  const batches = Math.ceil(all.length / n);
-  const start = (day % batches) * n;
-  return all.slice(start, start + n);
+  const batches = Math.max(1, Math.ceil(all.length / Math.min(all.length, cfg.finder.queries_per_run || all.length)));
+  return all.filter((_, i) => i % batches === ((k % batches) + batches) % batches);
+}
+const batchCount = (cfg: BotConfig) => Math.max(1, Math.ceil(cfg.finder.queries.length / Math.min(cfg.finder.queries.length, cfg.finder.queries_per_run || cfg.finder.queries.length)));
+
+/** Today's batch (scheduled morning run). */
+export function todaysQueries(cfg: BotConfig, day = Math.floor(Date.now() / 86400_000)): string[] {
+  return batchOf(cfg, day);
 }
 
-// Each Find-products click moves on to the next batch of searches, so every click looks somewhere new.
+// Each Find-products click moves on to the next batch, so every click looks somewhere new.
 let clickBatch: number | null = null;
 export function nextQueries(cfg: BotConfig, manual: boolean): string[] {
-  const all = cfg.finder.queries;
-  const n = Math.min(all.length, cfg.finder.queries_per_run || all.length);
-  const batches = Math.ceil(all.length / n);
   const day = Math.floor(Date.now() / 86400_000);
   if (!manual) return todaysQueries(cfg, day);
-  clickBatch = ((clickBatch ?? day % batches) + 1) % batches;
-  return all.slice(clickBatch * n, clickBatch * n + n);
+  clickBatch = ((clickBatch ?? (day + Math.floor(Math.random() * batchCount(cfg)))) + 1) % batchCount(cfg);
+  return batchOf(cfg, clickBatch);
 }
 
 // Ideas found since the service started, newest first. The dashboard shows these on the product board.
@@ -148,10 +150,14 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   // Skip parts you already sell.
   hits = hits.filter((h) => { const t = tokens(h.title).slice(0, 6); return !myTokens.some((m) => overlap(t, m) >= Math.min(4, t.length)); });
   console.log(`Finder: checking sold counts on ${hits.length} new-to-you listings`);
+  // Only look at listings you haven't seen yet (already found, added or dismissed ones are skipped).
+  const seenBefore = await storedLinks().catch(() => new Set<string>());
+  finds.forEach((f) => seenBefore.add(f.ebay));
+  hits = hits.filter((h) => !seenBefore.has(`https://www.ebay.com/itm/${h.legacy}`));
   summary.checked = hits.length;
   await addSoldCounts(hits);
   let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
-  if (!top.length) { r.info.push(`🔎 Product finder: checked ${hits.length} printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
+  if (!top.length) { r.info.push(`🔎 Product finder: checked ${hits.length} new printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
 
   console.log(`Finder: ${top.length} with ${cfg.finder.min_sold}+ sold; checking CAD`);
   const withCad: { h: Hit; cad: Cad }[] = [];
