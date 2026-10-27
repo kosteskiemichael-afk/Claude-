@@ -71,7 +71,7 @@ const DEFAULTS: BotConfig = {
   finder: {
     enabled: true,
     day: -1, // -1 = every morning (0-6 = one weekday only)
-    min_sold: 100,
+    min_sold: 50,
     // A big pool of searches; each run uses the next batch of queries_per_run, rotating daily,
     // so every run looks somewhere new without getting slow.
     queries_per_run: 20,

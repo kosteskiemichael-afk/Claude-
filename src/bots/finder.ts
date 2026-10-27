@@ -33,6 +33,7 @@ export function todaysQueries(cfg: BotConfig, day = Math.floor(Date.now() / 8640
 
 // Each Find-products click moves on to the next batch, so every click looks somewhere new.
 let clickBatch: number | null = null;
+export function finderBatchCount(cfg: BotConfig) { return batchCount(cfg); }
 export function nextQueries(cfg: BotConfig, manual: boolean): string[] {
   const day = Math.floor(Date.now() / 86400_000);
   if (!manual) return todaysQueries(cfg, day);
@@ -55,7 +56,7 @@ async function searchEbay(cfg: BotConfig, queries: string[]): Promise<Hit[]> {
       });
       let kept = 0;
       for (const it of j.itemSummaries || []) {
-        if (kept >= 30) break;
+        if (kept >= 50) break;
         const title = String(it.title || "");
         const seller = String(it.seller?.username || "");
         if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;

@@ -59,7 +59,7 @@ async function step(name: string, r: Report, fn: () => Promise<void> | void) {
   }
 }
 
-export async function runBots(opts: { only?: string[] } = {}) {
+export async function runBots(opts: { only?: string[]; silent?: boolean } = {}) {
   const cfg = loadConfig();
   const only = opts.only?.length ? opts.only : (process.env.BOTS || "").split(",").map((s) => s.trim()).filter(Boolean);
   const on = (b: string) => (!only.length || only.includes(b)) && (cfg as any)[b]?.enabled !== false;
@@ -118,7 +118,7 @@ export async function runBots(opts: { only?: string[] } = {}) {
     const u = brainUsage();
     console.log(`Brain usage this run: ${u.input_tokens} in / ${u.output_tokens} out tokens`);
   }
-  const shouldPush = r.urgent.length > 0 || r.changes.length > 0 || firstRunOfDay || only.length > 0;
+  const shouldPush = !opts.silent && (r.urgent.length > 0 || r.changes.length > 0 || firstRunOfDay || only.length > 0);
   if (shouldPush) {
     const title = r.urgent.length ? `Nexa: ${r.urgent.length} thing(s) need you${tag}` : only.includes("finder") ? `Nexa product ideas${tag}` : `Nexa store update${tag}`;
     await push(title, sections.join("\n\n") || "All quiet.", r.urgent.length > 0);

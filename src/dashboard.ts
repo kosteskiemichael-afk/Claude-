@@ -221,7 +221,7 @@ async function getData(force = false) {
 }
 export function invalidateDashboard() { memo.delete("runs"); memo.delete("listings"); memo.delete("ads"); memo.delete("sheet"); memo.delete("alltime"); }
 
-export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false) {
+export function registerDashboard(app: Express, secret: string, isRunning: () => boolean = () => false, deepStatus: () => any = () => null) {
   // X button on a product: "added" (you listed it) or "dismissed" (not interested); "" restores it.
   app.post(`/dashboard/${secret}/decide`, async (req, res) => {
     try {
@@ -239,7 +239,7 @@ export function registerDashboard(app: Express, secret: string, isRunning: () =>
   app.get(`/dashboard/${secret}/data`, async (req, res) => {
     try {
       const d = await getData(req.query.fresh === "1");
-      res.set("Cache-Control", "no-store").json({ ...d, running: isRunning() });
+      res.set("Cache-Control", "no-store").json({ ...d, running: isRunning(), deep: deepStatus() });
     } catch (e) {
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) });
     }
@@ -376,6 +376,8 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 .pfind a{font:500 12px var(--fd);color:#7d9bff;text-decoration:none;padding:6px 8px;border:1px solid var(--line);border-radius:2px}.pfind a:hover{border-color:var(--ink2);color:var(--ink)}
 .pfind .fq,.pfind .fnote{grid-column:1/-1;font-size:11.5px;color:var(--mute)}.pfind .fq b{color:var(--ink2);font-weight:500}.pfind .fnote b{color:var(--ink2)}
 .lnk.small{font-size:12px;justify-self:start}
+.deepbar{display:flex;flex-direction:column;gap:6px;margin:-6px 0 14px;font:500 11px var(--fm);letter-spacing:.06em;color:var(--ink2)}.deepbar:empty{display:none}
+.dtrack{height:2px;background:var(--line2)}.dtrack i{display:block;height:100%;background:var(--cy);box-shadow:0 0 10px rgba(47,98,255,.6);transition:width .6s var(--ease)}
 @keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes mq{to{transform:translateX(-50%)}}
 @keyframes newsale{0%{background:rgba(59,224,138,.18)}100%{background:var(--panel2)}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
@@ -390,6 +392,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <span class="chip hide" id="clock">--:--:--</span>
     <span class="chip hide">NEXT RUN <span id="next">--</span></span>
     <button class="btn mg" id="find">Find products</button>
+    <button class="btn mg" id="deep">Deep scan</button>
     <button class="btn" id="run">Run bots →</button>
   </div>
 </header>
@@ -406,7 +409,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 <div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
 <div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
-<section class="panel" id="prodp"><h2>Products found <small id="pcount"></small></h2><div class="prods" id="prods"></div></section>
+<section class="panel" id="prodp"><h2>Products found <small id="pcount"></small></h2><div class="deepbar" id="deepbar"></div><div class="prods" id="prods"></div></section>
 <div class="grid three">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
   <section class="panel ideas"><h2>Product radar <small id="ideatime"></small></h2><div id="ideas"></div></section>
@@ -471,6 +474,8 @@ function render(){
  document.querySelectorAll(".ev .h").forEach(h=>h.onclick=()=>{const e=h.parentNode;e.classList.toggle("open");e.classList.contains("open")?open.add(e.dataset.id):open.delete(e.dataset.id)});
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Results list under Products found.</p>'}
+ const DP=D.deep;$("deepbar").innerHTML=DP&&(DP.running||Date.now()-DP.finished<600000)&&DP.total?'<div class="dtrack"><i style="width:'+Math.round(DP.done/DP.total*100)+'%"></i></div><span>'+(DP.running?"Deep scan running: batch "+DP.done+" of "+DP.total+" done":"Deep scan finished")+" · "+DP.checked+" new listings checked · "+DP.found+" new products added"+(DP.running?" · new products appear below as they're found":"")+'</span>':"";
+ $("deep").disabled=!!D.running;$("deep").textContent=DP&&DP.running?"Scanning… "+DP.done+"/"+DP.total:"Deep scan";
  const P=D.products,PL=showHidden?P.hidden:P.list;CUR=PL;
  $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button>';
  $("hidtog").onclick=()=>{showHidden=!showHidden;render()};
@@ -499,9 +504,10 @@ function render(){
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}
 async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;btn.textContent=label;document.getElementById("app").classList.add("running");
  try{const r=await fetch("/bots/run/"+S+(only?"?only="+only:""),{method:"POST"});const j=await r.json();
-  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?("Searched "+j.finder.searched.length+" categories ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with "+"100+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
+  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?("Searched "+j.finder.searched.length+" categories ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
 $("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");
+$("deep").onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch("/bots/deep/"+S,{method:"POST"});const j=await r.json();toast(j.ok?"Deep scan started: "+j.total+" batches (~"+Math.round(j.total*1.5)+" min). New products appear in the list as they're found. You can leave this page.":"Not started: "+(j.error||r.status))}catch(err){toast("Deep scan failed to start: "+err.message)}load(true)};
 load();setInterval(()=>load(false),20000);
 </script></body></html>`;

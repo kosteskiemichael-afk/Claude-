@@ -6,6 +6,9 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { createHash } from "node:crypto";
 import { registerTools } from "./tools.js";
 import { invalidateDashboard, registerDashboard } from "./dashboard.js";
+import { loadConfig } from "./bots/shared.js";
+import { finderBatchCount } from "./bots/finder.js";
+import { push } from "./bots/notify.js";
 import { runBots } from "./bots/run.js";
 import { API_BASE, SANDBOX, USER_SCOPES } from "./ebay.js";
 
@@ -112,7 +115,27 @@ app.get("/auth/callback", async (req, res) => {
 
 // Bot runs: the Render cron job (or the dashboard's Run now button) POSTs here.
 let botsRunning = false;
-registerDashboard(app, SECRET, () => botsRunning);
+// Deep scan: runs the product finder through every batch of searches, in the background.
+const deep = { running: false, done: 0, total: 0, found: 0, checked: 0, started: 0, finished: 0 };
+registerDashboard(app, SECRET, () => botsRunning, () => deep);
+
+app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
+  if (botsRunning) { res.status(409).json({ ok: false, error: "A bot run is already in progress." }); return; }
+  const cfg = loadConfig();
+  Object.assign(deep, { running: true, done: 0, total: finderBatchCount(cfg), found: 0, checked: 0, started: Date.now(), finished: 0 });
+  botsRunning = true;
+  res.json({ ok: true, total: deep.total });
+  try {
+    for (let k = 0; k < deep.total; k++) {
+      try {
+        const r = await runBots({ only: ["finder"], silent: true });
+        const f = (r as any).finder; if (f) { deep.found += f.fresh || 0; deep.checked += f.checked || 0; }
+      } catch (e) { console.error("Deep scan batch failed", e); }
+      deep.done = k + 1; invalidateDashboard();
+    }
+    await push("Nexa deep scan done", `Searched every category: checked ${deep.checked} new printed listings, ${deep.found} new products added to your dashboard.`, false).catch(() => {});
+  } finally { deep.running = false; deep.finished = Date.now(); botsRunning = false; invalidateDashboard(); }
+});
 
 app.post(`/bots/run/${SECRET}`, async (req, res) => {
   if (botsRunning) { res.status(409).json({ ok: false, error: "A bot run is already in progress." }); return; }
