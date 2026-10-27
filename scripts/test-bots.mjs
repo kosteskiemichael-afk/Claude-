@@ -130,8 +130,8 @@ check(!fi.includes("nobody buys"), "finder: ignores items under 100 sold");
 check(!fi.includes("NC"), "finder: never offers NonCommercial (NC) CAD files");
 {
   const { JUNK, JUNK_CATEGORY } = await import("../dist/bots/finder.js");
-  const junk = ["GI Joe Jeep 7000 reproduction 3D Printed", "Vintage Star Wars Kenner 1983 Speeder Bike Handle", "Walther PPK Finger Grip Extension 3D Printed", "creality ender 3 v2 neo parts SD card"];
-  const good = ["Cuisinart SM-50 Worm Gear Replacement 3D Printed", "Yamaha WaveRunner Glove Box Lid Lock 3D printed", "DeWalt drill trigger switch housing 3D printed", "Breville BES870 drip tray bracket 3D printed", "Ford F150 seat motor gear 3d printed"];
+  const junk = ["GI Joe Jeep 7000 reproduction 3D Printed", "Vintage Star Wars Kenner 1983 Speeder Bike Handle", "Walther PPK Finger Grip Extension 3D Printed", "creality ender 3 v2 neo parts SD card", "3D Printed Forearm and Riot Grip for Rossi Brawler 410/45 colt", "FLASHFORGE 3D Printer Enclosure Kit", "3DMakerpro Handheld 3D Scanner", "3D Printed 1/25 Reese Trailer Hitch"];
+  const good = ["Cuisinart SM-50 Worm Gear Replacement 3D Printed", "Yamaha WaveRunner Glove Box Lid Lock 3D printed", "DeWalt drill trigger switch housing 3D printed", "Breville BES870 drip tray bracket 3D printed", "Ford F150 seat motor gear 3d printed", "Tundra 3D Printed In Dash Mount Bracket for Tekonsha P3 Brake Controller", "3d printed Skeg replacement for Tobin inflatable kayaks"];
   check(junk.every((t) => JUNK.test(t)) && good.every((t) => !JUNK.test(t)), "finder: toys / gun parts / printer accessories filtered, real parts kept");
   check(!JUNK_CATEGORY.test("eBay Motors Parts & Accessories Car & Truck Parts") && JUNK_CATEGORY.test("Toys & Hobbies Action Figures"), "finder: category filter keeps auto parts, drops toys");
 }
