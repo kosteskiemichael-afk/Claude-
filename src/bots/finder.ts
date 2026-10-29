@@ -8,13 +8,14 @@
 //   gears        gears, brackets, mounts, hinges, latches, bushings, pulleys
 //   autoboat     car / truck / boat / marine / powersports / tractor parts, by make
 //   premium      parts for expensive equipment (espresso machines, Vitamix, Dyson, Sub-Zero, Festool, Bose...)
+//   makeit       gears / pulleys / spacers whose listing states the specs, so Claude can model them (unique products)
 // Toys, collectibles, decor, firearm parts and printer accessories are filtered out everywhere.
 import { rest } from "../ebay.js";
 import { askJson, brainOn, FAST_MODEL } from "./brain.js";
 import { storeCall, storedLinks } from "../store.js";
 import { BotConfig, Listing, Report, money, short } from "./shared.js";
 
-type Hit = { id: string; legacy: string; title: string; seller: string; price: number; sold?: number };
+type Hit = { id: string; legacy: string; title: string; seller: string; price: number; sold?: number; text?: string };
 type Cad = { url: string; name: string; license: string };
 
 const STOP = new Set("new replacement part parts for the and with 3d printed printing print heavy duty pack of set fits fit compatible kit black white plastic gear free shipping usa made".split(" "));
@@ -85,15 +86,57 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
   return [...seen.values()];
 }
 
-// ---------- the four strategies ----------
-export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium";
+// ---------- Make-it check: parts Claude can model from published specs ----------
+// Gears (tooth count + DP or module, ideally bore), pulleys, sprockets, spacers, shims, bushings, washers.
+export type MakeSpecs = { kind: string; specs: string[] };
+const num = String.raw`(\d+-\d+\/\d+|\d+\s*\/\s*\d+|\d+(?:\.\d+)?)`;
+export function makeSpecs(title: string, text = ""): MakeSpecs | null {
+  const all = `${title} ${text}`;
+  const t = title.toLowerCase();
+  const found: string[] = [];
+  const grab = (re: RegExp, label: (m: RegExpMatchArray) => string) => { const m = all.match(re); if (m) found.push(label(m)); return !!m; };
+  const isGear = /\bgears?\b|pinion|sprocket/i.test(t) && !/gear (shift|indicator|bag|holder|stand|organi[sz]er)|landing gear|game gear|gearbox cover/i.test(t);
+  const isPulley = /\bpulley/i.test(t);
+  const isSpacer = /\b(spacers?|shims?|washers?|bushings?|sleeves?|collars?)\b/i.test(t);
+  if (!isGear && !isPulley && !isSpacer) return null;
+  const teeth = grab(/\b(\d{2,3})\s*\/\s*(\d{2,3})\s*(?:t\b|teeth|tooth)?(?!\s*")/i, (m) => `${m[1]}/${m[2]}T`)   // compound, e.g. 80/63
+    || grab(new RegExp(String.raw`\b(\d{1,3})\s*(?:t\b|teeth|tooth|-tooth)`, "i"), (m) => `${m[1]}T`);
+  const pitch = grab(/\b(\d{1,2})\s*(?:dp\b|d\.p\.|diametral pitch|pitch\b)/i, (m) => `${m[1]} DP`)
+    || grab(/diametral pitch\s*:?\s*(\d{1,2})/i, (m) => `${m[1]} DP`)
+    || grab(/\b(?:module|mod\.?)\s*:?\s*(\d(?:\.\d+)?)\b|\bm(0\.\d+|\d(?:\.\d+)?)\s*gear/i, (m) => `module ${m[1] || m[2]}`);
+  grab(new RegExp(String.raw`bore(?:\s*diameter)?\s*:?\s*${num}\s*("|in\b|inch|mm)?`, "i"), (m) => `bore ${m[1]}${m[2] ? (m[2] === '"' ? '"' : " " + m[2]) : ""}`);
+  grab(new RegExp(String.raw`keyway\s*:?\s*${num}\s*("|in\b|inch|mm)?`, "i"), (m) => `keyway ${m[1]}${m[2] === '"' ? '"' : m[2] ? " " + m[2] : ""}`);
+  grab(new RegExp(String.raw`(?:face width|width|thickness|thick)\s*:?\s*${num}\s*("|in\b|inch|mm)`, "i"), (m) => `width ${m[1]}${m[2] === '"' ? '"' : " " + m[2]}`);
+  grab(/pressure angle\s*:?\s*(14\.5|20)/i, (m) => `${m[1]}° PA`);
+  grab(/\b(gt2|gt3|htd\s*\d?m|mxl|xl|t5|t2\.5)\b/i, (m) => m[1].toUpperCase());
+  grab(new RegExp(String.raw`\b${num}\s*(mm|")\s*(?:od|outer diameter|o\.d\.)`, "i"), (m) => `OD ${m[1]}${m[2] === '"' ? '"' : " mm"}`);
+  if (isGear && teeth && pitch) return { kind: "gear", specs: found };
+  if (isPulley && found.some((f) => /^bore/.test(f))) return { kind: "pulley", specs: found };
+  if (isSpacer && found.some((f) => /^(bore|width|OD)/.test(f))) return { kind: "spacer", specs: found };
+  return null;
+}
+
+// ---------- the strategies ----------
+export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium" | "makeit";
 export const STRATEGY_NAMES: Record<Strategy, string> = {
   keywords: "Keyword bot", competitors: "Competitor bot", categories: "Category bot", cadfirst: "CAD-first bot",
-  gears: "Gears & Brackets bot", autoboat: "Auto & Boat bot", premium: "Premium Equipment bot",
+  gears: "Gears & Brackets bot", autoboat: "Auto & Boat bot", premium: "Premium Equipment bot", makeit: "Make-it bot",
 };
 
 // Focused search pools for the three specialist bots.
-const POOLS: Record<"gears" | "autoboat" | "premium", string[]> = {
+const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit", string[]> = {
+  // Make-it bot: parts Claude can model from specs (no physical part needed)
+  makeit: [
+    "lathe change gear", "change gear 16 dp", "change gear 18 dp", "change gear 20 dp", "change gear 24 dp", "metric transposing gear",
+    "127 tooth gear", "lathe gear set", "atlas lathe gear", "south bend lathe gear", "logan lathe gear", "craftsman lathe gear",
+    "clausing lathe gear", "sherline gear", "mini lathe gear", "mill power feed gear", "thread dial gear", "spur gear teeth bore",
+    "module gear teeth", "replacement gear teeth bore", "gear 14.5 pressure angle", "worm gear teeth", "pinion gear teeth",
+    "bevel gear teeth", "helical gear teeth", "nylon gear teeth bore", "sprocket teeth", "timing pulley gt2", "htd pulley",
+    "v belt pulley bore", "step pulley bore", "motor pulley bore keyway", "pulley 5/8 bore", "pulley 1/2 bore",
+    "spacer bore", "shim set", "bushing bore", "shaft collar", "washer set", "sleeve bore", "drill press gear",
+    "bandsaw gear", "mixer gear teeth", "garage door opener gear teeth", "clock gear teeth", "sewing machine gear teeth",
+    "projector gear teeth", "tape deck gear teeth", "turntable gear teeth", "printer gear teeth",
+  ],
   gears: [
     "worm gear", "drive gear", "replacement gear", "gear set", "spur gear replacement", "gearbox gear", "motor gear", "pinion gear",
     "timing gear", "transmission gear", "nylon gear replacement", "helical gear", "bevel gear", "planetary gear", "idler gear",
@@ -202,7 +245,7 @@ async function gatherCadFirst(cfg: BotConfig): Promise<Gathered> {
   return { hits: [...all.values()], searched: pick.map((q) => `Printables: ${q}`), presetCad };
 }
 
-async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium"): Promise<Gathered> {
+async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit"): Promise<Gathered> {
   const pool = POOLS[key], per = 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
   const pick = pool.filter((_, i) => i % batches === k).map((q) => "3d printed " + q);
   return { hits: await collect(cfg, pick.map((q) => ({ q }))), searched: pick, presetCad: new Map() };
@@ -214,20 +257,26 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["gears", "autoboat", "premium", "keywords", "competitors", "gears", "autoboat", "premium", "categories", "cadfirst"];
+const ORDER: Strategy[] = ["makeit", "gears", "autoboat", "premium", "makeit", "keywords", "competitors", "gears", "makeit", "autoboat", "premium", "categories", "cadfirst"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["gears", "autoboat", "premium"];
+const FOCUS: Strategy[] = ["makeit", "gears", "autoboat", "premium"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["gears", "autoboat", "premium", "competitors", "gears", "autoboat", "premium", "keywords", "categories", "cadfirst", "gears", "autoboat", "premium", "gears", "autoboat", "premium"];
+export const DEEP_PLAN: Strategy[] = ["makeit", "gears", "autoboat", "premium", "makeit", "competitors", "gears", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "gears", "autoboat", "premium", "makeit"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
   const soldOf = (it: any) => Math.max(0, ...(it.estimatedAvailabilities || []).map((a: any) => Number(a.estimatedSoldQuantity || 0)));
   const one = async (h: Hit) => {
-    try { h.sold = soldOf(await rest("GET", `/buy/browse/v1/item/${encodeURIComponent(h.id)}`, { app: true, timeoutMs: 15000 })); }
+    try {
+      const it = await rest("GET", `/buy/browse/v1/item/${encodeURIComponent(h.id)}`, { app: true, timeoutMs: 15000 });
+      h.sold = soldOf(it);
+      // keep the listing text so the Make-it check can read specs (teeth, DP, bore...)
+      h.text = [it.shortDescription, it.description, ...(it.localizedAspects || []).map((a: any) => `${a.name}: ${a.value}`)]
+        .join(" ").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&#\d+;|&\w+;/g, " ").replace(/\s+/g, " ").slice(0, 6000);
+    }
     catch { /* skip */ }
   };
   // 6 lookups at a time keeps a full scan to a minute or two.
@@ -293,13 +342,13 @@ async function findCad(h: Hit): Promise<Cad | null> {
   return null;
 }
 
-export type FinderSummary = { bot: string; searched: string[]; checked: number; found: number; fresh: number };
+export type FinderSummary = { bot: string; searched: string[]; checked: number; found: number; fresh: number; makeable?: number };
 export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report, manual = false, strategy: Strategy = "keywords"): Promise<FinderSummary> {
   const myTokens = myListings.map((l) => tokens(l.title));
   const g = strategy === "competitors" ? await gatherCompetitors(cfg)
     : strategy === "categories" ? await gatherCategories(cfg)
     : strategy === "cadfirst" ? await gatherCadFirst(cfg)
-    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" ? await gatherPool(cfg, strategy)
+    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" || strategy === "makeit" ? await gatherPool(cfg, strategy)
     : await gatherKeywords(cfg, manual);
   const queries = g.searched;
   const botName = STRATEGY_NAMES[strategy];
@@ -316,7 +365,11 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   hits = hits.filter((h) => !seenBefore.has(`https://www.ebay.com/itm/${h.legacy}`));
   summary.checked = hits.length;
   await addSoldCounts(hits);
-  let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
+  const make = new Map<string, MakeSpecs>();
+  for (const h of hits) { const ms = makeSpecs(h.title, h.text); if (ms) make.set(h.legacy, ms); }
+  let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold && (strategy !== "makeit" || make.has(h.legacy)))
+    .sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
+  summary.makeable = top.filter((h) => make.has(h.legacy)).length;
   if (!top.length) { r.info.push(`🔎 ${botName}: checked ${hits.length} new printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
 
   console.log(`Finder: ${top.length} with ${cfg.finder.min_sold}+ sold; checking CAD`);
@@ -324,6 +377,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   const noCad: Hit[] = [];
   let cadErrors = 0;
   for (const h of top) {
+    if (make.has(h.legacy)) { noCad.push(h); continue; } // Claude builds these from the specs; no CAD hunt needed
     const pre = g.presetCad.get(h.legacy);
     if (pre) { withCad.push({ h, cad: pre }); continue; }
     try { const cad = await findCad(h); cad ? withCad.push({ h, cad }) : noCad.push(h); }
@@ -345,6 +399,11 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
     } catch { /* keep unverified list */ }
   }
 
+  const statusOf = (h: Hit, cad: Cad | null) => {
+    const ms = make.get(h.legacy);
+    if (ms) return `🛠 Claude can make it (${ms.kind}): ${ms.specs.join(", ")} · ${botName}`;
+    return (cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD found - check paid") + ` · ${botName}`;
+  };
   // Put every idea on the dashboard's product board right away.
   const today = new Date().toISOString().slice(0, 10);
   const known = new Set(finds.map((f) => f.ebay));
@@ -354,7 +413,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   ].map(({ h, cad }) => ({
     found: today, title: h.title, seller: h.seller, sold: h.sold || 0, price: h.price,
     ebay: `https://www.ebay.com/itm/${h.legacy}`, cad: cad?.url || "", license: cad?.license || "", cadName: cad?.name || "",
-    status: (cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD found - check paid") + ` · ${botName}`,
+    status: statusOf(h, cad),
     decision: "",
   }));
   summary.found = ideas.length;
@@ -373,7 +432,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
       title: h.title, seller: h.seller, sold: h.sold, price: h.price,
       ebay_url: `https://www.ebay.com/itm/${h.legacy}`,
       cad_url: cad?.url || "", cad_license: cad?.license || "", cad_name: cad?.name || "",
-      status: (cad ? (brainOn() ? "CAD checked - same part" : "Possible CAD - check it's the same part") : "No free CAD found - check paid") + ` · ${botName}`,
+      status: statusOf(h, cad),
     }));
     try {
       const resp = await fetch(hook, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rows }), signal: AbortSignal.timeout(30000), redirect: "follow" });

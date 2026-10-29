@@ -99,7 +99,7 @@ const { runBots, windowStart } = await import("../dist/bots/run.js");
 const { decidePrice, floorTotal } = await import("../dist/bots/pricing.js");
 const { loadConfig } = await import("../dist/bots/shared.js");
 const r = await runBots();
-const rf = await runBots({ only: ["finder"] });
+const rf = await runBots({ only: ["finder"], strategy: "keywords" });
 const fi = rf.info.join("\n");
 console.log(fi);
 
@@ -133,6 +133,13 @@ check(!fi.includes("NC"), "finder: never offers NonCommercial (NC) CAD files");
   const junk = ["GI Joe Jeep 7000 reproduction 3D Printed", "Vintage Star Wars Kenner 1983 Speeder Bike Handle", "Walther PPK Finger Grip Extension 3D Printed", "creality ender 3 v2 neo parts SD card", "3D Printed Forearm and Riot Grip for Rossi Brawler 410/45 colt", "FLASHFORGE 3D Printer Enclosure Kit", "3DMakerpro Handheld 3D Scanner", "3D Printed 1/25 Reese Trailer Hitch"];
   const good = ["Cuisinart SM-50 Worm Gear Replacement 3D Printed", "Yamaha WaveRunner Glove Box Lid Lock 3D printed", "DeWalt drill trigger switch housing 3D printed", "Breville BES870 drip tray bracket 3D printed", "Ford F150 seat motor gear 3d printed", "Tundra 3D Printed In Dash Mount Bracket for Tekonsha P3 Brake Controller", "3d printed Skeg replacement for Tobin inflatable kayaks"];
   check(junk.every((t) => JUNK.test(t)) && good.every((t) => !JUNK.test(t)), "finder: toys / gun parts / printer accessories filtered, real parts kept");
+  const { makeSpecs } = await import("../dist/bots/finder.js");
+  const a = makeSpecs("SOUTH BEND Heavy 10 METAL LATHE METRIC TRANSPOSING CHANGE GEAR 80/63 3d Printed", "Gear Ratio: 80T / 63T 80T Width: 0.500\" Bore Diameter: 0.75\" Diametral Pitch: 16");
+  const b = makeSpecs("SOUTH BEND 9B and 9C METAL LATHE, 100T Metric Conversion Gear (3d Printed)", "Tooth Count: 100T Gear Width: 0.375\" Bore Diameter: 9/16\" (0.5625\") Keyway: 1/8\" Diametral Pitch: 18");
+  const c = makeSpecs("F150 F250 Ford Bronco Gear Shift Indicator Bracket 3D printed", "");
+  const d = makeSpecs("3D Printed 1/2\" Standard Cartridge Headshell Spacers/Shims", "set of 1.0 mm to 4.5 mm thickness 1.0 mm");
+  check(a?.kind === "gear" && a.specs.includes("16 DP") && b?.kind === "gear" && b.specs.includes("18 DP") && b.specs.some((x) => /keyway 1\/8/.test(x)) && b.specs.some((x) => /bore 9\/16/.test(x)) && a.specs.includes("80/63T") && !d.specs.some((x) => /T$/.test(x)) && !c && d?.kind === "spacer",
+    "make-it check: reads gear specs (teeth, DP, bore, keyway), ignores shift brackets, catches spacers  " + JSON.stringify([a?.specs, b?.specs, d?.specs]));
   check(!JUNK_CATEGORY.test("eBay Motors Parts & Accessories Car & Truck Parts") && JUNK_CATEGORY.test("Toys & Hobbies Action Figures"), "finder: category filter keeps auto parts, drops toys");
 }
 for (const st of ["competitors", "categories", "cadfirst"]) {

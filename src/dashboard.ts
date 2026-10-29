@@ -185,9 +185,9 @@ async function buildData() {
       line: `${unshipped.length} to ship · ${late.length} late`, detail: "Watches buyer messages, feedback and ship-by dates." },
     { name: "Production", icon: "▣", state: queueUnits ? "busy" : "ok",
       line: `${queueUnits} part${queueUnits === 1 ? "" : "s"} in print queue`, detail: "Builds the print list from unshipped orders." },
-    { name: "Product finders ×7", icon: "✦", state: "ok",
+    { name: "Product finders ×8", icon: "✦", state: "ok",
       line: lastFinder ? `last scan ${new Date(lastFinder.time).toLocaleString("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" })}` : "scans every morning",
-      detail: "Gears & Brackets, Auto & Boat, Premium Equipment, Keyword, Competitor, Category, CAD-first. No toys or gun parts. Each tap runs the next bot; Deep scan runs them all." },
+      detail: "Make-it (parts Claude can build), Gears & Brackets, Auto & Boat, Premium, Keyword, Competitor, Category, CAD-first. No toys or gun parts." },
     { name: "AI brain", icon: "⬡", state: brain ? "ok" : "off",
       line: brain ? "online · daily brief + reply drafts" : "offline (add ANTHROPIC_API_KEY)", detail: "Verifies competitors and CAD matches, writes the morning plan." },
   ];
@@ -346,7 +346,7 @@ td.m{font-family:var(--fm);white-space:nowrap;color:var(--ink)}.t2{max-width:360
 .prod .pc{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px}.prod .cad{font:500 12px var(--fd);color:#fff;background:var(--cy);padding:6px 11px;border-radius:2px;text-decoration:none}
 .prod .cad:hover{background:#4672ff}.prod .cn{color:var(--mute)}
 .tagc{font:500 10px var(--fm);letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line2);border-radius:2px;color:var(--ink2);margin-right:6px}
-.tagc.ok{border-color:rgba(59,224,138,.4);color:var(--ok)}.tagc.warn{border-color:rgba(242,178,58,.45);color:var(--warn)}.tagc.bad{border-color:rgba(232,54,43,.5);color:#ff6a60}
+.tagc.ok{border-color:rgba(59,224,138,.4);color:var(--ok)}.tagc.mk{border-color:rgba(47,98,255,.7);color:#9db4ff;background:rgba(47,98,255,.12);text-transform:none;letter-spacing:.02em}.tagc.warn{border-color:rgba(242,178,58,.45);color:var(--warn)}.tagc.bad{border-color:rgba(232,54,43,.5);color:#ff6a60}
 #pcount a{color:#7d9bff}
 input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
 #allp{margin-bottom:28px}.atk{grid-template-columns:repeat(6,1fr);margin-bottom:22px}.atk .k .v{font-size:clamp(20px,2vw,30px)}
@@ -371,7 +371,7 @@ input[type=checkbox]{accent-color:var(--cy);vertical-align:-2px}
 .pb.ok2:hover{background:rgba(59,224,138,.1)}.pb.no2:hover{background:rgba(232,54,43,.1)}
 .lnk{background:none;border:0;color:#7d9bff;cursor:pointer;font:inherit;padding:0;text-decoration:underline;text-underline-offset:3px}
 h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppercase}
-.pb.fc{background:none;cursor:pointer;color:var(--ink);border-style:dashed}.pb.fc:hover{border-color:var(--ink2)}
+.pb.mkb{border-color:rgba(47,98,255,.6);color:#9db4ff;background:rgba(47,98,255,.1)}.pb.fc{background:none;cursor:pointer;color:var(--ink);border-style:dashed}.pb.fc:hover{border-color:var(--ink2)}
 .pfind{display:none;grid-template-columns:1fr 1fr;gap:6px;padding:10px;border:1px solid var(--line2);background:var(--panel)}.prod.finding .pfind{display:grid}
 .pfind a{font:500 12px var(--fd);color:#7d9bff;text-decoration:none;padding:6px 8px;border:1px solid var(--line);border-radius:2px}.pfind a:hover{border-color:var(--ink2);color:var(--ink)}
 .pfind .fq,.pfind .fnote{grid-column:1/-1;font-size:11.5px;color:var(--mute)}.pfind .fq b{color:var(--ink2);font-weight:500}.pfind .fnote b{color:var(--ink2)}
@@ -423,7 +423,7 @@ const S="__SECRET__";const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
-let D=null,open=new Set(),seen=null,showHidden=false,CUR=[];
+let D=null,open=new Set(),seen=null,showHidden=false,makeOnly=false,CUR=[];
 // Search links for a CAD file, free and paid. A paid file must still allow selling prints (commercial license).
 function cadQuery(t){const stop=/^(3d|3-d|printed|print|printing|replacement|replace|part|parts|new|upgraded|heavy|duty|pack|set|of|for|the|and|with|fits|fit|compatible|model|type|black|white|oem|obsolete|reproduction|from|\d+x|x\d+)$/i;
  return t.replace(/[^a-z0-9\/ -]/gi," ").split(/\s+/).filter(w=>w&&!stop.test(w)).slice(0,5).join(" ")}
@@ -476,12 +476,12 @@ function render(){
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Results list under Products found.</p>'}
  const DP=D.deep;$("deepbar").innerHTML=DP&&(DP.running||Date.now()-DP.finished<600000)&&DP.total?'<div class="dtrack"><i style="width:'+Math.round(DP.done/DP.total*100)+'%"></i></div><span>'+(DP.running?"Deep scan running: batch "+DP.done+" of "+DP.total+" done"+(DP.bot?" · now: "+DP.bot:""):"Deep scan finished")+" · "+DP.checked+" new listings checked · "+DP.found+" new products added"+(DP.running?" · new products appear below as they're found":"")+'</span>':"";
  $("deep").disabled=!!D.running;$("deep").textContent=DP&&DP.running?"Scanning… "+DP.done+"/"+DP.total:"Deep scan";
- const P=D.products,PL=showHidden?P.hidden:P.list;CUR=PL;
- $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button>';
- $("hidtog").onclick=()=>{showHidden=!showHidden;render()};
- const cls=st=>/same part/i.test(st)?"ok":/no free cad/i.test(st)?"bad":"warn";
+ const P=D.products,PL0=showHidden?P.hidden:P.list,PL=makeOnly?PL0.filter(x=>/claude can make/i.test(x.status)):PL0;CUR=PL;
+ $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button> · <button class="lnk" id="mktog">'+(makeOnly?"show all":"🛠 Claude can make ("+P.list.filter(x=>/claude can make/i.test(x.status)).length+")")+'</button>';
+ $("hidtog").onclick=()=>{showHidden=!showHidden;render()};$("mktog").onclick=()=>{makeOnly=!makeOnly;render()};
+ const cls=st=>/claude can make/i.test(st)?"mk":/same part/i.test(st)?"ok":/no free cad/i.test(st)?"bad":"warn";
  const n0=v=>Number(v||0).toLocaleString("en-US");
- $("prods").innerHTML=PL.length?PL.map((x,i)=>'<div class="prod" data-i="'+i+'"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span>'+(showHidden?'':'<button class="px" title="Hide: added it / not interested" data-x="'+i+'">✕</button>')+'</div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':'<button class="pb fc" data-f="'+i+'">Find CAD (free + paid) ↓</button>')+'</div><div class="pfind">'+findLinks(x)+'</div><div class="pask"><span>Hide this product:</span><button class="pb ok2" data-d="added" data-i="'+i+'">✓ Added it</button><button class="pb no2" data-d="dismissed" data-i="'+i+'">✕ Not interested</button><button class="lnk" data-c="'+i+'">cancel</button></div><div class="ps">'+(showHidden?'<span class="tagc '+(/^added/i.test(x.decision)?"ok":"bad")+'">'+esc(/^added/i.test(x.decision)?"added it":"not interested")+'</span><button class="lnk" data-r="'+i+'">restore</button>':'<span class="tagc '+cls(x.status)+'">'+esc((x.status||"new").replace(/no free cad.*$/i,"No free CAD found · try paid"))+'</span>')+'</div></div>').join(""):'<p class="empty">'+(showHidden?"Nothing hidden.":"No products yet. Hit “Find products” and they’ll list here.")+'</p>';
+ $("prods").innerHTML=PL.length?PL.map((x,i)=>'<div class="prod" data-i="'+i+'"><div class="ph"><span class="pn">'+String(i+1).padStart(2,"0")+'</span><span class="fd">'+esc(x.found)+'</span>'+(showHidden?'':'<button class="px" title="Hide: added it / not interested" data-x="'+i+'">✕</button>')+'</div><div class="pt">'+esc(x.title)+'</div><div class="pnums"><div><b>'+n0(x.sold)+'</b><span>sold</span></div><div><b>'+money(x.price)+'</b><span>their price</span></div><div><b>$'+n0(x.theirRevenue)+'</b><span>their sales</span></div><div><b class="'+(x.margin>=40?"g":x.margin>=25?"y":"r")+'">'+money(x.profit)+'</b><span>est. profit · '+x.margin+'%</span></div></div><div class="pseller">seller <b>'+esc(x.seller)+'</b>'+(x.cadName?' · CAD: '+esc(x.cadName)+' <span class="lic">'+esc(x.license)+'</span>':'')+'</div><div class="pbtns"><a class="pb eb" target="_blank" rel="noopener" href="'+esc(x.ebay)+'">eBay listing ↗</a>'+(x.cad?'<a class="pb cd" target="_blank" rel="noopener" href="'+esc(x.cad)+'">CAD file ↗</a>':/claude can make/i.test(x.status)?'<span class="pb mkb">🛠 Send to Claude to build</span>':'<button class="pb fc" data-f="'+i+'">Find CAD (free + paid) ↓</button>')+'</div><div class="pfind">'+findLinks(x)+'</div><div class="pask"><span>Hide this product:</span><button class="pb ok2" data-d="added" data-i="'+i+'">✓ Added it</button><button class="pb no2" data-d="dismissed" data-i="'+i+'">✕ Not interested</button><button class="lnk" data-c="'+i+'">cancel</button></div><div class="ps">'+(showHidden?'<span class="tagc '+(/^added/i.test(x.decision)?"ok":"bad")+'">'+esc(/^added/i.test(x.decision)?"added it":"not interested")+'</span><button class="lnk" data-r="'+i+'">restore</button>':'<span class="tagc '+cls(x.status)+'">'+esc((x.status||"new").replace(/no free cad.*$/i,"No free CAD found · try paid"))+'</span>')+'</div></div>').join(""):'<p class="empty">'+(showHidden?"Nothing hidden.":"No products yet. Hit “Find products” and they’ll list here.")+'</p>';
  document.querySelectorAll("#prods [data-f]").forEach(b=>b.onclick=()=>b.closest(".prod").classList.toggle("finding"));
  document.querySelectorAll("#prods [data-x]").forEach(b=>b.onclick=()=>b.closest(".prod").classList.add("asking"));
  document.querySelectorAll("#prods [data-c]").forEach(b=>b.onclick=()=>b.closest(".prod").classList.remove("asking"));
@@ -504,7 +504,7 @@ function render(){
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}
 async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;btn.textContent=label;document.getElementById("app").classList.add("running");
  try{const r=await fetch("/bots/run/"+S+(only?"?only="+only:"?force=1"),{method:"POST"});const j=await r.json();
-  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?((j.finder.bot?j.finder.bot+": ":"")+"searched "+j.finder.searched.length+" ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
+  toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?((j.finder.bot?j.finder.bot+": ":"")+"searched "+j.finder.searched.length+" ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.makeable?" · "+j.finder.makeable+" Claude can make":"")+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
 $("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");
