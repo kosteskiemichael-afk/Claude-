@@ -246,9 +246,11 @@ async function gatherCadFirst(cfg: BotConfig): Promise<Gathered> {
 }
 
 async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit"): Promise<Gathered> {
-  const pool = POOLS[key], per = 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
-  const pick = pool.filter((_, i) => i % batches === k).map((q) => "3d printed " + q);
-  return { hits: await collect(cfg, pick.map((q) => ({ q }))), searched: pick, presetCad: new Map() };
+  const pool = POOLS[key], per = key === "makeit" ? 12 : 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
+  const base = pool.filter((_, i) => i % batches === k);
+  // Make-it searches both "3d printed X" and plain "X" (eBay's matching is narrow); collect() keeps printed listings only.
+  const pick = key === "makeit" ? base.flatMap((q) => ["3d printed " + q, q + " printed"]) : base.map((q) => "3d printed " + q);
+  return { hits: await collect(cfg, pick.map((q) => ({ q, keep: key === "makeit" ? 80 : 50 }))), searched: pick, presetCad: new Map() };
 }
 
 async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered> {

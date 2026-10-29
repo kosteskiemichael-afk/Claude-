@@ -392,6 +392,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <span class="chip hide" id="clock">--:--:--</span>
     <span class="chip hide">NEXT RUN <span id="next">--</span></span>
     <button class="btn mg" id="find">Find products</button>
+    <button class="btn mg" id="mkscan">🛠 Make-it scan</button>
     <button class="btn mg" id="deep">Deep scan</button>
     <button class="btn" id="run">Run bots →</button>
   </div>
@@ -508,6 +509,7 @@ async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;b
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
 $("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");
+$("mkscan").onclick=e=>run("finder&strategy=makeit",e.currentTarget,"Finding parts Claude can make…");
 $("deep").onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch("/bots/deep/"+S,{method:"POST"});const j=await r.json();toast(j.ok?"Deep scan started: "+j.total+" batches (~"+Math.round(j.total*1.5)+" min). New products appear in the list as they're found. You can leave this page.":"Not started: "+(j.error||r.status))}catch(err){toast("Deep scan failed to start: "+err.message)}load(true)};
 load();setInterval(()=>load(false),20000);
 </script></body></html>`;
