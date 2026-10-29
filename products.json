@@ -468,6 +468,18 @@
    "license": "",
    "cad_name": "",
    "status": "No free CAD · Gears bot"
+  },
+  {
+   "added": "2026-10-29",
+   "title": "Panasonic 3DO FZ-1 FZ-10 Laser Pickup Sled Gear Fix Repair Disc Read Error",
+   "seller": "morebetterbitusa (+ pitsunami 3D printed: 74 sold @ $8)",
+   "sold": 414,
+   "price": 7.99,
+   "ebay": "https://www.ebay.com/itm/175194821406",
+   "cad": "https://www.thingiverse.com/thing:5327942",
+   "license": "CC BY-SA",
+   "cad_name": "Panasonic 3DO CD Drive Sled Gear (RobertDaleSmith) - fits FZ-1 & FZ-10. Alt: thing:2799915 (zbrowns, CC BY)",
+   "status": "CAD found (CC BY-SA, credit the designer) · print with 0.2 mm nozzle"
   }
  ]
 }
