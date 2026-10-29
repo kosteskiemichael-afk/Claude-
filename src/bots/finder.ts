@@ -369,7 +369,9 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   await addSoldCounts(hits);
   const make = new Map<string, MakeSpecs>();
   for (const h of hits) { const ms = makeSpecs(h.title, h.text); if (ms) make.set(h.legacy, ms); }
-  let top = hits.filter((h) => (h.sold || 0) >= cfg.finder.min_sold && (strategy !== "makeit" || make.has(h.legacy)))
+  // Parts Claude builds to spec are unique (little competition), so 20+ sold is enough proof for them.
+  const minSold = (h: Hit) => (make.has(h.legacy) ? Math.min(cfg.finder.min_sold, 20) : cfg.finder.min_sold);
+  let top = hits.filter((h) => (h.sold || 0) >= minSold(h) && (strategy !== "makeit" || make.has(h.legacy)))
     .sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
   summary.makeable = top.filter((h) => make.has(h.legacy)).length;
   if (!top.length) { r.info.push(`🔎 ${botName}: checked ${hits.length} new printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
