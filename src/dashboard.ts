@@ -7,6 +7,7 @@ import { rest } from "./ebay.js";
 import { activeListings, loadConfig, recentOrders } from "./bots/shared.js";
 import { finds, JUNK, todaysQueries } from "./bots/finder.js";
 import { storeCall } from "./store.js";
+import { profitAt, shipInfo, Ship } from "./bots/profit.js";
 
 type Run = { time: number; title: string; message: string; urgent: boolean };
 
@@ -158,6 +159,19 @@ async function buildData() {
   }));
   const top = [...units.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([title, n]) => ({ title, units: n }));
 
+  // Profit per sale on every listing (real shipping setup, real ad rate, eBay fees on item + shipping).
+  const ships = await cached("ship", 3_600_000, () => shipInfo(cfg, listings), new Map<string, Ship>());
+  const sold30 = new Map<string, number>();
+  for (const o of month) for (const it of o.items) sold30.set(it.item_id, (sold30.get(it.item_id) || 0) + it.quantity);
+  const profitRows = listings.map((l) => {
+    const sh = ships.get(l.item_id) || { kind: "calculated" as const, buyer: cfg.pricing.calc_ship_estimate ?? 5.51 };
+    const ad = ads.has(l.item_id) ? ads.get(l.item_id)! : 0;
+    const pr = profitAt(cfg, l.item_id, l.price, sh, ad);
+    return { id: l.item_id, title: l.title, price: l.price, ship: sh.kind, buyerShip: sh.buyer, ad, profit: Math.round(pr.profit * 100) / 100,
+      margin: Math.round(pr.margin * 100), floor: pr.floor, sold30: sold30.get(l.item_id) || 0, protected: l.protected, variations: l.has_variations };
+  }).sort((a, b) => a.margin - b.margin);
+  const profit30 = profitRows.reduce((a, r) => a + r.profit * r.sold30, 0);
+
   const queue = new Map<string, number>();
   unshipped.forEach((o) => o.items.forEach((i) => queue.set(i.title, (queue.get(i.title) || 0) + i.quantity)));
 
@@ -195,7 +209,7 @@ async function buildData() {
   return {
     now, dry: cfg.dry_run, nextRunAt, nextRunLabel: `${nextH % 12 || 12}${nextH < 12 ? "AM" : "PM"}`,
     lastRunAt: lastRun?.time ?? null,
-    kpis: { listings: listings.length, unshipped: unshipped.length, late: late.length, lowStock: lowStock.length, above: above.length, cap },
+    kpis: { profit30: Math.round(profit30), listings: listings.length, unshipped: unshipped.length, late: late.length, lowStock: lowStock.length, above: above.length, cap },
     sales: { ordersToday: todays.length, revToday: todays.reduce((a, o) => a + o.total, 0), orders7, rev7, orders30: month.length, rev30, days, top, recent },
     bots,
     runs: runs.slice(0, 20),
@@ -208,6 +222,7 @@ async function buildData() {
       top: [...itemAll.values()].sort((a, b) => b.rev - a.rev || b.units - a.units).slice(0, 12),
     },
     queue: [...queue.entries()].map(([title, qty]) => ({ title, qty })).sort((a, b) => b.qty - a.qty),
+    profit: { rows: profitRows, floorPct: Math.round(cfg.pricing.min_margin * 100), guardPct: Math.round((cfg.pricing.guard_margin ?? 0.25) * 100) },
     pricing: Object.entries(cfg.pricing.rules).map(([id, rule]) => {
       const l = byId.get(id);
       return { title: l?.title || id, price: l?.price ?? null, min: rule.min ?? null, max: rule.max ?? null, ad: ads.get(id) ?? null, qty: l?.quantity_available ?? null };
@@ -417,6 +432,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
   <section class="panel"><h2>Print queue <small id="qcount"></small></h2><div id="queue"></div></section>
 </div>
 <section class="panel"><h2>Price watch <small>bot-tracked listings</small></h2><div class="scroll"><table id="price"></table></div></section>
+<section class="panel" id="profitp"><h2>Profit per sale <small id="profsum"></small></h2><div class="scroll" style="max-height:520px"><table id="profit"></table></div></section>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -500,6 +516,10 @@ function render(){
  $("queue").innerHTML=D.queue.length?D.queue.map(q=>'<div class="q"><b>'+q.qty+'×</b><span>'+esc(q.title)+'</span></div>').join(""):'<p class="empty">Queue clear. Nothing to print.</p>';
  $("price").innerHTML='<tr><th>Listing</th><th>Price</th><th>Range</th><th>Position</th><th>Ad</th><th>Stock</th></tr>'+D.pricing.map(p=>{const lo=p.min??(p.price?p.price*.8:0),hi=p.max??(p.price?p.price*1.2:1);const pos=p.price==null?50:Math.max(0,Math.min(100,(p.price-lo)/((hi-lo)||1)*100));
   return '<tr><td class="t2">'+esc(p.title)+'</td><td class="m">'+money(p.price)+'</td><td class="m">'+(p.min!=null?money(p.min):"floor")+' – '+(p.max!=null?money(p.max):"—")+'</td><td><div class="range"><i style="left:'+pos+'%"></i></div></td><td>'+(p.ad!=null?'<span class="ad">'+p.ad+'%</span>':'<span class="empty">—</span>')+'</td><td class="m">'+(p.qty??"—")+'</td></tr>'}).join("");
+ if(D.profit){const P=D.profit,R=P.rows,bad=R.filter(r=>r.margin<P.guardPct).length,thin=R.filter(r=>r.margin>=P.guardPct&&r.margin<P.floorPct).length;
+  $("profsum").textContent="est. profit 30d "+money(D.kpis.profit30||0)+" · "+bad+" under "+P.guardPct+"% · "+thin+" under "+P.floorPct+"%";
+  $("profit").innerHTML='<tr><th>Listing</th><th>Price</th><th>Shipping</th><th>Ad</th><th>Profit / sale</th><th>Margin</th><th>Floor ('+P.floorPct+'%)</th><th>Sold 30d</th></tr>'+R.map(r=>{const c=r.margin<P.guardPct?"#FF5C5C":r.margin<P.floorPct?"#FFB020":"#3BE08A";
+   return '<tr><td class="t2">'+esc(r.title)+(r.protected?' <span class="lic">locked</span>':'')+(r.variations?' <span class="lic">variations</span>':'')+'</td><td class="m">'+money(r.price)+'</td><td class="m">'+(r.ship==="free"?"free (you pay)":r.ship+" +"+money(r.buyerShip))+'</td><td class="m">'+r.ad+'%</td><td class="m" style="color:'+c+'">'+money(r.profit)+'</td><td class="m" style="color:'+c+'">'+r.margin+'%</td><td class="m">'+money(r.floor)+'</td><td class="m">'+r.sold30+'</td></tr>'}).join("")}
  tick();
 }
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}

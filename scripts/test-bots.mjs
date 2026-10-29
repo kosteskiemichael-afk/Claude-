@@ -151,6 +151,13 @@ const fl = floorTotal(cfg, {});
 check(Math.abs(fl - (1.69 + 0.5 + 0.4) / (1 - 0.156 - 0.4)) < 1e-9, `profit floor = $${fl.toFixed(2)} for envelope items`);
 const d = decidePrice(cfg, { query: "", min: 0 }, { item_id: "9", title: "x", price: 6.0, shipping_cost: 0 }, [{ seller: "a", title: "", total: 5.0 }]);
 check(d === null || d.price >= fl, "never prices below profit floor even if competitor is cheaper");
+{
+  const { profitAt, floorPrice } = await import("../dist/bots/profit.js");
+  const free = { kind: "free", buyer: 0 }, calc = { kind: "calculated", buyer: 5.51 };
+  const a = profitAt(cfg, "x", 8, free, 5), b = profitAt(cfg, "x", 8, calc, 5);
+  check(a.profit < 1 && b.profit > 4 && floorPrice(cfg, "x", free, 5) > 15 && floorPrice(cfg, "x", calc, 5) < 6,
+    `profit math: $8 free-ship = $${a.profit.toFixed(2)}, $8 + calculated ship = $${b.profit.toFixed(2)}; floors $${floorPrice(cfg, "x", free, 5)} / $${floorPrice(cfg, "x", calc, 5)}`);
+}
 const w = windowStart([7, 13, 19], "America/Indianapolis", new Date("2026-10-21T11:00:00Z"));
 check(w.firstRunOfDay && Math.round((Date.parse("2026-10-21T11:00:00Z") - w.since) / 36e5 * 10) / 10 === 12.5, "7am run looks back 12.5h to last night's run");
 // The dashboard page script must parse (a syntax error there blanks the whole page).

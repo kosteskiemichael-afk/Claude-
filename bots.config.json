@@ -162,6 +162,7 @@
         ],
         "max": 10.99
       }
-    }
+    },
+    "once_per_day": false
   }
 }

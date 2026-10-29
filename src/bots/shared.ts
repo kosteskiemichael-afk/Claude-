@@ -36,6 +36,11 @@ export type BotConfig = {
     min_change: number;        // ignore moves smaller than this
     once_per_day: boolean;     // reprice only on the morning run (avoids price wars)
     rules: Record<string, PriceRule>;
+    fvf_rate?: number;             // eBay final value fee share (charged on item + shipping)
+    free_ship_label_cost?: number; // label you pay on free-shipping listings
+    calc_ship_estimate?: number;   // what buyers typically pay on calculated-shipping listings
+    guard_margin?: number;         // below this margin the profit guard raises the price
+    costs?: Record<string, { material?: number; label?: number }>; // per-listing overrides
   };
   marketing: { enabled: boolean; target_ad_rate: number; max_ad_rate: number; boost_sellers_rate: number; ad_rates: Record<string, number>; add_unpromoted: boolean };
   service: { enabled: boolean; ship_warning_hours: number };
@@ -64,6 +69,11 @@ const DEFAULTS: BotConfig = {
     min_change: 0.2,
     once_per_day: true,
     rules: {},
+    fvf_rate: 0.136,
+    free_ship_label_cost: 5.51,
+    calc_ship_estimate: 5.51,
+    guard_margin: 0.25,
+    costs: {},
   },
   marketing: { enabled: true, target_ad_rate: 2.0, max_ad_rate: 5.0, boost_sellers_rate: 4.0, ad_rates: {}, add_unpromoted: false },
   service: { enabled: true, ship_warning_hours: 18 },

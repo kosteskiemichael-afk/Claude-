@@ -6,6 +6,7 @@ import { rest } from "../ebay.js";
 import { brainOn, matchCompetitors, MatchInput, planSearches } from "./brain.js";
 import type { Traffic } from "./inventory.js";
 import { BotConfig, Listing, PriceRule, Report, money, setPriceQty, short } from "./shared.js";
+import { adRates, floorPrice, profitAt, Ship, shipInfo } from "./profit.js";
 
 export type Competitor = { seller: string; title: string; total: number };
 
@@ -65,8 +66,11 @@ export function floorTotal(cfg: BotConfig, rule: PriceRule): number {
 }
 
 export function decidePrice(
-  cfg: BotConfig, rule: PriceRule, l: Listing, comps: Competitor[],
+  cfg: BotConfig, rule: PriceRule, l: Listing, comps: Competitor[], ship?: Ship, adPct?: number | null,
 ): { price: number; reason: string } | null {
+  // What the buyer really pays for shipping (calculated listings show $0 in the listing data).
+  const buyerShip = ship ? ship.buyer : l.shipping_cost;
+  const floor = ship ? floorPrice(cfg, l.item_id, ship, adPct) : floorTotal(cfg, rule) - l.shipping_cost;
   const p = cfg.pricing;
   if (!comps.length) return null;
   // Ignore anything absurdly cheap (broken listings, wrong part, parts lots).
@@ -74,12 +78,12 @@ export function decidePrice(
   const median = sorted[Math.floor(sorted.length / 2)];
   const usable = sorted.filter((t) => t >= median * 0.4);
   const lowest = usable[0];
-  const myTotal = l.price + l.shipping_cost;
+  const myTotal = l.price + buyerShip;
 
   let targetTotal: number | null = null;
   let reason = "";
   if (myTotal > lowest + 0.005) {
-    targetTotal = Math.max(lowest - p.undercut, floorTotal(cfg, rule));
+    targetTotal = Math.max(lowest - p.undercut, floor + buyerShip);
     reason = `cheapest competitor ${money(lowest)}`;
   } else if (myTotal < lowest * (1 - p.raise_when_below_pct)) {
     targetTotal = lowest - p.undercut;
@@ -87,8 +91,8 @@ export function decidePrice(
   }
   if (targetTotal === null) return null;
 
-  let price = targetTotal - l.shipping_cost;
-  const minPrice = Math.max(rule.min ?? 0, floorTotal(cfg, rule) - l.shipping_cost);
+  let price = targetTotal - buyerShip;
+  const minPrice = Math.max(rule.min ?? 0, floor);
   if (rule.max !== undefined) price = Math.min(price, rule.max);
   price = Math.max(price, minPrice);
   // Cap the move per run.
@@ -102,6 +106,15 @@ export function decidePrice(
 export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   const byId = new Map(listings.map((l) => [l.item_id, l]));
   const changes: { item_id: string; title: string; price: number }[] = [];
+  const open = listings.filter((l) => !l.protected && !l.has_variations);
+  const ships = await shipInfo(cfg, open);
+  const ads = await adRates().catch(() => new Map<string, number>());
+  const adOf = (id: string) => (ads.has(id) ? ads.get(id)! : 0);
+  const shipOf = (l: Listing): Ship => ships.get(l.item_id) || { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 };
+  const profitNote = (l: Listing, price: number) => {
+    const pr = profitAt(cfg, l.item_id, price, shipOf(l), adOf(l.item_id));
+    return `profit ${money(pr.profit)}/sale, ${Math.round(pr.margin * 100)}%`;
+  };
   const sold30 = (id: string) => traffic?.get(id)?.sold ?? 0;
 
   // Price-action logic, tuned for profit:
@@ -117,7 +130,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   const myDay = (id: string) => cd === 1 || [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 9973, 0) % cd === today % cd;
   const apply = (l: Listing, rule: PriceRule, comps: Competitor[], tag: string) => {
     const s30 = sold30(l.item_id);
-    const d = decidePrice(cfg, rule, l, comps);
+    const d = decidePrice(cfg, rule, l, comps, shipOf(l), adOf(l.item_id));
     if (d && d.price < l.price) {
       // Sales mode: small cuts (a few cents up to small_cut_max) to beat a cheaper competitor always go through.
       const small = l.price - d.price <= (cfg.pricing.small_cut_max ?? 0);
@@ -130,7 +143,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     let target = d?.price;
     let reason = d?.reason || "";
     if (!d && s30 >= 5 && traffic) {
-      const lowest = comps.length ? Math.min(...comps.map((c) => c.total)) - l.shipping_cost - cfg.pricing.undercut : Infinity;
+      const lowest = comps.length ? Math.min(...comps.map((c) => c.total)) - shipOf(l).buyer - cfg.pricing.undercut : Infinity;
       const cap = Math.min(rule.max ?? l.price * 1.25, lowest);
       const up = Math.round(Math.min(l.price * 1.03, cap) * 100) / 100;
       if (up - l.price >= cfg.pricing.min_change) { target = up; reason = `selling fast: ${s30} sold in 30 days`; }
@@ -138,7 +151,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     if (target === undefined) return;
     if (target > l.price && !myDay(l.item_id)) return; // raises wait for this listing's price day
     changes.push({ item_id: l.item_id, title: l.title, price: target });
-    r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}): ${short(l.title)}`);
+    r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
 
   // 1) Items with hand-written rules.
@@ -186,6 +199,23 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       r.info.push(`Brain pricing skipped: ${(e as Error).message.slice(0, 140)}`);
     }
   }
+
+  // 3) Profit guard: never keep selling a listing at a thin margin. Anything under guard_margin
+  //    is raised toward the full profit floor (at most +15% per run, so it's gradual).
+  const guard = cfg.pricing.guard_margin ?? 0.25;
+  const changed = new Set(changes.map((c) => c.item_id));
+  let thin = 0;
+  for (const l of open) {
+    if (changed.has(l.item_id) || l.price <= 0) continue;
+    const sh = shipOf(l), ad = adOf(l.item_id);
+    const pr = profitAt(cfg, l.item_id, l.price, sh, ad);
+    if (pr.margin >= guard) { if (pr.margin < cfg.pricing.min_margin) thin++; continue; }
+    const target = Math.round(Math.min(floorPrice(cfg, l.item_id, sh, ad), l.price * 1.15) * 100) / 100;
+    if (target - l.price < cfg.pricing.min_change) continue;
+    changes.push({ item_id: l.item_id, title: l.title, price: target });
+    r.changes.push(`🛡 Profit guard ${money(l.price)} → ${money(target)} (was ${money(pr.profit)}/sale, ${Math.round(pr.margin * 100)}%; now ${profitNote(l, target)}): ${short(l.title)}`);
+  }
+  if (thin) r.info.push(`${thin} listings make ${Math.round(guard * 100)}–${Math.round(cfg.pricing.min_margin * 100)}% profit (see Profit per sale on Nexa Command).`);
 
   if (changes.length) {
     const warn = await setPriceQty(cfg, changes);
