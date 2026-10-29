@@ -59,11 +59,13 @@ async function step(name: string, r: Report, fn: () => Promise<void> | void) {
   }
 }
 
-export async function runBots(opts: { only?: string[]; silent?: boolean; strategy?: Strategy } = {}) {
+export async function runBots(opts: { only?: string[]; silent?: boolean; strategy?: Strategy; force?: boolean } = {}) {
   const cfg = loadConfig();
   const only = opts.only?.length ? opts.only : (process.env.BOTS || "").split(",").map((s) => s.trim()).filter(Boolean);
   const on = (b: string) => (!only.length || only.includes(b)) && (cfg as any)[b]?.enabled !== false;
-  const { since, firstRunOfDay } = windowStart(cfg.run_hours_local, cfg.timezone);
+  const ws = windowStart(cfg.run_hours_local, cfg.timezone);
+  const since = ws.since;
+  const firstRunOfDay = ws.firstRunOfDay || !!opts.force; // force = a manual 'run everything now' (pricing, ad boosts, morning report)
   const r = newReport();
 
   const listings = await activeListings();
