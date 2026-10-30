@@ -10,7 +10,8 @@ import { loadConfig } from "./bots/shared.js";
 import { DEEP_PLAN, STRATEGY_NAMES } from "./bots/finder.js";
 import { push } from "./bots/notify.js";
 import { runBots } from "./bots/run.js";
-import { API_BASE, SANDBOX, USER_SCOPES } from "./ebay.js";
+import { API_BASE, SANDBOX, USER_SCOPES, trading, tradingWarnings } from "./ebay.js";
+import { isProtected } from "./bots/shared.js";
 
 const SECRET = process.env.CONNECTOR_SECRET || "";
 if (SECRET.length < 32) {
@@ -150,6 +151,25 @@ app.post(`/bots/run/${SECRET}`, async (req, res) => {
     console.error("Bot run failed", e);
     res.status(500).json({ ok: false, error: e instanceof Error ? e.message : String(e) });
   } finally { botsRunning = false; invalidateDashboard(); }
+});
+
+// Title changes Claude makes for you (burr holders refused). Body: {changes:[{item_id,title}]}
+app.post(`/listing/titles/${SECRET}`, async (req, res) => {
+  const out: any[] = [];
+  for (const c of (req.body?.changes || []) as { item_id: string; title: string }[]) {
+    const id = String(c.item_id || ""), title = String(c.title || "").trim();
+    if (!id || !title || title.length > 80) { out.push({ id, ok: false, error: "bad id or title (max 80 chars)" }); continue; }
+    try {
+      const cur = await trading("GetItem", { ItemID: id });
+      const it = Array.isArray(cur.Item) ? cur.Item[0] : cur.Item;
+      const old = String(it?.Title?.["#text"] ?? it?.Title ?? "");
+      if (isProtected(id, old) || isProtected(id, title)) { out.push({ id, ok: false, error: "protected listing" }); continue; }
+      const r = await trading("ReviseFixedPriceItem", { Item: { ItemID: id, Title: title } });
+      out.push({ id, ok: true, from: old, to: title, warnings: tradingWarnings(r) });
+    } catch (e) { out.push({ id, ok: false, error: (e as Error).message.slice(0, 200) }); }
+  }
+  invalidateDashboard();
+  res.json({ ok: true, results: out });
 });
 
 // Anything else (wrong secret) looks like it doesn't exist.
