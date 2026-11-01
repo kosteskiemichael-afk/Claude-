@@ -30,7 +30,7 @@ const trading = {
   }</ItemArray><PaginationResult><TotalNumberOfPages>1</TotalNumberOfPages></PaginationResult></ActiveList>`,
   ReviseInventoryStatus: ``,
   GetMyMessages: `<Messages><Message><MessageID>m1</MessageID><Text>&lt;p&gt;Does this fit my 1A model?&lt;/p&gt;</Text><Sender>buyer_joe</Sender><Subject>Does this fit model 1A?</Subject><Read>false</Read></Message><Message><Sender>old</Sender><Subject>read one</Subject><Read>true</Read></Message></Messages>`,
-  GetFeedback: `<FeedbackDetailArray><FeedbackDetail><CommentingUser>sad_sam</CommentingUser><CommentText>Part did not fit</CommentText><CommentType>Negative</CommentType><CommentTime>${iso(-2)}</CommentTime></FeedbackDetail><FeedbackDetail><CommentingUser>happy</CommentingUser><CommentText>great</CommentText><CommentType>Positive</CommentType><CommentTime>${iso(-1)}</CommentTime></FeedbackDetail></FeedbackDetailArray>`,
+  GetFeedback: `<FeedbackDetailArray><FeedbackDetail><FeedbackID>f1</FeedbackID><ItemID>111</ItemID><ItemTitle>Lasko Box Fan Feet</ItemTitle><CommentingUser>sad_sam</CommentingUser><CommentText>Part did not fit</CommentText><CommentType>Negative</CommentType><CommentTime>${iso(-2)}</CommentTime></FeedbackDetail><FeedbackDetail><CommentingUser>happy</CommentingUser><CommentText>great</CommentText><CommentType>Positive</CommentType><CommentTime>${iso(-1)}</CommentTime></FeedbackDetail></FeedbackDetailArray>`,
 };
 
 globalThis.fetch = async (url, opts = {}) => {
@@ -49,12 +49,14 @@ globalThis.fetch = async (url, opts = {}) => {
     }
     if (b.system.includes("same replacement part as an eBay listing")) return say(JSON.stringify({ keep: [0] }));
     if (b.system.includes("customer service voice")) return say("Hi Joe, thanks for reaching out! Could you send your model number so I can confirm fit? - Nexa Manufacturing Co");
+    if (b.system.includes("negative/neutral eBay feedback")) return say(JSON.stringify({ reply: "Thanks for letting us know. We've tightened tolerances on these feet and reached out to make it right.", subject: "Free replacement", message: "Sorry about the fit! We'd like to send a free replacement. What fan model do you have? - Nexa Manufacturing Co" }));
     if (b.system.includes("business brain")) return say("• Raise Cuisinart gear to $19.99\n• Restock burr holders");
     return say("{}");
   }
   if (u.hostname === "ntfy.sh") { writes.push(["PUSH", opts.headers.Title]); return new Response("ok"); }
   if (u.pathname === "/ws/api.dll") {
     const call = opts.headers["X-EBAY-API-CALL-NAME"];
+    if (call === "RespondToFeedback" || call === "AddMemberMessageAAQToPartner") writes.push([call, (opts.body.match(/<(ResponseText|Body)>(.*?)<\/\1>/) || [])[2]]);
     if (call === "ReviseInventoryStatus") writes.push(["REVISE", opts.body.match(/<InventoryStatus>.*?<\/InventoryStatus>/g)]);
     return new Response(`<?xml version="1.0"?><${call}Response xmlns="urn:ebay:apis:eBLBaseComponents"><Ack>Success</Ack>${trading[call] ?? ""}</${call}Response>`);
   }

@@ -45,8 +45,8 @@ export async function serviceBot(cfg: BotConfig, since: Date, unshipped: Order[]
     r.info.push(`Couldn't check messages: ${(e as Error).message.slice(0, 120)}`);
   }
 
-  // 2) Negative / neutral feedback since the last run.
-  try {
+  // 2) Negative / neutral feedback since the last run (the feedback fixer handles it when it is on).
+  if ((cfg as any).feedback?.enabled === false) try {
     const f = await trading("GetFeedback", {
       FeedbackType: "FeedbackReceivedAsSeller",
       DetailLevel: "ReturnAll",

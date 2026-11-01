@@ -9,6 +9,7 @@ import { marketingBot } from "./marketing.js";
 import { push } from "./notify.js";
 import { pricingBot } from "./pricing.js";
 import { titleBot } from "./titles.js";
+import { feedbackBot } from "./feedback.js";
 import { productionBot } from "./production.js";
 import { serviceBot } from "./service.js";
 import { finderBot, morningExtra, morningFocus, nextStrategy, Strategy } from "./finder.js";
@@ -78,6 +79,7 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
   if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("titles") && firstRunOfDay) await step("Title doctor", r, () => titleBot(cfg, listings, r, traffic));
+  if (on("feedback")) await step("Feedback fixer", r, () => feedbackBot(cfg, r));
   if (on("service")) await step("Customer service", r, () => serviceBot(cfg, since, unshipped, r));
   const weekday = new Date().toLocaleDateString("en-US", { weekday: "short", timeZone: cfg.timezone });
   const finderDay = cfg.finder.day < 0 || ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][cfg.finder.day] === weekday; // -1 = every day

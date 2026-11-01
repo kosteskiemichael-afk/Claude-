@@ -197,6 +197,8 @@ async function buildData() {
       line: `${adVals.length} ads · avg ${avgAd.toFixed(1)}% · ${above.length} over ${cap}%`, detail: `Sellers boosted to ${cfg.marketing.boost_sellers_rate ?? 0}%. Your own rates kept. Cap ${cap}%.` },
     { name: "Customer care", icon: "◉", state: late.length ? "bad" : "ok",
       line: `${unshipped.length} to ship · ${late.length} late`, detail: "Watches buyer messages, feedback and ship-by dates." },
+    { name: "Feedback fixer", icon: "✚", state: "ok",
+      line: "Replies to bad feedback · offers replacements", detail: "New negative/neutral feedback gets a professional public reply and a private free-replacement offer to the buyer. Never asks buyers to change feedback." },
     { name: "Production", icon: "▣", state: queueUnits ? "busy" : "ok",
       line: `${queueUnits} part${queueUnits === 1 ? "" : "s"} in print queue`, detail: "Builds the print list from unshipped orders." },
     { name: "Product finders ×8", icon: "✦", state: "ok",
