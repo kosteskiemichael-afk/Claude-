@@ -32,7 +32,7 @@ export function windowStart(hours: number[], tz: string, now = new Date()): { si
   return { since: new Date(now.getTime() - (gap + 0.5) * 3600_000), firstRunOfDay: idx === 0 };
 }
 
-async function trafficMap(): Promise<Map<string, Traffic>> {
+export async function trafficMap(): Promise<Map<string, Traffic>> {
   const ymd = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, "");
   const end = new Date(Date.now() - 86400_000);
   const start = new Date(end.getTime() - 29 * 86400_000);

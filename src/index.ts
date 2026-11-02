@@ -172,6 +172,22 @@ app.post(`/listing/titles/${SECRET}`, async (req, res) => {
   res.json({ ok: true, results: out });
 });
 
+// Split finder: which options of multi-option listings deserve their own listing. Read-only.
+let splitJob: { running: boolean; started?: string; finished?: string; log: string[]; rows?: any[]; error?: string } = { running: false, log: [] };
+app.post(`/report/splits/${SECRET}`, async (_req, res) => {
+  if (splitJob.running) return res.json({ ok: true, already_running: true });
+  splitJob = { running: true, started: new Date().toISOString(), log: [] };
+  res.json({ ok: true, started: true });
+  try {
+    const { findSplits } = await import("./bots/splits.js");
+    const { trafficMap } = await import("./bots/run.js");
+    const traffic = await trafficMap().catch(() => undefined);
+    splitJob.rows = await findSplits(traffic, (s) => splitJob.log.push(s));
+  } catch (e) { splitJob.error = (e as Error).message; }
+  splitJob.running = false; splitJob.finished = new Date().toISOString();
+});
+app.get(`/report/splits/${SECRET}`, (_req, res) => { res.json(splitJob); });
+
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });
 
