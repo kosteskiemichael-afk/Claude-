@@ -26,6 +26,7 @@ export type SplitRow = {
   best_competitor_price: number;
   best_competitor_url: string;
   suggested_title: string;
+  already_listed: string;
 };
 
 const arr = (x: any) => (x == null ? [] : Array.isArray(x) ? x : [x]);
@@ -99,6 +100,10 @@ export async function findSplits(traffic?: Map<string, { impressions: number; vi
       const compSold = comp.best?.sold || 0;
       const score = Math.round(compSold + mySold * 8 + (comp.count > 0 ? 2 : 0));
       const priority: SplitRow["priority"] = compSold >= 50 || mySold >= 5 ? "HIGH" : compSold >= 15 || mySold >= 2 ? "MEDIUM" : "LOW";
+      // Do you already sell this exact gear on its own? (same brand + same tooth numbers, single listing)
+      const mine = all.filter((x) => !x.has_variations && x.item_id !== l.item_id && x.title.toLowerCase().includes(brand.toLowerCase())
+        && nums.length > 0 && nums.every((n) => new RegExp(`(^|[^\\d])${n.replace(".", "\\.")}([^\\d]|$)`).test(x.title)));
+      const already = mine.map((x) => `${x.item_id}: ${x.title}`).join(" | ");
       const suggested = `${base.join(" ")} ${opt} Replacement`.replace(/\s+/g, " ").slice(0, 80);
       rows.push({
         priority, score, parent_item_id: l.item_id, parent_title: l.title,
@@ -108,13 +113,13 @@ export async function findSplits(traffic?: Map<string, { impressions: number; vi
         competitor_listings_found: comp.count,
         best_competitor_title: comp.best?.title || "", best_competitor_seller: comp.best?.seller || "",
         best_competitor_sold: compSold, best_competitor_price: comp.best?.price || 0, best_competitor_url: comp.best?.url || "",
-        suggested_title: suggested,
+        suggested_title: suggested, already_listed: already,
       });
     });
     for (let i = 0; i < tasks.length; i += 4) await Promise.all(tasks.slice(i, i + 4).map((f: () => Promise<void>) => f()));
     log(`checked ${l.title.slice(0, 50)} (${vars.length} options)`);
   }
-  rows.sort((a, b) => b.score - a.score);
+  rows.sort((a, b) => (a.already_listed ? 1 : 0) - (b.already_listed ? 1 : 0) || b.score - a.score);
   rows.forEach((r, i) => (r.rank = i + 1));
   return rows;
 }
