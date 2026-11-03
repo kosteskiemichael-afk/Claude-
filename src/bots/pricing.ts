@@ -158,6 +158,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     if (target === undefined) return;
     if (target < l.price) target = charm(target, Math.max(rule.min ?? 0, floorPrice(cfg, l.item_id, shipOf(l), adOf(l.item_id))));
     if (target > l.price && !myDay(l.item_id)) return; // raises wait for this listing's price day
+    // Don't undo a demand cut: a listing people look at but don't buy stays down, even if competitors are higher.
+    const tr = traffic?.get(l.item_id);
+    if (target > l.price && tr && tr.sold === 0 && tr.views >= (cfg.pricing.stale_views ?? 12)) return;
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
