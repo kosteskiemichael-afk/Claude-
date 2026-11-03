@@ -161,6 +161,16 @@
           "clip"
         ],
         "max": 10.99
+      },
+      "206662585723": {
+        "note": "Atlas 10/12 rear headstock 32T SPINDLE gear (not the 32T change gear)",
+        "query": "atlas craftsman 32 tooth spindle gear",
+        "must_include": [
+          "atlas",
+          "32",
+          "spindle"
+        ],
+        "min": 12.99
       }
     },
     "once_per_day": false
