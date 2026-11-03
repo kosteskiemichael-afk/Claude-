@@ -135,6 +135,11 @@ const GUN_BLOCK = /receiver|lower|upper|frame|jig|80%|sear|switch|auto ?key|trig
 // Focused search pools for the three specialist bots.
 const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting", string[]> = {
   drones: [
+    "dji phantom 3 lens cap", "dji phantom 3 gimbal lock", "dji phantom 4 gimbal lock", "dji phantom 2 gimbal guard",
+    "dji avata 2 flashlight mount", "dji avata 2 gopro mount", "dji neo flashlight mount", "dji neo 2 case", "dji neo 2 mount",
+    "dji osmo pocket mount", "dji osmo pocket 3 adapter", "dji rc pro lanyard bracket", "dji rc 2 lanyard", "dji o4 air unit case",
+    "dji o4 camera mount", "source one antenna mount", "fpv sma antenna mount", "bn-180 gps mount", "bn-880 gps mount",
+    "dji mini 5 pro accessory", "dji mini 4 pro lens cover", "dji air 3s accessory", "dji strobe mount", "drone strobe mount",
     "dji mini battery cover", "dji mini landing gear", "dji mini propeller guard", "dji mini gimbal cover", "dji air 3 landing gear",
     "dji avata propeller guard", "dji mavic landing gear", "dji mavic gimbal protector", "dji controller holder", "dji controller lanyard mount",
     "dji tablet holder", "dji phone holder", "dji drone battery holder", "dji neo propeller guard", "dji flip part", "dji fpv part",
