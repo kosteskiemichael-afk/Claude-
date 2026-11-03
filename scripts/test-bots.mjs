@@ -120,7 +120,7 @@ check(r.urgent.some((u) => u.includes("buyer_joe")) && !r.urgent.some((u) => u.i
 check(r.urgent.some((u) => u.includes("sad_sam")) && !r.urgent.some((u) => u.includes("happy")), "negative feedback alerted, positive ignored");
 check(r.urgent.some((u) => u.includes("PAST ship-by")), "late order flagged");
 check(writes.some((w) => w[0] === "PUSH"), "phone push sent");
-check(all.includes("<ItemID>333</ItemID><StartPrice>16.98</StartPrice>"), "brain priced unruled Canon door vs 2 verified competitors (ignored $80 camera body): 15.89 → 16.98");
+check(!all.includes("<ItemID>333</ItemID><StartPrice>16.98</StartPrice>"), "Canon door NOT raised: 60 views, 0 sales means the price is already a problem");
 check(r.urgent.some((u) => u.includes("Suggested reply") && u.includes("model number")), "brain drafted a reply to the buyer (not sent)");
 check(brainCalls.includes("claude-haiku-5-5") && brainCalls.includes("claude-sonnet-5-5"), "Haiku for matching, Sonnet for brief/replies");
 check(!brainCalls.some(() => false) && !JSON.stringify(writes).includes("Baratza"), "brain never caused a burr holder write");
