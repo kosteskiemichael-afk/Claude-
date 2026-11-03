@@ -27,6 +27,26 @@ export async function priceReport(log: (s: string) => void = () => {}): Promise<
     if (!listings.find((l) => l.item_id === id)) continue;
     try { comps.set(id, (await findCompetitors(cfg, rule)).sort((a, b) => a.total - b.total)); } catch { /* skip */ }
   }
+  // Without the AI brain (no API key on the server): build the search from the title itself and
+  // require most of its key words (brand, model/part numbers) to appear in a competitor's title.
+  const STOP = new Set(["new","replacement","3d","printed","for","the","and","with","part","parts","fits","set","of","pack","pcs","kit","heavy","duty","black","white","high","strength","repair","compatible","pc","x","-","|","&","/"]);
+  const keyWords = (t: string) => [...new Set(t.toLowerCase().replace(/[^a-z0-9\-\/ ]+/g, " ").split(/\s+/)
+    .filter((w) => w.length > 1 && !STOP.has(w)))];
+  if (!brainOn()) {
+    const rest = listings.filter((l) => !cfg.pricing.rules[l.item_id]);
+    for (let i = 0; i < rest.length; i += 5) {
+      await Promise.all(rest.slice(i, i + 5).map(async (l) => {
+        const kw = keyWords(l.title);
+        const must = [...kw.filter((w) => /\d/.test(w)).slice(0, 3), ...kw.filter((w) => !/\d/.test(w)).slice(0, 3)];
+        if (must.length < 2) return;
+        try {
+          const pool = await findCompetitors(cfg, { query: kw.slice(0, 7).join(" "), must_include: must }, Math.max(2, Math.ceil(must.length * 0.66)));
+          if (pool.length) comps.set(l.item_id, pool.sort((a, b) => a.total - b.total));
+        } catch { /* skip */ }
+      }));
+      if (i % 25 === 0) log(`checked ${Math.min(i + 5, rest.length)}/${rest.length}`);
+    }
+  }
   if (brainOn()) {
     const rest = listings.filter((l) => !cfg.pricing.rules[l.item_id]);
     for (let i = 0; i < rest.length; i += 40) {
