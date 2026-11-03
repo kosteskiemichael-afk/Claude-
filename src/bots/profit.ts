@@ -65,11 +65,19 @@ export function profitAt(cfg: BotConfig, id: string, price: number, ship: Ship, 
   return { total, fees, profit, margin: price > 0 ? profit / price : 0, floor: floorPrice(cfg, id, ship, adPct) };
 }
 
-/** Lowest item price that still makes min_margin profit (as a share of the item price). */
-export function floorPrice(cfg: BotConfig, id: string, ship: Ship, adPct?: number | null, margin = cfg.pricing.min_margin): number {
+/** Lowest item price we'll sell at:
+ *  - min_margin profit (30%), but
+ *  - small items (that floor under small_item_price, $10) need small_item_margin (50%), and
+ *  - every sale must clear min_profit dollars ($2.50) after fees, label and material. */
+export function floorPrice(cfg: BotConfig, id: string, ship: Ship, adPct?: number | null, margin?: number): number {
   const rate = fvf(cfg) + adFrac(cfg, adPct);
   const fixed = cfg.pricing.per_order_fee + label(cfg, id, ship) + material(cfg, id) + ship.buyer * rate;
-  return Math.ceil((fixed / (1 - rate - margin)) * 100) / 100;
+  const at = (m: number) => fixed / (1 - rate - m);
+  if (margin !== undefined) return Math.ceil(at(margin) * 100) / 100;
+  let p = at(cfg.pricing.min_margin);
+  if (p < (cfg.pricing.small_item_price ?? 10)) p = Math.max(p, at(cfg.pricing.small_item_margin ?? 0.5));
+  p = Math.max(p, ((cfg.pricing.min_profit ?? 2.5) + fixed) / (1 - rate));
+  return Math.ceil(p * 100) / 100;
 }
 
 /** Ad rate (%) per listing from running Promoted Listings (cost-per-sale) campaigns. */

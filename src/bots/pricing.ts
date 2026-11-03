@@ -261,13 +261,14 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     if (changed.has(l.item_id) || l.price <= 0) continue;
     const sh = shipOf(l), ad = adOf(l.item_id);
     const pr = profitAt(cfg, l.item_id, l.price, sh, ad);
-    if (pr.margin >= guard) { if (pr.margin < cfg.pricing.min_margin) thin++; continue; }
-    const target = Math.round(Math.min(floorPrice(cfg, l.item_id, sh, ad), l.price * 1.15) * 100) / 100;
+    const fl = floorPrice(cfg, l.item_id, sh, ad); // 30% / 50% small items / $2.50 minimum
+    if (l.price >= fl - 0.01) { if (pr.margin < guard) thin++; continue; }
+    const target = Math.round(Math.min(fl, l.price * 1.15) * 100) / 100;
     if (target - l.price < cfg.pricing.min_change) continue;
     changes.push({ item_id: l.item_id, title: l.title, price: target });
-    r.changes.push(`🛡 Profit guard ${money(l.price)} → ${money(target)} (was ${money(pr.profit)}/sale, ${Math.round(pr.margin * 100)}%; now ${profitNote(l, target)}): ${short(l.title)}`);
+    r.changes.push(`🛡 Profit floor ${money(l.price)} → ${money(target)} (was ${money(pr.profit)}/sale, ${Math.round(pr.margin * 100)}%; now ${profitNote(l, target)}${target < fl ? "; more next run" : ""}): ${short(l.title)}`);
   }
-  if (thin) r.info.push(`${thin} listings make ${Math.round(guard * 100)}–${Math.round(cfg.pricing.min_margin * 100)}% profit (see Profit per sale on Nexa Command).`);
+  if (thin) r.info.push(`${thin} listings are under ${Math.round(guard * 100)}% margin but above the dollar minimum.`);
 
   if (changes.length) {
     const warn = await setPriceQty(cfg, changes);

@@ -39,6 +39,9 @@ export type BotConfig = {
     fvf_rate?: number;             // eBay final value fee share (charged on item + shipping)
     free_ship_label_cost?: number; // label you pay on free-shipping listings
     calc_ship_estimate?: number;
+    small_item_price?: number;     // items whose 30% floor is under this price...
+    small_item_margin?: number;    // ...need this margin instead (0.5)
+    min_profit?: number;           // dollars every sale must make after all costs
     stale_views?: number;          // views in 30 days with 0 sales that trigger a demand cut
     stale_cut_pct?: number;        // size of that cut (toward the profit floor)   // what buyers typically pay on calculated-shipping listings
     guard_margin?: number;         // below this margin the profit guard raises the price

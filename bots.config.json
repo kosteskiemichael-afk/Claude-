@@ -22,6 +22,9 @@
   "pricing": {
     "min_margin": 0.3,
     "guard_margin": 0.3,
+    "small_item_price": 10,
+    "small_item_margin": 0.5,
+    "min_profit": 2.5,
     "small_cut_max": 1.0,
     "cooldown_days": 3,
     "max_step_pct": 0.1,

@@ -157,7 +157,8 @@ check(d === null || d.price >= fl, "never prices below profit floor even if comp
   const { profitAt, floorPrice } = await import("../dist/bots/profit.js");
   const free = { kind: "free", buyer: 0 }, calc = { kind: "calculated", buyer: 5.51 };
   const a = profitAt(cfg, "x", 8, free, 5), b = profitAt(cfg, "x", 8, calc, 5);
-  check(a.profit < 1 && b.profit > 4 && floorPrice(cfg, "x", free, 5) > 15 && floorPrice(cfg, "x", calc, 5) < 6,
+  check(a.profit < 1 && b.profit > 4 && floorPrice(cfg, "x", free, 5) > 15 && floorPrice(cfg, "x", calc, 5) < 7
+    && profitAt(cfg, "x", floorPrice(cfg, "x", calc, 5), calc, 5).margin >= 0.499 && profitAt(cfg, "x", floorPrice(cfg, "x", calc, 5), calc, 5).profit >= 2.5,
     `profit math: $8 free-ship = $${a.profit.toFixed(2)}, $8 + calculated ship = $${b.profit.toFixed(2)}; floors $${floorPrice(cfg, "x", free, 5)} / $${floorPrice(cfg, "x", calc, 5)}`);
 }
 const w = windowStart([7, 13, 19], "America/Indianapolis", new Date("2026-10-21T11:00:00Z"));
