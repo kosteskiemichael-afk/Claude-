@@ -1,4 +1,5 @@
 // Offline test: runs every bot against fake eBay responses. No real eBay calls.
+process.env.PRICING_ANYTIME = "1"; // tests run at any hour
 //   npm run build && node scripts/test-bots.mjs
 process.env.EBAY_APP_ID = "test"; process.env.EBAY_CERT_ID = "test"; process.env.EBAY_REFRESH_TOKEN = "test";
 process.env.PROTECTED_ITEM_IDS = "206531844850";

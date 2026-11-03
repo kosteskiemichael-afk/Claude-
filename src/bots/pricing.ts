@@ -146,6 +146,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   // Raises and big cuts wait for that day; matching a cheaper competitor happens any day.
   const cd = Math.max(1, cfg.pricing.cooldown_days ?? 5);
   const today = Math.floor(Date.now() / 86400_000);
+  // Big moves (raises, demand cuts, cuts over small_cut_max) only before noon, i.e. the 7am run.
+  // Later runs just match small undercuts and enforce the profit floor.
+  const morning = !!process.env.PRICING_ANYTIME || Number(new Date().toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: cfg.timezone })) % 24 < 12;
   const myDay = (id: string) => cd === 1 || [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 9973, 0) % cd === today % cd;
   const apply = (l: Listing, rule: PriceRule, comps: Competitor[], tag: string) => {
     const s30 = sold30(l.item_id);
@@ -174,7 +177,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     const tr = traffic?.get(l.item_id);
     if (target > l.price && tr && tr.sold === 0 && tr.views >= (cfg.pricing.stale_views ?? 12)) return;
     const big = Math.abs(target - l.price) > (cfg.pricing.small_cut_max ?? 0);
-    if (big && movedOn.get(l.item_id) === today) return;
+    if (big && (movedOn.get(l.item_id) === today || !morning)) return;
     if (big) movedOn.set(l.item_id, today);
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
@@ -258,7 +261,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       const t = traffic.get(l.item_id);
       if (!t || done.has(l.item_id) || t.sold > 0) continue;
       if (t.impressions >= 400 && t.views / t.impressions < 0.005) clickProblems.push(`${short(l.title, 40)} (${t.impressions} shown, ${t.views} clicks)`);
-      if (t.views < lookers || !myDay(l.item_id) || movedOn.get(l.item_id) === today) continue;
+      if (t.views < lookers || !myDay(l.item_id) || !morning || movedOn.get(l.item_id) === today) continue;
       const floor = Math.max(cfg.pricing.rules[l.item_id]?.min ?? 0, floorPrice(cfg, l.item_id, shipOf(l), adOf(l.item_id)));
       const target = charm(Math.round(Math.max(floor, l.price * (1 - cut)) * 100) / 100, floor);
       if (l.price - target < cfg.pricing.min_change) continue;
