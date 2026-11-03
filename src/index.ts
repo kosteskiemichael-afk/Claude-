@@ -235,7 +235,7 @@ app.post(`/pricing/match/${SECRET}`, async (req, res) => {
     const ships = await shipInfo(cfg, ls); const ads = await adRates().catch(() => new Map<string, number>());
     const out: any[] = []; const changes: { item_id: string; title: string; price: number }[] = [];
     for (const l of ls) {
-      if (l.protected || l.has_variations) { out.push({ id: l.item_id, skipped: l.protected ? "protected" : "has options" }); continue; }
+      if (l.protected || l.has_variations || l.on_sale) { out.push({ id: l.item_id, skipped: l.protected ? "protected" : l.on_sale ? "in sale event" : "has options" }); continue; }
       const sh = ships.get(l.item_id)!; const ad = ads.get(l.item_id) ?? 0;
       const comps = await keywordCompetitors(cfg, l.title).catch(() => []);
       const d = decidePrice(fast, { query: "", max: l.price }, l, comps, sh, ad);

@@ -113,6 +113,14 @@ export function decidePrice(
 export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   const byId = new Map(listings.map((l) => [l.item_id, l]));
   const changes: { item_id: string; title: string; price: number }[] = [];
+  // Listings in a running sale event keep their price until the sale ends (eBay shows the discounted price,
+  // and price revisions during a markdown don't stick).
+  const { saleListingIds } = await import("./shared.js");
+  const sale = await saleListingIds().catch(() => new Set<string>());
+  for (const l of listings) if (l.on_sale) sale.add(l.item_id);
+  if (sale.size) r.info.push(`${sale.size} listings are in your sale event; pricing leaves them alone until it ends.`);
+  listings = listings.filter((l) => !sale.has(l.item_id));
+  byId.clear(); listings.forEach((l) => byId.set(l.item_id, l));
   const open = listings.filter((l) => !l.protected && !l.has_variations);
   const ships = await shipInfo(cfg, open);
   const ads = await adRates().catch(() => new Map<string, number>());
@@ -168,6 +176,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   // 1) Items with hand-written rules.
   for (const [itemId, rule] of Object.entries(cfg.pricing.rules)) {
     const l = byId.get(itemId);
+    if (sale.has(itemId)) continue;
     if (!l) { r.info.push(`Price rule for ${itemId} skipped: listing not active.`); continue; }
     if (l.protected || l.has_variations) continue;
     try { apply(l, rule, await findCompetitors(cfg, rule), ""); }

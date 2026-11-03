@@ -194,7 +194,26 @@ export type Listing = {
   shipping_cost: number;
   has_variations: boolean;
   protected: boolean;
+  /** In a Promotions Manager sale event: buyers pay `price`, the listing's own price is higher. */
+  on_sale?: boolean;
 };
+
+/** Listings in a running sale event (markdown). eBay won't take price changes on them reliably and
+ *  the shown price is already discounted, so the pricing bot leaves them alone until the sale ends. */
+export async function saleListingIds(): Promise<Set<string>> {
+  const { rest } = await import("../ebay.js");
+  const ids = new Set<string>();
+  const j = await rest("GET", "/sell/marketing/v1/promotion", { query: { marketplace_id: "EBAY_US", promotion_type: "MARKDOWN_SALE", promotion_status: "RUNNING", limit: "50" } });
+  for (const p of j.promotions || []) {
+    const id = String(p.promotionId || "").split("/").pop();
+    if (!id) continue;
+    try {
+      const m = await rest("GET", `/sell/marketing/v1/item_price_markdown/${encodeURIComponent(id)}`, {});
+      for (const d of m.selectedInventoryDiscounts || []) for (const l of d.inventoryCriterion?.listingIds || []) ids.add(String(l));
+    } catch { /* skip this sale */ }
+  }
+  return ids;
+}
 
 export async function activeListings(): Promise<Listing[]> {
   const out: Listing[] = [];
@@ -217,6 +236,7 @@ export async function activeListings(): Promise<Listing[]> {
         shipping_cost: opt ? num(opt.ShippingServiceCost) ?? 0 : 0,
         has_variations: !!it.Variations,
         protected: isProtected(id, title),
+        on_sale: !!it.SellingStatus?.PromotionalSaleDetails,
       });
     }
     const pages = num(al.PaginationResult?.TotalNumberOfPages) ?? 1;
