@@ -188,6 +188,18 @@ app.post(`/report/splits/${SECRET}`, async (_req, res) => {
 });
 app.get(`/report/splits/${SECRET}`, (_req, res) => { res.json(splitJob); });
 
+// Price report for every listing (read-only).
+let priceJob: { running: boolean; started?: string; finished?: string; log: string[]; rows?: any[]; error?: string } = { running: false, log: [] };
+app.post(`/report/prices/${SECRET}`, async (_req, res) => {
+  if (priceJob.running) return res.json({ ok: true, already_running: true });
+  priceJob = { running: true, started: new Date().toISOString(), log: [] };
+  res.json({ ok: true, started: true });
+  try { const { priceReport } = await import("./bots/pricereport.js"); priceJob.rows = await priceReport((s) => priceJob.log.push(s)); }
+  catch (e) { priceJob.error = (e as Error).message; }
+  priceJob.running = false; priceJob.finished = new Date().toISOString();
+});
+app.get(`/report/prices/${SECRET}`, (_req, res) => { res.json(priceJob); });
+
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });
 
