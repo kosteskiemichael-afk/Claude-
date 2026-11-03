@@ -273,14 +273,29 @@ export async function setPriceQty(
   const warnings: string[] = [];
   for (let i = 0; i < safe.length; i += 4) {
     const chunk = safe.slice(i, i + 4);
-    const r = await trading("ReviseInventoryStatus", {
-      InventoryStatus: chunk.map((c) => ({
-        ItemID: c.item_id,
-        ...(c.price !== undefined ? { StartPrice: c.price.toFixed(2) } : {}),
-        ...(c.quantity !== undefined ? { Quantity: c.quantity } : {}),
-      })),
-    });
-    warnings.push(...tradingWarnings(r));
+    try {
+      const r = await trading("ReviseInventoryStatus", {
+        InventoryStatus: chunk.map((c) => ({
+          ItemID: c.item_id,
+          ...(c.price !== undefined ? { StartPrice: c.price.toFixed(2) } : {}),
+          ...(c.quantity !== undefined ? { Quantity: c.quantity } : {}),
+        })),
+      });
+      warnings.push(...tradingWarnings(r));
+    } catch (e) {
+      // eBay's daily cap on ReviseInventoryStatus: fall back to ReviseFixedPriceItem (separate quota), one item at a time.
+      if (!/usage limit|exceeded/i.test((e as Error).message)) throw e;
+      for (const c of chunk) {
+        try {
+          const r = await trading("ReviseFixedPriceItem", { Item: {
+            ItemID: c.item_id,
+            ...(c.price !== undefined ? { StartPrice: c.price.toFixed(2) } : {}),
+            ...(c.quantity !== undefined ? { Quantity: c.quantity } : {}),
+          } });
+          warnings.push(...tradingWarnings(r));
+        } catch (e2) { warnings.push(`${c.item_id} not updated: ${(e2 as Error).message.slice(0, 120)}`); }
+      }
+    }
   }
   return warnings;
 }
