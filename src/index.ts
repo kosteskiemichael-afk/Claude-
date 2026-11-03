@@ -9,7 +9,7 @@ import { invalidateDashboard, registerDashboard } from "./dashboard.js";
 import { loadConfig } from "./bots/shared.js";
 import { DEEP_PLAN, STRATEGY_NAMES } from "./bots/finder.js";
 import { push } from "./bots/notify.js";
-import { runBots } from "./bots/run.js";
+import { runBots, localHour } from "./bots/run.js";
 import { API_BASE, SANDBOX, USER_SCOPES, trading, tradingWarnings } from "./ebay.js";
 import { isProtected } from "./bots/shared.js";
 
@@ -138,6 +138,26 @@ app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
   } finally { deep.running = false; deep.finished = Date.now(); botsRunning = false; invalidateDashboard(); }
 });
 
+// What the last bot run did (price changes with profit per sale, alerts, notes).
+const lastRun: { at?: string; r?: any } = {};
+app.get(`/bots/last/${SECRET}`, (_req, res) => { res.json({ at: lastRun.at, changes: lastRun.r?.changes || [], urgent: lastRun.r?.urgent || [], info: lastRun.r?.info || [] }); });
+
+// Built-in schedule: runs every bot at run_hours_local (7am / 1pm / 7pm Indianapolis) while the server is awake,
+// so pricing reacts to competitors and demand without anyone pressing Run.
+let lastSlot = "";
+setInterval(async () => {
+  try {
+    const cfg = loadConfig();
+    const h = localHour(cfg.timezone);
+    const day = new Date().toLocaleDateString("en-US", { timeZone: cfg.timezone });
+    const slot = `${day} ${h}`;
+    if (!cfg.run_hours_local.includes(h) || slot === lastSlot || botsRunning || deep.running) return;
+    lastSlot = slot; botsRunning = true;
+    try { lastRun.r = await runBots(); lastRun.at = new Date().toISOString(); }
+    finally { botsRunning = false; invalidateDashboard(); }
+  } catch (e) { console.error("Scheduled bot run failed", e); }
+}, 5 * 60_000);
+
 app.post(`/bots/run/${SECRET}`, async (req, res) => {
   if (botsRunning) { res.status(409).json({ ok: false, error: "A bot run is already in progress." }); return; }
   botsRunning = true;
@@ -145,7 +165,8 @@ app.post(`/bots/run/${SECRET}`, async (req, res) => {
   try {
     const only = String(req.query.only || "").split(",").map((x) => x.trim()).filter(Boolean);
     const strategy = String(req.query.strategy || "") as any;
-    const r = await runBots({ only, force: req.query.force === "1", ...(strategy && STRATEGY_NAMES[strategy as keyof typeof STRATEGY_NAMES] ? { strategy } : {}) });
+    const r = lastRun.r = await runBots({ only, force: req.query.force === "1", ...(strategy && STRATEGY_NAMES[strategy as keyof typeof STRATEGY_NAMES] ? { strategy } : {}) });
+    lastRun.at = new Date().toISOString();
     res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length, finder: (r as any).finder || null });
   } catch (e) {
     console.error("Bot run failed", e);

@@ -113,7 +113,7 @@ check(all.includes("<ItemID>111</ItemID><Quantity>10</Quantity>"), "low-stock La
 check(!all.includes("<ItemID>333</ItemID><Quantity>"), "sold-out (qty 0) Canon door left sold out");
 check(r.urgent.some((u) => u.includes("Burr holder stock low")), "burr holder low stock alerts you instead");
 check(!all.includes("<StartPrice>5.99</StartPrice>") && !all.includes("<StartPrice>6.27</StartPrice>"), "non-3D-printed competitor ($6 'original part') ignored");
-check(all.includes("<ItemID>111</ItemID><StartPrice>9.23</StartPrice>"), "Lasko feet lowered max 10% step toward $8.28 (10.25 → 9.23)");
+check(all.includes("<ItemID>111</ItemID><StartPrice>8.99</StartPrice>"), "Lasko feet lowered ~10% toward $8.28 with a .99 ending (10.25 → 8.99)");
 check(all.includes("<ItemID>222</ItemID><StartPrice>10.99</StartPrice>"), "Lasko knob RAISED toward competitor (9.99 → 10.99 capped step)");
 check(writes.filter((w) => w[0] === "ADRATE").length === 1 && all.includes('5.0') && !all.includes('2.0\\"'), "only the 8.5% ad capped to 5%; 5% and 2% ads kept as set");
 check(r.urgent.some((u) => u.includes("buyer_joe")) && !r.urgent.some((u) => u.includes("read one")), "unread buyer message alerted");

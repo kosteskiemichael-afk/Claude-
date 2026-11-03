@@ -15,7 +15,7 @@ import { serviceBot } from "./service.js";
 import { finderBot, morningExtra, morningFocus, nextStrategy, Strategy } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
-function localHour(tz: string, d = new Date()): number {
+export function localHour(tz: string, d = new Date()): number {
   const h = new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: tz }).format(d);
   return Number(h);
 }

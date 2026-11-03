@@ -65,6 +65,13 @@ export function floorTotal(cfg: BotConfig, rule: PriceRule): number {
   return costs / (1 - p.fee_rate - p.min_margin);
 }
 
+/** Shopper-friendly price endings (.99 / .49) on cuts: never below the floor, never more than 3% extra off. */
+export function charm(p: number, min: number): number {
+  const base = Math.floor(p);
+  const opts = [base + 0.99, base + 0.49, base - 0.01].filter((x) => x <= p + 1e-9 && x >= min - 1e-9 && x >= p * 0.97);
+  return opts.length ? Math.round(Math.max(...opts) * 100) / 100 : p;
+}
+
 export function decidePrice(
   cfg: BotConfig, rule: PriceRule, l: Listing, comps: Competitor[], ship?: Ship, adPct?: number | null,
 ): { price: number; reason: string } | null {
@@ -149,6 +156,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       if (up - l.price >= cfg.pricing.min_change) { target = up; reason = `selling fast: ${s30} sold in 30 days`; }
     }
     if (target === undefined) return;
+    if (target < l.price) target = charm(target, Math.max(rule.min ?? 0, floorPrice(cfg, l.item_id, shipOf(l), adOf(l.item_id))));
     if (target > l.price && !myDay(l.item_id)) return; // raises wait for this listing's price day
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
@@ -218,6 +226,27 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       }
       r.info.push(`Price-checked ${checked} more listings against the same part from other sellers.`);
     } catch (e) { r.info.push(`Keyword pricing skipped: ${(e as Error).message.slice(0, 140)}`); }
+  }
+
+  // 2c) Demand check (uses eBay traffic): buyers look but nobody buys -> it's the price. Step it down
+  //     toward the profit floor on its price day, even when no competitor was found.
+  //     Shown a lot but rarely clicked -> it's the title/photo, not the price (reported, not repriced).
+  if (traffic) {
+    const done = new Set(changes.map((c) => c.item_id));
+    const lookers = cfg.pricing.stale_views ?? 12, cut = cfg.pricing.stale_cut_pct ?? 0.06;
+    const clickProblems: string[] = [];
+    for (const l of open) {
+      const t = traffic.get(l.item_id);
+      if (!t || done.has(l.item_id) || t.sold > 0) continue;
+      if (t.impressions >= 400 && t.views / t.impressions < 0.005) clickProblems.push(`${short(l.title, 40)} (${t.impressions} shown, ${t.views} clicks)`);
+      if (t.views < lookers || !myDay(l.item_id)) continue;
+      const floor = Math.max(cfg.pricing.rules[l.item_id]?.min ?? 0, floorPrice(cfg, l.item_id, shipOf(l), adOf(l.item_id)));
+      const target = charm(Math.round(Math.max(floor, l.price * (1 - cut)) * 100) / 100, floor);
+      if (l.price - target < cfg.pricing.min_change) continue;
+      changes.push({ item_id: l.item_id, title: l.title, price: target });
+      r.changes.push(`📉 Price ${money(l.price)} → ${money(target)} (${t.views} views, 0 sales in 30 days; ${profitNote(l, target)}): ${short(l.title)}`);
+    }
+    if (clickProblems.length) r.info.push(`Seen a lot but rarely clicked (fix title/main photo, not price): ${clickProblems.slice(0, 6).join("; ")}${clickProblems.length > 6 ? ` +${clickProblems.length - 6} more` : ""}.`);
   }
 
   // 3) Profit guard: never keep selling a listing at a thin margin. Anything under guard_margin
