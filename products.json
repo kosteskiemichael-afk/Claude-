@@ -431,7 +431,7 @@
    "cad": "https://www.thingiverse.com/thing:5842684",
    "license": "CC BY",
    "cad_name": "Antique National Walking Lawn Sprinkler Tractor Gear (LINUStheRAT) - check it matches the worm gear; v2 has thicker teeth",
-   "status": "CAD found (CC BY, credit the designer) · Gears bot"
+   "status": "CAD found (CC BY, credit the designer) \u00b7 Gears bot"
   },
   {
    "added": "2026-10-29",
@@ -443,7 +443,7 @@
    "cad": "",
    "license": "",
    "cad_name": "",
-   "status": "No CAD - model from a used Thompson sprinkler / old gear set · Gears bot"
+   "status": "No CAD - model from a used Thompson sprinkler / old gear set \u00b7 Gears bot"
   },
   {
    "added": "2026-10-29",
@@ -455,7 +455,7 @@
    "cad": "",
    "license": "",
    "cad_name": "",
-   "status": "No free CAD · low price ($6.74) · Gears bot"
+   "status": "No free CAD \u00b7 low price ($6.74) \u00b7 Gears bot"
   },
   {
    "added": "2026-10-29",
@@ -467,7 +467,7 @@
    "cad": "",
    "license": "",
    "cad_name": "",
-   "status": "No free CAD · Gears bot"
+   "status": "No free CAD \u00b7 Gears bot"
   },
   {
    "added": "2026-10-29",
@@ -479,7 +479,7 @@
    "cad": "https://www.thingiverse.com/thing:5327942",
    "license": "CC BY-SA",
    "cad_name": "Panasonic 3DO CD Drive Sled Gear (RobertDaleSmith) - fits FZ-1 & FZ-10. Alt: thing:2799915 (zbrowns, CC BY)",
-   "status": "CAD found (CC BY-SA, credit the designer) · print with 0.2 mm nozzle"
+   "status": "CAD found (CC BY-SA, credit the designer) \u00b7 print with 0.2 mm nozzle"
   },
   {
    "added": "2026-10-29",
@@ -491,7 +491,7 @@
    "sold": 62,
    "price": 29.99,
    "ebay": "https://www.ebay.com/itm/186387008873",
-   "status": "CAD found (CC BY-SA) · ready to print"
+   "status": "CAD found (CC BY-SA) \u00b7 ready to print"
   },
   {
    "added": "2026-10-29",
@@ -552,6 +552,198 @@
    "price": 10.95,
    "ebay": "https://www.ebay.com/itm/281808089734",
    "status": "No free CAD - simple part"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/359141",
+   "license": "CC BY",
+   "cad_name": "DJI Phantom 3 Gimbal Lock for 2.7k Camera",
+   "title": "DJI Phantom 3 Gimbal Lock 3d printed from Clear PET",
+   "seller": "nathanprinter",
+   "sold": 191,
+   "price": 11.99,
+   "ebay": "https://www.ebay.com/itm/111685935307",
+   "status": "Drone \u00b7 CC BY: credit designer in listing"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/133087",
+   "license": "CC BY",
+   "cad_name": "DJI Phantom 3 Camera & Gimbal Protector",
+   "title": "DJI Phantom 3 - BLACK - Gimbal Camera Guard 3d printed",
+   "seller": "nathanprinter",
+   "sold": 125,
+   "price": 9.97,
+   "ebay": "https://www.ebay.com/itm/111778842031",
+   "status": "Drone \u00b7 CC BY: credit designer \u00b7 also 97 sold clear PET version"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "",
+   "license": "",
+   "cad_name": "",
+   "title": "2 WHITE Flexible 3D Printed Camera Lens Caps for ALL the DJI Phantom 3's",
+   "seller": "nathanprinter",
+   "sold": 209,
+   "price": 8.95,
+   "ebay": "https://www.ebay.com/itm/111669536812",
+   "status": "Drone \u00b7 only non-commercial files exist; Claude to model our own"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "",
+   "license": "",
+   "cad_name": "",
+   "title": "DJI Phantom 2 V+ Flight Kit - Lens Cap - Gimbal Lock & Guard 3d printed",
+   "seller": "nathanprinter",
+   "sold": 56,
+   "price": 12.95,
+   "ebay": "https://www.ebay.com/itm/111844432730",
+   "status": "Drone \u00b7 bundle idea; no commercial file found"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/94474",
+   "license": "CC BY",
+   "cad_name": "DJI Osmo Pocket GoPro Mount (Martin)",
+   "title": "DJI OSMO Pocket Adapter Mount for Tripod or GoPro - Flexible 3D Print",
+   "seller": "aerial-pixel",
+   "sold": 145,
+   "price": 20.0,
+   "ebay": "https://www.ebay.com/itm/323601646650",
+   "status": "Drone \u00b7 CC BY \u00b7 Pocket 3 version: printables 672757 (CC BY-SA)"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/256295",
+   "license": "CC0",
+   "cad_name": "DJI RC Pro Lanyard Mount",
+   "title": "DJI 'RC Pro' Lanyard, Wrist Strap Bracket for Mavic 3, Air 2S Remote, 3D Printed",
+   "seller": "langcpht",
+   "sold": 58,
+   "price": 10.0,
+   "ebay": "https://www.ebay.com/itm/265430426880",
+   "status": "Drone \u00b7 CC0: no strings \u00b7 RC-N1 version printables 646743 (CC BY)"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/415956",
+   "license": "CC BY",
+   "cad_name": "TBS Source One V5 T elrs antenna mount",
+   "title": "3D Printed SMA BN-180 T-Antenna Mount For Source One FPV Drone (2 PCS)",
+   "seller": "",
+   "sold": 78,
+   "price": 11.99,
+   "ebay": "https://www.ebay.com/itm/325504178377",
+   "status": "Drone/FPV \u00b7 CC BY"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/959702",
+   "license": "CC BY",
+   "cad_name": "avata 2 light mount",
+   "title": "DJI Avata 2 Tool-Less Flashlight Mount for RovyVon Aurora A1 and A3 Lights",
+   "seller": "aerial-pixel",
+   "sold": 55,
+   "price": 14.95,
+   "ebay": "https://www.ebay.com/itm/326148916826",
+   "status": "Drone \u00b7 CC BY \u00b7 check which light it fits"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "",
+   "license": "",
+   "cad_name": "",
+   "title": "DJI Neo Flashlight Mount for RovyVon Aurora A1 and A3",
+   "seller": "aerial-pixel",
+   "sold": 42,
+   "price": 15.95,
+   "ebay": "https://www.ebay.com/itm/205127895425",
+   "status": "Drone \u00b7 no commercial file found; Claude can model"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "",
+   "license": "",
+   "cad_name": "",
+   "title": "DJI FPV Remote Controller 3 Phone Mount For DJI Avata 2 and Neo Remote",
+   "seller": "aerial-pixel",
+   "sold": 90,
+   "price": 25.95,
+   "ebay": "https://www.ebay.com/itm/204922587382",
+   "status": "Drone \u00b7 no commercial file found; Claude can model"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "",
+   "license": "",
+   "cad_name": "",
+   "title": "DJI Avata 2 GoPro Action Camera Mount 3D Printed PETG and TPU",
+   "seller": "aerial-pixel",
+   "sold": 34,
+   "price": 19.95,
+   "ebay": "https://www.ebay.com/itm/326090871089",
+   "status": "Drone \u00b7 no commercial file found"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/1144012",
+   "license": "CC BY",
+   "cad_name": "DJI Air Unit O4 Pro Soft Mount",
+   "title": "DJI O4 Air Unit Lite Protective Case + O4 Pro Cam Mount 3D-Printed",
+   "seller": "lu_905860",
+   "sold": 25,
+   "price": 13.0,
+   "ebay": "https://www.ebay.com/itm/177596579535",
+   "status": "Drone/FPV \u00b7 CC BY"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/118057",
+   "license": "CC BY",
+   "cad_name": "DJI Mini 2 Firehouse LED strobe mount",
+   "title": "DJI Spark Strobe Mount For Strobon Cree Firehouse Tech Flexible 3D Printed Qty 2",
+   "seller": "aerial-pixel",
+   "sold": 21,
+   "price": 15.0,
+   "ebay": "https://www.ebay.com/itm/202038051410",
+   "status": "Drone \u00b7 CC BY \u00b7 Air 2S strobe mounts printables 233848 (CC BY)"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/1643444",
+   "license": "CC BY",
+   "cad_name": "DJI Neo 2 Armour",
+   "title": "Storage Case For DJI Neo 2 Drone Anti-pressure Storage Box 3D Printed",
+   "seller": "alliancenetwork",
+   "sold": 25,
+   "price": 21.34,
+   "ebay": "https://www.ebay.com/itm/358783209367",
+   "status": "Drone \u00b7 CC BY \u00b7 Neo 2 GoPro mount printables 1632557 (CC BY)"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/226056",
+   "license": "CC BY",
+   "cad_name": "DJI Mini 3 Pro Front Legs (1,655 downloads)",
+   "title": "Dji Mini 3 / Mini 3 Pro / Mini 4 / Mini 4 Pro Drone Extension Clip On Legs 3D Printed",
+   "seller": "",
+   "sold": 0,
+   "price": 17.43,
+   "ebay": "https://www.ebay.com/itm/326246075045",
+   "status": "Drone \u00b7 eBay hides sold count \u00b7 Mini 4 Pro shoes printables 638851 (CC0)"
+  },
+  {
+   "added": "2026-11-03",
+   "cad": "https://www.printables.com/model/138052",
+   "license": "CC BY",
+   "cad_name": "DJI Mini 2 Light Landing Extenders",
+   "title": "Landing Gear For DJI Mini 2 - Extended Landing Gear - 3D Printed",
+   "seller": "plasticprinterstore",
+   "sold": 0,
+   "price": 18.0,
+   "ebay": "https://www.ebay.com/itm/198057355955",
+   "status": "Drone \u00b7 eBay hides sold count \u00b7 Mini 2 legs printables 270285 (CC0)"
   }
  ]
 }
