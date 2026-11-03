@@ -110,6 +110,10 @@ export function decidePrice(
   return { price, reason };
 }
 
+// Listings that already had a real (non-penny) price move today. Kept in memory while the server is
+// awake, so 3 runs a day (or extra manual runs) don't stack cuts on the same listing.
+const movedOn = new Map<string, number>();
+
 export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   const byId = new Map(listings.map((l) => [l.item_id, l]));
   const changes: { item_id: string; title: string; price: number }[] = [];
@@ -169,6 +173,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     // Don't undo a demand cut: a listing people look at but don't buy stays down, even if competitors are higher.
     const tr = traffic?.get(l.item_id);
     if (target > l.price && tr && tr.sold === 0 && tr.views >= (cfg.pricing.stale_views ?? 12)) return;
+    const big = Math.abs(target - l.price) > (cfg.pricing.small_cut_max ?? 0);
+    if (big && movedOn.get(l.item_id) === today) return;
+    if (big) movedOn.set(l.item_id, today);
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
@@ -251,10 +258,11 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
       const t = traffic.get(l.item_id);
       if (!t || done.has(l.item_id) || t.sold > 0) continue;
       if (t.impressions >= 400 && t.views / t.impressions < 0.005) clickProblems.push(`${short(l.title, 40)} (${t.impressions} shown, ${t.views} clicks)`);
-      if (t.views < lookers || !myDay(l.item_id)) continue;
+      if (t.views < lookers || !myDay(l.item_id) || movedOn.get(l.item_id) === today) continue;
       const floor = Math.max(cfg.pricing.rules[l.item_id]?.min ?? 0, floorPrice(cfg, l.item_id, shipOf(l), adOf(l.item_id)));
       const target = charm(Math.round(Math.max(floor, l.price * (1 - cut)) * 100) / 100, floor);
       if (l.price - target < cfg.pricing.min_change) continue;
+      movedOn.set(l.item_id, today);
       changes.push({ item_id: l.item_id, title: l.title, price: target });
       r.changes.push(`📉 Price ${money(l.price)} → ${money(target)} (${t.views} views, 0 sales in 30 days; ${profitNote(l, target)}): ${short(l.title)}`);
     }
