@@ -230,6 +230,26 @@ app.post(`/pricing/match/${SECRET}`, async (req, res) => {
   } catch (e) { res.status(500).json({ ok: false, error: (e as Error).message }); }
 });
 
+// Set exact prices Claude was asked to set (burr holders refused). Body: {changes:[{item_id, price}]}
+app.post(`/pricing/set/${SECRET}`, async (req, res) => {
+  try {
+    const { loadConfig, activeListings, setPriceQty } = await import("./bots/shared.js");
+    const cfg = loadConfig(); const ls = await activeListings();
+    const changes: { item_id: string; title: string; price: number }[] = []; const out: any[] = [];
+    for (const c of (req.body?.changes || []) as { item_id: string; price: number }[]) {
+      const l = ls.find((x) => x.item_id === String(c.item_id));
+      if (!l) { out.push({ id: c.item_id, ok: false, error: "not active" }); continue; }
+      if (l.protected) { out.push({ id: c.item_id, ok: false, error: "protected listing" }); continue; }
+      if (!(c.price > 0)) { out.push({ id: c.item_id, ok: false, error: "bad price" }); continue; }
+      changes.push({ item_id: l.item_id, title: l.title, price: Math.round(c.price * 100) / 100 });
+      out.push({ id: l.item_id, ok: true, from: l.price, to: c.price });
+    }
+    const warn = changes.length ? await setPriceQty(cfg, changes) : [];
+    invalidateDashboard();
+    res.json({ ok: true, results: out, warnings: warn });
+  } catch (e) { res.status(500).json({ ok: false, error: (e as Error).message }); }
+});
+
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });
 
