@@ -76,6 +76,8 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
         if (JUNK.test(title) || JUNK_CATEGORY.test(String(it.categories?.map((c: any) => c.categoryName).join(" ") || ""))) continue;
         if (Number(it.price?.value || 0) < (cfg.finder.min_price ?? 0)) continue;
         if (sch.must && !sch.must(title)) continue;
+        // Every bot: no functional/prohibited gun parts, whatever search found them.
+        if (GUN_WORDS.test(title) && GUN_BLOCK.test(title.replace(/magazine loader|speed loader|mag loader/gi, ""))) continue;
         const legacy = String(it.legacyItemId || it.itemId?.split("|")[1] || "");
         if (!legacy || seen.has(legacy)) continue;
         seen.set(legacy, { id: it.itemId, legacy, title, seller, price: Number(it.price?.value || 0) });
@@ -117,14 +119,38 @@ export function makeSpecs(title: string, text = ""): MakeSpecs | null {
 }
 
 // ---------- the strategies ----------
-export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium" | "makeit";
+export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting";
 export const STRATEGY_NAMES: Record<Strategy, string> = {
   keywords: "Keyword bot", competitors: "Competitor bot", categories: "Category bot", cadfirst: "CAD-first bot",
   gears: "Gears & Brackets bot", autoboat: "Auto & Boat bot", premium: "Premium Equipment bot", makeit: "Make-it bot",
+  drones: "Drone Parts bot", shooting: "Shooting Accessories bot",
 };
 
+// Shooting Accessories bot: accessories only. Anything that is part of how a gun fires or is eBay-prohibited
+// (receivers/frames/jigs, triggers, sears, suppressors/solvent traps, flash hiders, magazines/extenders,
+// bump stocks, braces, forward grips, barrel shrouds, conversion kits) is thrown out before it reaches you.
+const GUN_WORDS = /\b(gun|guns|pistol|rifle|shotgun|firearm|ar-?15|ar-?10|ak-?47|glock|sig sauer|smith ?& ?wesson|ruger|picatinny|m-?lok|keymod|holster|9mm|5\.56|\.223|\.308|12 ?ga)\b/i;
+const GUN_BLOCK = /receiver|lower|upper|frame|jig|80%|sear|switch|auto ?key|trigger|suppress|silencer|solvent|flash ?hider|muzzle|compensator|brake|magazine|\bmags?\b|extension|extender|bump|brace|forward grip|vertical grip|shroud|barrel|conversion|drop.?in|lightning link|bolt|slide|firing pin|hammer|buffer|stock kit/i;
+
 // Focused search pools for the three specialist bots.
-const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit", string[]> = {
+const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting", string[]> = {
+  drones: [
+    "dji mini battery cover", "dji mini landing gear", "dji mini propeller guard", "dji mini gimbal cover", "dji air 3 landing gear",
+    "dji avata propeller guard", "dji mavic landing gear", "dji mavic gimbal protector", "dji controller holder", "dji controller lanyard mount",
+    "dji tablet holder", "dji phone holder", "dji drone battery holder", "dji neo propeller guard", "dji flip part", "dji fpv part",
+    "drone landing gear", "drone propeller guard", "drone gimbal lock", "drone battery charging hub", "drone gopro mount",
+    "drone light mount", "drone payload release", "drone drop mechanism", "drone antenna mount", "fpv antenna mount", "fpv camera mount",
+    "fpv gopro mount", "fpv frame", "tinywhoop frame", "fpv tpu", "fpv battery strap mount", "fpv goggles part", "radiomaster part",
+    "autel drone part", "skydio part", "parrot anafi part", "potensic part", "holy stone part", "dji agras part",
+  ],
+  shooting: [
+    "holster", "kydex holster", "iwb holster clip", "scope cap", "scope lens cover", "red dot cover", "optic cover",
+    "chamber flag", "gun rack", "gun wall mount", "rifle wall mount", "shotgun wall mount", "gun safe organizer",
+    "pistol rack", "ammo box", "ammo tray", "ammo caddy", "reloading tray", "brass catcher", "cleaning rod holder",
+    "bore guide", "picatinny rail cover", "rail cover", "flashlight rail mount", "sling mount", "sling swivel",
+    "bipod adapter", "phone scope adapter", "target holder", "target stand bracket", "shell holder", "choke tube case",
+    "range bag organizer", "gun cleaning stand", "magazine loader", "speed loader",
+  ],
   // Make-it bot: parts Claude can model from specs (no physical part needed)
   makeit: [
     "lathe change gear", "change gear 16 dp", "change gear 18 dp", "change gear 20 dp", "change gear 24 dp", "metric transposing gear",
@@ -249,12 +275,13 @@ async function gatherCadFirst(cfg: BotConfig): Promise<Gathered> {
   return { hits: [...all.values()], searched: pick.map((q) => `Printables: ${q}`), presetCad };
 }
 
-async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit"): Promise<Gathered> {
+async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting"): Promise<Gathered> {
   const pool = POOLS[key], per = key === "makeit" ? 12 : 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
   const base = pool.filter((_, i) => i % batches === k);
   // Make-it searches both "3d printed X" and plain "X" (eBay's matching is narrow); collect() keeps printed listings only.
   const pick = key === "makeit" ? base.flatMap((q) => ["3d printed " + q, q + " printed"]) : base.map((q) => "3d printed " + q);
-  return { hits: await collect(cfg, pick.map((q) => ({ q, keep: key === "makeit" ? 80 : 50 }))), searched: pick, presetCad: new Map() };
+  const must = key === "shooting" ? (t: string) => !GUN_BLOCK.test(t.replace(/magazine loader|speed loader|mag loader/gi, "")) : undefined;
+  return { hits: await collect(cfg, pick.map((q) => ({ q, keep: key === "makeit" ? 80 : 50, must }))), searched: pick, presetCad: new Map() };
 }
 
 async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered> {
@@ -263,14 +290,14 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["makeit", "gears", "autoboat", "premium", "makeit", "keywords", "competitors", "gears", "makeit", "autoboat", "premium", "categories", "cadfirst"];
+const ORDER: Strategy[] = ["makeit", "gears", "drones", "autoboat", "premium", "shooting", "makeit", "keywords", "competitors", "gears", "drones", "makeit", "autoboat", "premium", "shooting", "categories", "cadfirst"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["makeit", "gears", "autoboat", "premium"];
+const FOCUS: Strategy[] = ["makeit", "gears", "drones", "autoboat", "premium", "shooting"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["makeit", "gears", "autoboat", "premium", "makeit", "competitors", "gears", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "gears", "autoboat", "premium", "makeit"];
+export const DEEP_PLAN: Strategy[] = ["makeit", "gears", "drones", "shooting", "autoboat", "premium", "makeit", "competitors", "gears", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "gears", "autoboat", "premium", "makeit"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
@@ -354,7 +381,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   const g = strategy === "competitors" ? await gatherCompetitors(cfg)
     : strategy === "categories" ? await gatherCategories(cfg)
     : strategy === "cadfirst" ? await gatherCadFirst(cfg)
-    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" || strategy === "makeit" ? await gatherPool(cfg, strategy)
+    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" || strategy === "makeit" || strategy === "drones" || strategy === "shooting" ? await gatherPool(cfg, strategy)
     : await gatherKeywords(cfg, manual);
   const queries = g.searched;
   const botName = STRATEGY_NAMES[strategy];
