@@ -37,11 +37,15 @@ export async function priceReport(log: (s: string) => void = () => {}): Promise<
     for (let i = 0; i < rest.length; i += 5) {
       await Promise.all(rest.slice(i, i + 5).map(async (l) => {
         const kw = keyWords(l.title);
-        const must = [...kw.filter((w) => /\d/.test(w)).slice(0, 3), ...kw.filter((w) => !/\d/.test(w)).slice(0, 3)];
+        const nums = kw.filter((w) => /\d/.test(w)).slice(0, 4);
+        const words = kw.filter((w) => !/\d/.test(w)).slice(0, 3);
+        const must = [...nums, ...words];
         if (must.length < 2) return;
         try {
           const pool = await findCompetitors(cfg, { query: kw.slice(0, 7).join(" "), must_include: must }, Math.max(2, Math.ceil(must.length * 0.66)));
-          if (pool.length) comps.set(l.item_id, pool.sort((a, b) => a.total - b.total));
+          // every number in your title (tooth counts, part/model numbers) must also be in theirs
+          const strict = pool.filter((c) => nums.every((n) => c.title.toLowerCase().includes(n)));
+          if (strict.length) comps.set(l.item_id, strict.sort((a, b) => a.total - b.total));
         } catch { /* skip */ }
       }));
       if (i % 25 === 0) log(`checked ${Math.min(i + 5, rest.length)}/${rest.length}`);
