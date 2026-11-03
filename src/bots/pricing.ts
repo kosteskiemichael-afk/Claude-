@@ -200,6 +200,26 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     }
   }
 
+  // 2b) No AI key on the server: still check every listing, using its own title to find the same part.
+  if (!brainOn()) {
+    try {
+      const { keywordCompetitors } = await import("./pricereport.js");
+      const rest = listings.filter((l) => !l.protected && !l.has_variations && !cfg.pricing.rules[l.item_id]);
+      let checked = 0;
+      for (let i = 0; i < rest.length; i += 5) {
+        await Promise.all(rest.slice(i, i + 5).map(async (l) => {
+          try {
+            const comps = await keywordCompetitors(cfg, l.title);
+            if (!comps.length) return;
+            checked++;
+            apply(l, { query: "", max: Math.round(l.price * 1.6 * 100) / 100 }, comps, "🔎 ");
+          } catch { /* skip this listing */ }
+        }));
+      }
+      r.info.push(`Price-checked ${checked} more listings against the same part from other sellers.`);
+    } catch (e) { r.info.push(`Keyword pricing skipped: ${(e as Error).message.slice(0, 140)}`); }
+  }
+
   // 3) Profit guard: never keep selling a listing at a thin margin. Anything under guard_margin
   //    is raised toward the full profit floor (at most +15% per run, so it's gradual).
   const guard = cfg.pricing.guard_margin ?? 0.25;

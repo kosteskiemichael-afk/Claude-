@@ -200,6 +200,36 @@ app.post(`/report/prices/${SECRET}`, async (_req, res) => {
 });
 app.get(`/report/prices/${SECRET}`, (_req, res) => { res.json(priceJob); });
 
+// Match the cheapest seller of the same part right now, never below the profit floor. Body: {items:[item_id]}
+app.post(`/pricing/match/${SECRET}`, async (req, res) => {
+  try {
+    const { loadConfig, activeListings, setPriceQty } = await import("./bots/shared.js");
+    const { decidePrice } = await import("./bots/pricing.js");
+    const { shipInfo, adRates, profitAt } = await import("./bots/profit.js");
+    const { keywordCompetitors } = await import("./bots/pricereport.js");
+    const cfg = loadConfig();
+    const fast = { ...cfg, pricing: { ...cfg.pricing, max_step_pct: 1 } } as typeof cfg; // full move now, floors still apply
+    const want = new Set(((req.body?.items || []) as string[]).map(String));
+    const ls = (await activeListings()).filter((l) => want.has(l.item_id));
+    const ships = await shipInfo(cfg, ls); const ads = await adRates().catch(() => new Map<string, number>());
+    const out: any[] = []; const changes: { item_id: string; title: string; price: number }[] = [];
+    for (const l of ls) {
+      if (l.protected || l.has_variations) { out.push({ id: l.item_id, skipped: l.protected ? "protected" : "has options" }); continue; }
+      const sh = ships.get(l.item_id)!; const ad = ads.get(l.item_id) ?? 0;
+      const comps = await keywordCompetitors(cfg, l.title).catch(() => []);
+      const d = decidePrice(fast, { query: "", max: l.price }, l, comps, sh, ad);
+      const before = profitAt(cfg, l.item_id, l.price, sh, ad);
+      if (!d || d.price >= l.price) { out.push({ id: l.item_id, title: l.title.slice(0, 50), held: true, price: l.price, cheapest: comps[0]?.total ?? null, profit: +before.profit.toFixed(2) }); continue; }
+      const after = profitAt(cfg, l.item_id, d.price, sh, ad);
+      changes.push({ item_id: l.item_id, title: l.title, price: d.price });
+      out.push({ id: l.item_id, title: l.title.slice(0, 50), from: l.price, to: d.price, ship: sh.buyer, delivered: +(d.price + sh.buyer).toFixed(2), cheapest: comps[0]?.total ?? null, profit_before: +before.profit.toFixed(2), profit_after: +after.profit.toFixed(2), margin_after: Math.round(after.margin * 100), floor_hit: d.price <= after.floor + 0.01 });
+    }
+    const warn = changes.length ? await setPriceQty(cfg, changes) : [];
+    invalidateDashboard();
+    res.json({ ok: true, changed: changes.length, results: out, warnings: warn });
+  } catch (e) { res.status(500).json({ ok: false, error: (e as Error).message }); }
+});
+
 // Anything else (wrong secret) looks like it doesn't exist.
 app.use((_req, res) => { res.status(404).send("Not found"); });
 

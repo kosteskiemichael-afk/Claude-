@@ -13,6 +13,19 @@ export type PriceRow = {
   gap: number | null; verdict: string;
 };
 
+const STOPW = new Set(["new","replacement","3d","printed","for","the","and","with","part","parts","fits","set","of","pack","pcs","kit","heavy","duty","black","white","high","strength","repair","compatible","pc","x","-","|","&","/"]);
+const keyWordsOf = (t: string) => [...new Set(t.toLowerCase().replace(/[^a-z0-9\-\/ ]+/g, " ").split(/\s+/).filter((w) => w.length > 1 && !STOPW.has(w)))];
+/** Competitors for a listing found from its own title (no AI): every number in your title must be in theirs. */
+export async function keywordCompetitors(cfg: ReturnType<typeof loadConfig>, title: string): Promise<Competitor[]> {
+  const kw = keyWordsOf(title);
+  const nums = kw.filter((w) => /\d/.test(w)).slice(0, 4);
+  const words = kw.filter((w) => !/\d/.test(w)).slice(0, 3);
+  const must = [...nums, ...words];
+  if (must.length < 2) return [];
+  const pool = await findCompetitors(cfg, { query: kw.slice(0, 7).join(" "), must_include: must }, Math.max(2, Math.ceil(must.length * 0.66)));
+  return pool.filter((c) => nums.every((n) => c.title.toLowerCase().includes(n))).sort((a, b) => a.total - b.total);
+}
+
 export async function priceReport(log: (s: string) => void = () => {}): Promise<PriceRow[]> {
   const cfg = loadConfig();
   const listings = await activeListings();
@@ -27,26 +40,11 @@ export async function priceReport(log: (s: string) => void = () => {}): Promise<
     if (!listings.find((l) => l.item_id === id)) continue;
     try { comps.set(id, (await findCompetitors(cfg, rule)).sort((a, b) => a.total - b.total)); } catch { /* skip */ }
   }
-  // Without the AI brain (no API key on the server): build the search from the title itself and
-  // require most of its key words (brand, model/part numbers) to appear in a competitor's title.
-  const STOP = new Set(["new","replacement","3d","printed","for","the","and","with","part","parts","fits","set","of","pack","pcs","kit","heavy","duty","black","white","high","strength","repair","compatible","pc","x","-","|","&","/"]);
-  const keyWords = (t: string) => [...new Set(t.toLowerCase().replace(/[^a-z0-9\-\/ ]+/g, " ").split(/\s+/)
-    .filter((w) => w.length > 1 && !STOP.has(w)))];
   if (!brainOn()) {
     const rest = listings.filter((l) => !cfg.pricing.rules[l.item_id]);
     for (let i = 0; i < rest.length; i += 5) {
       await Promise.all(rest.slice(i, i + 5).map(async (l) => {
-        const kw = keyWords(l.title);
-        const nums = kw.filter((w) => /\d/.test(w)).slice(0, 4);
-        const words = kw.filter((w) => !/\d/.test(w)).slice(0, 3);
-        const must = [...nums, ...words];
-        if (must.length < 2) return;
-        try {
-          const pool = await findCompetitors(cfg, { query: kw.slice(0, 7).join(" "), must_include: must }, Math.max(2, Math.ceil(must.length * 0.66)));
-          // every number in your title (tooth counts, part/model numbers) must also be in theirs
-          const strict = pool.filter((c) => nums.every((n) => c.title.toLowerCase().includes(n)));
-          if (strict.length) comps.set(l.item_id, strict.sort((a, b) => a.total - b.total));
-        } catch { /* skip */ }
+        try { const c = await keywordCompetitors(cfg, l.title); if (c.length) comps.set(l.item_id, c); } catch { /* skip */ }
       }));
       if (i % 25 === 0) log(`checked ${Math.min(i + 5, rest.length)}/${rest.length}`);
     }
