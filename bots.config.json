@@ -177,7 +177,7 @@
         "min": 12.99
       }
     },
-    "once_per_day": false,
+    "once_per_day": true,
     "min_change": 0.5
   },
   "pending_splits": [
