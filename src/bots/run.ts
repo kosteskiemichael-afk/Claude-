@@ -97,9 +97,11 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
     let done = 0; const skipped: string[] = [];
     for (const l of listings) {
       if (done >= (ts.max_per_run ?? 40)) break;
-      if (l.protected || !PHRASE.test(l.title) || l.title.includes(ts.to)) continue;
+      const NYLON = /\s*[-–|,]?\s*\bnylon\b\s*/i;
+      const hasNylon = ts.nylon_to_petg && NYLON.test(l.title);
+      if (l.protected || (!PHRASE.test(l.title) && !hasNylon) || l.title.includes(ts.to)) continue;
       if (skip(l.title)) { skipped.push(l.title.slice(0, 45)); continue; }
-      let t = l.title.replace(PHRASE, " ").replace(/\s{2,}/g, " ").replace(/^[\s\-–|,]+|[\s\-–|,]+$/g, "").trim();
+      let t = l.title.replace(PHRASE, " ").replace(hasNylon ? NYLON : /$^/, " ").replace(/\s{2,}/g, " ").replace(/^[\s\-–|,]+|[\s\-–|,]+$/g, "").trim();
       t = (t + " " + ts.to).trim();
       if (t.length > 80) t = (t.slice(0, 80 - ts.to.length - 1).replace(/\s+\S*$/, "") + " " + ts.to).trim();
       try {

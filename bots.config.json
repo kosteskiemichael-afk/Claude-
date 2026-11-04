@@ -223,7 +223,6 @@
     "skip_words": [
       "asa",
       "tpu",
-      "nylon",
       "petg-cf",
       "carbon",
       "cf ",
@@ -246,6 +245,7 @@
       "hot tub",
       "mower"
     ],
-    "max_per_run": 40
+    "max_per_run": 40,
+    "nylon_to_petg": true
   }
 }
