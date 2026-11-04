@@ -177,8 +177,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     const tr = traffic?.get(l.item_id);
     if (target > l.price && tr && tr.sold === 0 && tr.views >= (cfg.pricing.stale_views ?? 12)) return;
     const big = Math.abs(target - l.price) > (cfg.pricing.small_cut_max ?? 0);
-    if (big && (movedOn.get(l.item_id) === today || !morning)) return;
-    if (big) movedOn.set(l.item_id, today);
+    // Calm pricing: every move happens on the morning run only, at most once a day per listing.
+    if (!morning || movedOn.get(l.item_id) === today) return;
+    movedOn.set(l.item_id, today);
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
