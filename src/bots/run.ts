@@ -93,6 +93,18 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
     (r as any).finder = { bot: `${first.bot} + ${second.bot}`, searched: [...first.searched, ...second.searched], checked: first.checked + second.checked, found: first.found + second.found, fresh: first.fresh + second.fresh };
   });
   if (on("production")) await step("Production", r, () => productionBot(unshipped, since, firstRunOfDay, r));
+  // Competition watch: every morning (or on demand), compare every listing to the sellers winning the same part.
+  if (on("compete") && (firstRunOfDay || only.includes("compete"))) await step("Competition watch", r, async () => {
+    const { runCompete, summary } = await import("./compete.js");
+    const rows = await runCompete(traffic);
+    if (!rows?.length) return;
+    const s = summary(rows);
+    r.info.push(`🏁 Competition watch: compared ${s.compared} listings to the top seller of the same part. ` +
+      `Free shipping: you ${s.you_free_ship_pct}% vs them ${s.top_free_ship_pct}%. Photos: ${s.you_photos} vs ${s.top_photos}. ` +
+      `Item specifics: ${s.you_specifics} vs ${s.top_specifics}. Cheaper delivered: ${s.you_cheaper_pct}% of listings.`);
+    rows.filter((x) => x.fixes.length && !x.protected).slice(0, 5).forEach((x) =>
+      r.info.push(`• ${x.title.slice(0, 45)} (${x.stage}): ${x.fixes.slice(0, 2).map((f) => f.what).join("; ")}`));
+  });
 
   // Morning: the brain reads the whole store and picks today's best moves.
   let brief = "";

@@ -221,6 +221,23 @@ app.post(`/report/prices/${SECRET}`, async (_req, res) => {
 });
 app.get(`/report/prices/${SECRET}`, (_req, res) => { res.json(priceJob); });
 
+// Competition watch + listing doctor (read-only). POST starts a run, GET returns JSON, /compete/:secret is the page.
+app.post(`/report/compete/${SECRET}`, async (_req, res) => {
+  const { competeJob, runCompete } = await import("./bots/compete.js");
+  if (competeJob.running) return res.json({ ok: true, already_running: true });
+  res.json({ ok: true, started: true });
+  const { trafficMap } = await import("./bots/run.js");
+  runCompete(await trafficMap().catch(() => undefined)).catch(() => {});
+});
+app.get(`/report/compete/${SECRET}`, async (_req, res) => {
+  const { competeJob, summary } = await import("./bots/compete.js");
+  res.json({ ...competeJob, summary: competeJob.rows ? summary(competeJob.rows) : null });
+});
+app.get(`/compete/${SECRET}`, async (_req, res) => {
+  const { competePage } = await import("./competepage.js");
+  res.type("html").send(competePage(SECRET));
+});
+
 // Match the cheapest seller of the same part right now, never below the profit floor. Body: {items:[item_id]}
 app.post(`/pricing/match/${SECRET}`, async (req, res) => {
   try {
