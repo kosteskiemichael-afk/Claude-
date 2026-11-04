@@ -215,7 +215,21 @@ export async function saleListingIds(): Promise<Set<string>> {
   return ids;
 }
 
-export async function activeListings(): Promise<Listing[]> {
+// One shared copy of your listings for the dashboard, boards and bots: eBay limits GetMyeBaySelling calls per day.
+// Fresh for 5 minutes; if eBay refuses (daily limit), the last good copy is used instead of failing.
+let listingsMemo: { at: number; ls: Listing[] } | null = null;
+let listingsInflight: Promise<Listing[]> | null = null;
+export async function activeListings(maxAgeMs = 5 * 60_000): Promise<Listing[]> {
+  if (listingsMemo && Date.now() - listingsMemo.at < maxAgeMs) return listingsMemo.ls;
+  if (listingsInflight) return listingsInflight;
+  listingsInflight = fetchListings().then((ls) => { listingsMemo = { at: Date.now(), ls }; return ls; })
+    .catch((e) => { if (listingsMemo) return listingsMemo.ls; throw e; })
+    .finally(() => { listingsInflight = null; });
+  return listingsInflight;
+}
+export const listingsFetchedAt = () => listingsMemo?.at ?? 0;
+
+async function fetchListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= 20; page++) {
     const r = await trading("GetMyeBaySelling", {

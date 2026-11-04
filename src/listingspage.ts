@@ -22,7 +22,7 @@ const fresh = (c: { at: number } | null, ms: number) => !!c && Date.now() - c.at
 export async function listingRows(force = false): Promise<{ at: number; listingsAt: number; rows: Row[] }> {
   if (!force && fresh(cache, 60_000)) return cache!;
   const cfg = loadConfig();
-  if (force || !fresh(listingsCache, 10 * 60_000)) listingsCache = { at: Date.now(), ls: await activeListings() };          // eBay listing data: every 10 min
+  if (force || !fresh(listingsCache, 5 * 60_000)) { const { listingsFetchedAt } = await import("./bots/shared.js"); const ls = await activeListings(force ? 60_000 : 5 * 60_000); listingsCache = { at: listingsFetchedAt() || Date.now(), ls }; } // shared, max 1 eBay call / 5 min
   if (!fresh(trafficCache, 60 * 60_000)) { const { trafficMap } = await import("./bots/run.js"); trafficCache = { at: Date.now(), t: await trafficMap().catch(() => new Map()) }; } // traffic: hourly
   if (!fresh(adsCache, 30 * 60_000)) adsCache = { at: Date.now(), a: await adRates().catch(() => new Map()) };
   if (!fresh(saleCache, 60 * 60_000)) saleCache = { at: Date.now(), s: await saleListingIds().catch(() => new Set<string>()) };
