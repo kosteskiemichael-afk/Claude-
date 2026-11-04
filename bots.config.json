@@ -178,5 +178,43 @@
       }
     },
     "once_per_day": false
-  }
+  },
+  "pending_splits": [
+    {
+      "parent_item_id": "206531584496",
+      "option": "24",
+      "title": "Atlas Craftsman 10\" 12\" Metal Lathe 24 Tooth Change Gear 16DP 3D Printed",
+      "price": 9.49
+    },
+    {
+      "parent_item_id": "206531584496",
+      "option": "32",
+      "title": "Atlas Craftsman 10\" 12\" Metal Lathe 32 Tooth Change Gear 16DP 3D Printed",
+      "price": 12.99
+    },
+    {
+      "parent_item_id": "206531584496",
+      "option": "20",
+      "title": "Atlas Craftsman 10\" 12\" Metal Lathe 20 Tooth Change Gear 16DP 3D Printed",
+      "price": 9.99
+    },
+    {
+      "parent_item_id": "206611080125",
+      "option": "16",
+      "title": "Logan 9\" 10\" 11\" Lathe 16 Tooth Change Gear 5/8\" Bore Keyed 3D Printed",
+      "price": 8.79
+    },
+    {
+      "parent_item_id": "206611080125",
+      "option": "72",
+      "title": "Logan 9\" 10\" 11\" Lathe 72 Tooth Change Gear 5/8\" Bore Keyed 3D Printed",
+      "price": 29.99
+    },
+    {
+      "parent_item_id": "206550329997",
+      "option": "63",
+      "title": "South Bend 9A 10K Lathe 63/80T Transposing Change Gear Metric 3D Printed",
+      "price": 39.99
+    }
+  ]
 }

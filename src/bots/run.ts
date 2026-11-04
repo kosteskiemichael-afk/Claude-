@@ -75,6 +75,18 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   const unshipped = needOrders ? await recentOrders(30, true) : [];
 
   const traffic = await trafficMap().catch(() => undefined);
+  // Single listings you approved, made from options of multi-option listings. Each is made once
+  // (skipped when a listing with that title already exists) and retried on later runs if eBay refuses.
+  const splits = ((cfg as any).pending_splits || []) as { parent_item_id: string; option: string; title: string; price: number }[];
+  if (splits.length) await step("New listings", r, async () => {
+    const { splitOption } = await import("../split.js");
+    const have = new Set(listings.map((l) => l.title.trim().toLowerCase()));
+    for (const q of splits) {
+      if (have.has(q.title.trim().toLowerCase())) continue;
+      try { const res: any = await splitOption(q); r.changes.push(`🆕 Listed "${q.title}" at $${q.price.toFixed(2)}: ${res.url}`); have.add(q.title.trim().toLowerCase()); }
+      catch (e) { r.info.push(`New listing "${q.title.slice(0, 40)}…" not made yet: ${(e as Error).message.slice(0, 160)}`); if (/usage limit|exceeded/i.test((e as Error).message)) break; }
+    }
+  });
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
   if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
