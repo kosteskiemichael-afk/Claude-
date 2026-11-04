@@ -221,6 +221,16 @@ app.post(`/report/prices/${SECRET}`, async (_req, res) => {
 });
 app.get(`/report/prices/${SECRET}`, (_req, res) => { res.json(priceJob); });
 
+// Listings board: every listing with price, shipping, status, ads, traffic, profit and competition.
+app.get(`/listings/${SECRET}/data`, async (req, res) => {
+  try { const { listingRows } = await import("./listingspage.js"); res.json(await listingRows(req.query.fresh === "1")); }
+  catch (e) { res.status(500).json({ error: (e as Error).message }); }
+});
+app.get(`/listings/${SECRET}`, async (_req, res) => {
+  const { listingsPage } = await import("./listingspage.js");
+  res.set("Cache-Control", "no-store").type("html").send(listingsPage(SECRET));
+});
+
 // Competition watch + listing doctor (read-only). POST starts a run, GET returns JSON, /compete/:secret is the page.
 app.post(`/report/compete/${SECRET}`, async (_req, res) => {
   const { competeJob, runCompete } = await import("./bots/compete.js");

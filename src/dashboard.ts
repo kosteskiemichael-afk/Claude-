@@ -409,6 +409,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <span class="chip hide" id="clock">--:--:--</span>
     <span class="chip hide">NEXT RUN <span id="next">--</span></span>
     <button class="btn mg" id="find">Find products</button>
+    <a class="btn mg" id="listings" href="/listings/__SECRET__" target="_blank" style="text-decoration:none">📋 All listings</a>
     <a class="btn mg" id="compete" href="/compete/__SECRET__" target="_blank" style="text-decoration:none">🏁 Competition watch</a>
     <button class="btn mg" id="mkscan">🛠 Make-it scan</button>
     <button class="btn mg" id="drscan">🚁 Drone parts scan</button>
