@@ -87,6 +87,28 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
       catch (e) { r.info.push(`New listing "${q.title.slice(0, 40)}…" not made yet: ${(e as Error).message.slice(0, 160)}`); if (/usage limit|exceeded/i.test((e as Error).message)) break; }
     }
   });
+  // Title swap you asked for: "3D Printed" -> "HD PETG" at the end of the title (burr holders and
+  // likely-ASA/outdoor parts skipped). Each listing once; listings already swapped are skipped.
+  const ts = (cfg as any).title_swap;
+  if (ts?.enabled) await step("Title swap", r, async () => {
+    const { trading } = await import("../ebay.js");
+    const PHRASE = /\s*[-–|,]?\s*\b3[\s-]?d[\s-]?print(?:ed)?\b\s*/i;
+    const skip = (t: string) => (ts.skip_words || []).some((w: string) => t.toLowerCase().includes(w));
+    let done = 0; const skipped: string[] = [];
+    for (const l of listings) {
+      if (done >= (ts.max_per_run ?? 40)) break;
+      if (l.protected || !PHRASE.test(l.title) || l.title.includes(ts.to)) continue;
+      if (skip(l.title)) { skipped.push(l.title.slice(0, 45)); continue; }
+      let t = l.title.replace(PHRASE, " ").replace(/\s{2,}/g, " ").replace(/^[\s\-–|,]+|[\s\-–|,]+$/g, "").trim();
+      t = (t + " " + ts.to).trim();
+      if (t.length > 80) t = (t.slice(0, 80 - ts.to.length - 1).replace(/\s+\S*$/, "") + " " + ts.to).trim();
+      try {
+        if (!cfg.dry_run) await trading("ReviseFixedPriceItem", { Item: { ItemID: l.item_id, Title: t } });
+        r.changes.push(`✏️ Title: "${l.title}" → "${t}"`); done++;
+      } catch (e) { r.info.push(`Title swap failed on ${l.title.slice(0, 40)}: ${(e as Error).message.slice(0, 120)}`); if (/usage limit|exceeded/i.test((e as Error).message)) break; }
+    }
+    if (skipped.length) r.info.push(`Title swap skipped ${skipped.length} that may not be PETG (outdoor/ASA/other material), tell Claude which are PETG: ${skipped.slice(0, 12).join("; ")}`);
+  });
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
   if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));

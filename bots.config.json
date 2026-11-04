@@ -216,5 +216,36 @@
       "title": "South Bend 9A 10K Lathe 63/80T Transposing Change Gear Metric HD PETG",
       "price": 39.99
     }
-  ]
+  ],
+  "title_swap": {
+    "enabled": true,
+    "to": "HD PETG",
+    "skip_words": [
+      "asa",
+      "tpu",
+      "nylon",
+      "petg-cf",
+      "carbon",
+      "cf ",
+      "pla",
+      "resin",
+      "boat",
+      "marine",
+      "outboard",
+      "jet ski",
+      "waverunner",
+      "sea doo",
+      "pontoon",
+      "kayak",
+      "exterior",
+      "outdoor",
+      "sprinkler",
+      "trailer",
+      "grill",
+      "pool",
+      "hot tub",
+      "mower"
+    ],
+    "max_per_run": 40
+  }
 }
