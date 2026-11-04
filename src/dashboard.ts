@@ -346,6 +346,13 @@ td.m{font-family:var(--fm);white-space:nowrap;color:var(--ink)}.t2{max-width:360
 .ad{font:500 11px var(--fm);padding:3px 8px;border:1px solid var(--line2);border-radius:2px;color:var(--ink)}
 .empty{color:var(--mute);font-size:13.5px}
 .scroll{overflow-x:auto}
+.lsbox{max-height:720px;overflow:auto;border:1px solid var(--line);border-radius:2px}
+.lsbox table{min-width:1500px}.lsbox th{position:sticky;top:0;background:var(--panel2);z-index:1;cursor:pointer;white-space:nowrap}
+.lsbox td{white-space:nowrap;padding:8px}.lsbox td.lt{white-space:normal;min-width:260px;max-width:340px}.lsbox td.fx{white-space:normal;max-width:300px;font-size:11px;color:var(--mute)}
+.lsf{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.lsf input,.lsf select{background:var(--panel2);color:var(--ink);border:1px solid var(--line2);border-radius:2px;padding:8px 10px;font:13px var(--fd)}
+.cmpk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0 0 12px}.cmpk div{border:1px solid var(--line);padding:10px;background:var(--panel2)}
+.cmpk b{display:block;font:600 18px var(--fd);color:var(--ink)}.cmpk span{font:500 10px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}.cmpk i{font-style:normal;font-size:11px;color:var(--mute)}
+.sg{color:var(--ok)}.sy{color:var(--warn)}.sr{color:var(--bad)}.sb{color:var(--cy)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140px);background:var(--panel2);border:1px solid var(--line2);border-left:2px solid var(--ok);padding:13px 18px;border-radius:2px;font:500 13px var(--fd);transition:transform .45s var(--ease);z-index:9;max-width:calc(100% - 32px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .scan{height:1px;background:linear-gradient(90deg,transparent,var(--cy),transparent);position:absolute;left:0;right:0;top:0;animation:scan 2.4s linear infinite;opacity:0}.running .scan{opacity:1}
@@ -431,6 +438,19 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 <div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
 <div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
+<section class="panel" id="lsp"><div class="scan"></div><h2>All listings &amp; competition <small id="lsstat"></small></h2>
+<div class="cmpk" id="cmpk"></div>
+<div class="lsf"><input id="lsq" placeholder="Search title or item #" size="26">
+<select id="lsstage"><option value="">All stages</option><option>selling</option><option>not shown (search)</option><option>shown, not clicked</option><option>clicked, not bought</option><option>low traffic</option></select>
+<select id="lsship"><option value="">All shipping</option><option value="free">Free shipping</option><option value="calculated">Calculated</option><option value="flat">Flat</option></select>
+<select id="lscomp"><option value="">All competition</option><option value="over">Pricier than competition</option><option value="under">Cheaper than competition</option><option value="none">No competitor found</option></select>
+<select id="lsads"><option value="">All ads</option><option value="on">Promoted</option><option value="off">Not promoted</option></select>
+<select id="lswho"><option value="">All fixes</option><option value="photos">Needs photos</option><option value="free">Free shipping switch</option><option value="spec">Item specifics</option><option value="desc">Description</option></select></div>
+<div class="lsbox"><table><thead><tr>
+<th data-k="title">Listing</th><th data-k="price">Price</th><th data-k="ship_buyer">Shipping</th><th data-k="delivered">Delivered</th><th data-k="qty">Qty</th><th data-k="stage">Status</th><th data-k="ad">Ad %</th>
+<th data-k="impressions">Shown 30d</th><th data-k="views">Clicks</th><th data-k="ctr">CTR %</th><th data-k="sold30">Sold 30d</th><th data-k="sold_total">Sold all</th>
+<th data-k="profit">Profit/sale</th><th data-k="margin">Margin</th><th data-k="photos">Photos</th><th data-k="topd">Top seller</th><th data-k="cheapd">Cheapest</th><th data-k="gap">You vs best</th><th>Fixes</th>
+</tr></thead><tbody id="lstb"></tbody></table></div></section>
 <section class="panel" id="prodp"><h2>Products found <small id="pcount"></small></h2><div class="deepbar" id="deepbar"></div><div class="prods" id="prods"></div></section>
 <div class="grid three">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
@@ -445,6 +465,32 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 const S="__SECRET__";const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+// ---- All listings & competition (inline, scrollable) ----
+let LS=null,CMP=null,lsK="sold30",lsDir=-1;
+const lsStage=s=>s.startsWith("selling")?"sg":s.startsWith("not")?"sr":s.startsWith("shown")?"sy":"sb";
+function lsVal(r,k){return k==="topd"?(r.top?r.top.delivered:1e9):k==="cheapd"?(r.cheapest?r.cheapest.delivered:1e9):k==="gap"?(r.gap==null?-1e9:r.gap):k==="ad"?(r.ad==null?-1:r.ad):k==="photos"?(r.photos==null?-1:r.photos):r[k]}
+function lsRender(){if(!LS)return;const all=LS.rows||[];
+ const s=CMP&&CMP.summary;
+ $("lsstat").textContent=all.length+" listings · eBay data "+new Date(LS.listingsAt).toLocaleTimeString()+(CMP&&CMP.finished?" · competition checked "+new Date(CMP.finished).toLocaleString():" · competition check runs 7am");
+ const st=s?s.stages:{};
+ $("cmpk").innerHTML=[["Photos / listing",s?s.you_photos:"–",s?"top sellers "+s.top_photos:""],["Free shipping",s?s.you_free_ship_pct+"%":"–",s?"top sellers "+s.top_free_ship_pct+"%":""],["Description words",s?s.you_desc_words:"–",s?"top sellers "+s.top_desc_words:""],["Item specifics",s?s.you_specifics:"–",s?"top sellers "+s.top_specifics:""],["Cheaper delivered",s?s.you_cheaper_pct+"%":"–","of compared listings"],["Not shown in search",st["not shown (search)"]||0,"listings"],["Shown, not clicked",st["shown, not clicked"]||0,"listings"],["Clicked, not bought",st["clicked, not bought"]||0,"listings"],["Selling",st["selling"]||0,"listings"]].map(([a,b,c])=>'<div><span>'+a+'</span><b>'+b+'</b><i>'+c+'</i></div>').join("");
+ const q=$("lsq").value.toLowerCase(),sg=$("lsstage").value,sh=$("lsship").value,cp=$("lscomp").value,ad=$("lsads").value,wh=$("lswho").value;
+ const fx=(r,re)=>r.fixes.some(f=>re.test(f));
+ const rows=all.filter(r=>(!q||r.title.toLowerCase().includes(q)||r.id.includes(q))&&(!sg||r.stage===sg)&&(!sh||r.ship_kind===sh)&&(!cp||(cp==="over"?r.gap>0.5:cp==="under"?(r.gap!=null&&r.gap<=0):r.gap==null))&&(!ad||(ad==="on"?r.ad>0:!(r.ad>0)))&&(!wh||(wh==="photos"?fx(r,/photo/i):wh==="free"?fx(r,/free shipping/i):wh==="spec"?fx(r,/specific/i):fx(r,/description/i))))
+  .sort((a,b)=>{const x=lsVal(a,lsK),y=lsVal(b,lsK);return (typeof x==="string"?x.localeCompare(y):x-y)*lsDir});
+ $("lstb").innerHTML=rows.map(r=>'<tr><td class="lt"><a href="https://www.ebay.com/itm/'+r.id+'" target="_blank" style="color:var(--ink)">'+esc(r.title)+'</a><div style="font-size:11px;color:var(--mute)">#'+r.id+(r.variations?' · options':'')+(r.protected?' · <span class="sy">protected</span>':'')+(r.on_sale?' · <span class="sb">in sale</span>':'')+'</div></td>'+
+  '<td>'+money(r.price)+'</td><td>'+(r.ship_kind==="free"?'<span class="sg">FREE</span>':r.ship_kind==="calculated"?'calc ~'+money(r.ship_buyer):money(r.ship_buyer))+'</td><td>'+money(r.delivered)+'</td><td class="'+(r.qty<=2?"sy":"")+'">'+r.qty+'</td>'+
+  '<td><span class="'+lsStage(r.stage)+'">'+esc(r.stage)+'</span></td><td>'+(r.ad>0?r.ad+'%':'<span style="color:var(--mute)">off</span>')+'</td>'+
+  '<td>'+r.impressions+'</td><td>'+r.views+'</td><td>'+r.ctr+'</td><td class="'+(r.sold30?"sg":"")+'">'+r.sold30+'</td><td>'+r.sold_total+'</td>'+
+  '<td class="'+(r.profit<2.5?"sr":"")+'">'+money(r.profit)+'</td><td>'+r.margin+'%</td><td class="'+(r.photos!=null&&r.top&&r.photos<r.top.photos?"sr":"")+'">'+(r.photos==null?"–":r.photos)+(r.top?' / '+r.top.photos:'')+'</td>'+
+  '<td>'+(r.top?'<a href="'+esc(r.top.url)+'" target="_blank">'+esc(r.top.seller)+'</a><br>'+money(r.top.delivered)+(r.top.free?' <span class="sg">free</span>':'')+' · '+r.top.sold+' sold':'<span style="color:var(--mute)">–</span>')+'</td>'+
+  '<td>'+(r.cheapest?'<a href="'+esc(r.cheapest.url)+'" target="_blank">'+esc(r.cheapest.seller)+'</a><br>'+money(r.cheapest.delivered)+(r.cheapest.free?' <span class="sg">free</span>':''):'<span style="color:var(--mute)">–</span>')+'</td>'+
+  '<td class="'+(r.gap==null?"":r.gap>0.5?"sr":"sg")+'">'+(r.gap==null?"–":(r.gap>0?"+":"−")+money(Math.abs(r.gap)))+'</td><td class="fx">'+esc(r.fixes.join(" · "))+'</td></tr>').join("")||'<tr><td colspan="19" style="color:var(--mute)">Nothing matches.</td></tr>';}
+async function lsLoad(){try{const [a,b]=await Promise.all([fetch("/listings/"+S+"/data",{cache:"no-store"}).then(r=>r.json()),fetch("/report/compete/"+S,{cache:"no-store"}).then(r=>r.json()).catch(()=>null)]);if(a.error)throw new Error(a.error);LS=a;CMP=b;lsRender()}catch(e){$("lsstat").textContent="couldn't load: "+e.message}}
+document.querySelectorAll("#lsp th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;lsDir=lsK===k?-lsDir:-1;lsK=k;lsRender()});
+["lsstage","lsship","lscomp","lsads","lswho"].forEach(i=>$(i).onchange=lsRender);$("lsq").oninput=lsRender;
+lsLoad();setInterval(lsLoad,60000);
+
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
 let D=null,open=new Set(),seen=null,showHidden=false,makeOnly=false,CUR=[];
 // Search links for a CAD file, free and paid. A paid file must still allow selling prints (commercial license).

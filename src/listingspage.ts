@@ -9,7 +9,7 @@ type Row = {
   ship_kind: string; ship_buyer: number; delivered: number; ad: number | null;
   impressions: number; views: number; ctr: number; sold30: number; conv: number;
   profit: number; margin: number; floor: number; stage: string;
-  top: any; cheapest: any; competitors: number; gap: number | null; fixes: string[]; checked: string | null;
+  photos: number | null; top: any; cheapest: any; competitors: number; gap: number | null; fixes: string[]; checked: string | null;
 };
 
 let cache: { at: number; rows: Row[]; listingsAt: number } | null = null;
@@ -45,6 +45,7 @@ export async function listingRows(force = false): Promise<{ at: number; listings
       impressions: t.impressions, views: t.views, ctr: t.impressions ? Math.round((t.views / t.impressions) * 1000) / 10 : 0, sold30: t.sold,
       conv: t.views ? Math.round((t.sold / t.views) * 1000) / 10 : 0,
       profit: Math.round(p.profit * 100) / 100, margin: Math.round(p.margin * 100), floor: floorPrice(cfg, l.item_id, sh, ad ?? 0), stage,
+      photos: c?.mine ? c.mine.photos : null,
       top: c?.top ? { seller: c.top.seller, delivered: c.top.delivered, sold: c.top.sold, free: c.top.freeShip, photos: c.top.photos, url: c.top.url } : null,
       cheapest: c?.cheapest ? { seller: c.cheapest.seller, delivered: c.cheapest.delivered, sold: c.cheapest.sold, free: c.cheapest.freeShip, url: c.cheapest.url } : null,
       competitors: c?.competitors ?? 0, gap: best ? Math.round((delivered - best.delivered) * 100) / 100 : null,
