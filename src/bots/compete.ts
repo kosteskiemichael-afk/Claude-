@@ -44,6 +44,7 @@ async function card(raw: any): Promise<Card> {
   };
 }
 
+export let lastBrowseError = "";
 async function myCard(id: string): Promise<Card | null> {
   try { return await card(await rest("GET", "/buy/browse/v1/item/get_item_by_legacy_id", { app: true, query: { legacy_item_id: id }, timeoutMs: 15000 })); }
   catch {
@@ -52,7 +53,7 @@ async function myCard(id: string): Promise<Card | null> {
       const it = (g.items || [])[0]; if (!it) return null;
       const c = await card(it); c.id = id; c.sold = Math.max(0, ...(g.items || []).map((x: any) => Math.max(0, ...(x.estimatedAvailabilities || []).map((a: any) => Number(a.estimatedSoldQuantity || 0)))));
       return c;
-    } catch { return null; }
+    } catch (e) { lastBrowseError = (e as Error).message.slice(0, 200); return null; }
   }
 }
 
@@ -135,7 +136,7 @@ export async function competeReport(traffic?: Map<string, Traffic>, log: (s: str
   for (let i = 0; i < listings.length; i += 4) {
     await Promise.all(listings.slice(i, i + 4).map(async (l) => {
       try {
-        const [mine, comps] = await Promise.all([myCard(l.item_id), rivals(l.title, mineIds).catch(() => [] as Card[])]);
+        const [mine, comps] = await Promise.all([myCard(l.item_id), rivals(l.title, mineIds).catch((e) => { lastBrowseError = (e as Error).message.slice(0, 200); return [] as Card[]; })]);
         const top = [...comps].sort((a, b) => b.sold - a.sold)[0] || null;
         const cheapest = [...comps].sort((a, b) => a.delivered - b.delivered)[0] || null;
         const t = traffic?.get(l.item_id);
@@ -156,6 +157,8 @@ export async function competeReport(traffic?: Map<string, Traffic>, log: (s: str
     if (i % 20 === 0) log(`checked ${Math.min(i + 4, listings.length)}/${listings.length}`);
   }
   out.sort((a, b) => b.score - a.score);
+  if (lastBrowseError) log(`eBay error: ${lastBrowseError}`);
+  if (out.length && out.every((r) => !r.mine)) throw new Error(`eBay's Browse API refused every request: ${lastBrowseError || "unknown"}`);
   return out;
 }
 
