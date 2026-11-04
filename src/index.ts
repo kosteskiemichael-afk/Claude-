@@ -221,6 +221,18 @@ app.post(`/report/prices/${SECRET}`, async (_req, res) => {
 });
 app.get(`/report/prices/${SECRET}`, (_req, res) => { res.json(priceJob); });
 
+// Split an option of a multi-option listing into its own listing (asked for by you). Body: {items:[SplitReq]}
+app.post(`/listing/split/${SECRET}`, async (req, res) => {
+  const { splitOption } = await import("./split.js");
+  const out: any[] = [];
+  for (const q of (req.body?.items || [])) {
+    try { out.push({ option: q.option, ...(await splitOption(q)) }); }
+    catch (e) { out.push({ option: q.option, ok: false, error: (e as Error).message.slice(0, 400) }); }
+  }
+  invalidateDashboard();
+  res.json({ ok: true, results: out });
+});
+
 // Listings board: every listing with price, shipping, status, ads, traffic, profit and competition.
 app.get(`/listings/${SECRET}/data`, async (req, res) => {
   try { const { listingRows } = await import("./listingspage.js"); res.json(await listingRows(req.query.fresh === "1")); }
