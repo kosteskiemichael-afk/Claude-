@@ -936,6 +936,30 @@
    "price": 15.0,
    "ebay": "https://www.ebay.com/itm/286264583160",
    "status": "POWERSPORTS \u00b7 no file"
+  },
+  {
+   "added": "2026-11-04",
+   "cad": "https://www.printables.com/model/623443",
+   "license": "CC0",
+   "cad_name": "Nelson Traveling Sprinkler Gear (179 downloads)",
+   "title": "Traveling Sprinkler Gear Orbit Nelson John Deere Drive Gear",
+   "seller": "",
+   "sold": 94,
+   "price": 17.25,
+   "ebay": "https://www.ebay.com/itm/188724821301",
+   "status": "GEAR \u00b7 CC0 file, print-ready \u00b7 listing doesn't say if it's printed \u00b7 fits Nelson Rain Train / Orbit / John Deere traveling sprinklers"
+  },
+  {
+   "added": "2026-11-04",
+   "cad": "https://www.printables.com/model/356222",
+   "license": "CC BY",
+   "cad_name": "Craftsman Travelling Sprinkler Parts (worm gear + bushing, seanj)",
+   "title": "Thompson Sears Tractor Lawn Sprinkler Gear Set & Top Bushing (file match unconfirmed)",
+   "seller": "",
+   "sold": 512,
+   "price": 23.25,
+   "ebay": "https://www.ebay.com/itm/285288930781#craftsman-file",
+   "status": "GEAR \u00b7 CC BY file for Craftsman (Sears) traveling sprinkler worm gear + bushing, only 18 downloads, fit vs Thompson set unconfirmed"
   }
  ]
 }
