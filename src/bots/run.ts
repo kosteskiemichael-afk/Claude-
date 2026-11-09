@@ -125,7 +125,7 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
     rows.filter((x) => x.fixes.length && !x.protected).slice(0, 5).forEach((x) =>
       r.info.push(`• ${x.title.slice(0, 45)} (${x.stage}): ${x.fixes.slice(0, 2).map((f) => f.what).join("; ")}`));
   });
-  if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
+  if (on("marketing")) await step("Marketing", r, () => marketingBot(cfg, listings, r, traffic));
   if (on("titles") && firstRunOfDay) await step("Title doctor", r, () => titleBot(cfg, listings, r, traffic));
   if (on("feedback")) await step("Feedback fixer", r, () => feedbackBot(cfg, r));
   if (on("service")) await step("Customer service", r, () => serviceBot(cfg, since, unshipped, r));
