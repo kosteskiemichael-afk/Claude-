@@ -37,7 +37,8 @@ async function removeFromSales(ids: Set<string>): Promise<string[]> {
       if (keep.length !== ls.length) { d.inventoryCriterion.listingIds = keep; changed = true; }
     }
     if (!changed) continue;
-    const body = { ...m };
+    const body: any = { ...m };
+    if (!body.description) body.description = body.name || "Sale";
     delete (body as any).promotionId; delete (body as any).promotionHref; delete (body as any).promotionStatus; delete (body as any).priority;
     await rest("PUT", `/sell/marketing/v1/item_price_markdown/${encodeURIComponent(pid)}`, { body });
     notes.push(`removed from sale "${m.name}"`);
@@ -52,8 +53,10 @@ export async function toEnvelope(items: { item_id: string; price?: number }[]) {
   const out: any[] = [];
   for (const q of items) {
     try {
-      const r = await trading("GetItem", { ItemID: q.item_id });
-      const it = Array.isArray(r.Item) ? r.Item[0] : r.Item;
+      if (isProtected(q.item_id, "")) throw new Error("protected listing");
+      // GetItem only to keep the package weight/size; if eBay's daily GetItem limit is hit, go without it.
+      let it: any = {};
+      try { const r = await trading("GetItem", { ItemID: q.item_id }); it = (Array.isArray(r.Item) ? r.Item[0] : r.Item) || {}; } catch { /* limit */ }
       if (isProtected(q.item_id, String(val(it.Title) || ""))) throw new Error("protected listing");
       const item: any = { ItemID: q.item_id,
         ShippingPackageDetails: { ...(it.ShippingPackageDetails || {}), ShippingPackage: "LargeEnvelope" } };
