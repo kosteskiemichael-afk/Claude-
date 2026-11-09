@@ -233,6 +233,18 @@ app.post(`/listing/split/${SECRET}`, async (req, res) => {
   res.json({ ok: true, results: out });
 });
 
+// Raise low options on multi-option listings. Body: {items:[{item_id, min}]}
+app.post(`/pricing/options/${SECRET}`, async (req, res) => {
+  const { raiseOptions } = await import("./split.js");
+  const out: any[] = [];
+  for (const q of (req.body?.items || [])) {
+    try { out.push({ item_id: q.item_id, ...(await raiseOptions(String(q.item_id), Number(q.min))) }); }
+    catch (e) { out.push({ item_id: q.item_id, ok: false, error: (e as Error).message.slice(0, 300) }); }
+  }
+  invalidateDashboard();
+  res.json({ ok: true, results: out });
+});
+
 // Listings board: every listing with price, shipping, status, ads, traffic, profit and competition.
 app.get(`/listings/${SECRET}/data`, async (req, res) => {
   try { const { listingRows } = await import("./listingspage.js"); res.json(await listingRows(req.query.fresh === "1")); }

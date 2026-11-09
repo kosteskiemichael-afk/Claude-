@@ -65,3 +65,23 @@ export async function splitOption(q: SplitReq) {
   const add = await trading("AddFixedPriceItem", { Item: item });
   return { ok: true, item_id: txt(add.ItemID), url: `https://www.ebay.com/itm/${txt(add.ItemID)}`, fees, photos: pics.length, specifics: specs.size, quantity: qty };
 }
+
+/** Raise every option of a multi-option listing that is priced below `min` up to `min` (others untouched). */
+export async function raiseOptions(itemId: string, min: number) {
+  const r = await trading("GetItem", { ItemID: itemId, DetailLevel: "ReturnAll" });
+  const it = Array.isArray(r.Item) ? r.Item[0] : r.Item;
+  if (isProtected(itemId, txt(it.Title))) throw new Error("protected listing");
+  const vars = arr(it.Variations?.Variation);
+  if (!vars.length) throw new Error("not a multi-option listing");
+  const changed: string[] = []; const out: any[] = [];
+  for (const v of vars) {
+    const p = Number(txt(v.StartPrice) || 0);
+    if (p >= min) continue;
+    const specs = arr(v.VariationSpecifics?.NameValueList).map((nv: any) => ({ Name: txt(nv.Name), Value: arr(nv.Value).map(txt) }));
+    out.push(txt(v.SKU) ? { SKU: txt(v.SKU), StartPrice: min.toFixed(2) } : { VariationSpecifics: { NameValueList: specs }, StartPrice: min.toFixed(2) });
+    changed.push(`${specs.map((s: any) => s.Value.join("/")).join(" ")}: $${p.toFixed(2)} → $${min.toFixed(2)}`);
+  }
+  if (!out.length) return { ok: true, changed: [] };
+  await trading("ReviseFixedPriceItem", { Item: { ItemID: itemId, Variations: { Variation: out } } });
+  return { ok: true, changed };
+}
