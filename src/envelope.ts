@@ -46,7 +46,8 @@ async function removeFromSales(ids: Set<string>): Promise<string[]> {
 }
 
 export async function toEnvelope(items: { item_id: string; price?: number }[]) {
-  const policyId = await envelopePolicyId();
+  // Your account doesn't use business policies, so shipping is set on each listing.
+  const policyId = await envelopePolicyId().catch(() => "");
   const saleNotes = await removeFromSales(new Set(items.map((i) => String(i.item_id)))).catch((e) => [`sale removal failed: ${(e as Error).message.slice(0, 160)}`]);
   const out: any[] = [];
   for (const q of items) {
@@ -55,8 +56,10 @@ export async function toEnvelope(items: { item_id: string; price?: number }[]) {
       const it = Array.isArray(r.Item) ? r.Item[0] : r.Item;
       if (isProtected(q.item_id, String(val(it.Title) || ""))) throw new Error("protected listing");
       const item: any = { ItemID: q.item_id,
-        SellerProfiles: { SellerShippingProfile: { ShippingProfileID: policyId } },
         ShippingPackageDetails: { ...(it.ShippingPackageDetails || {}), ShippingPackage: "LargeEnvelope" } };
+      if (policyId) item.SellerProfiles = { SellerShippingProfile: { ShippingProfileID: policyId } };
+      else item.ShippingDetails = { ShippingType: "Flat",
+        ShippingServiceOptions: [{ ShippingServicePriority: 1, ShippingService: "USPSFirstClass", ShippingServiceCost: "0.00", FreeShipping: "true" }] };
       if (q.price && !arr(it.Variations?.Variation).length) item.StartPrice = q.price.toFixed(2);
       await trading("ReviseFixedPriceItem", { Item: item });
       out.push({ item_id: q.item_id, ok: true, price: q.price });
