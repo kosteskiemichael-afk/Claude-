@@ -4,6 +4,7 @@
 // visibility. Per-listing rates in marketing.ad_rates are set exactly. Burr holders are never touched.
 import { rest } from "../ebay.js";
 import { BotConfig, Listing, Report, short } from "./shared.js";
+import { floorPrice, shipInfo, Ship } from "./profit.js";
 import type { Traffic } from "./inventory.js";
 
 export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
@@ -18,6 +19,17 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
   );
   if (!campaigns.length) { r.info.push("No running Promoted Listings (cost-per-sale) campaign found."); return; }
 
+  // Visibility boost: listings eBay barely shows (or shows but nobody clicks) get up to `visibility_boost`
+  // more points of ad rate, but only as far as the listing still clears your profit floor at its price.
+  const vis = Number((cfg.marketing as any).visibility_boost ?? 0);
+  const ships = vis ? await shipInfo(cfg as any, listings).catch(() => new Map<string, Ship>()) : new Map<string, Ship>();
+  const maxAffordable = (l: Listing): number => {
+    const sh = ships.get(l.item_id) || { kind: "calculated", buyer: (cfg as any).pricing?.calc_ship_estimate ?? 5.51 } as Ship;
+    let best = 0;
+    for (let rr = 1; rr <= cap + 0.001; rr += 0.5) if (floorPrice(cfg as any, l.item_id, sh, rr) <= l.price + 0.001) best = rr;
+    return best;
+  };
+  const lowVis = (id: string) => { const t = traffic?.get(id); if (!t) return false; return t.impressions < 150 || (t.views / Math.max(1, t.impressions) < 0.008 && t.sold === 0); };
   const promoted = new Set<string>();
   let lowered = 0;
   for (const c of campaigns) {
@@ -41,7 +53,12 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
       if (!isFinite(rate)) continue;
       const selling = (traffic?.get(id)?.sold ?? 0) > 0;
       // Your fixed rate wins; else cap at max; else raise listings that sold in the last 30 days to the boost rate.
-      const want = fixed[id] !== undefined ? Number(fixed[id]) : rate > cap + 0.001 ? cap : selling && rate < boost - 0.001 ? boost : rate;
+      let want = fixed[id] !== undefined ? Number(fixed[id]) : rate > cap + 0.001 ? cap : selling && rate < boost - 0.001 ? boost : rate;
+      if (fixed[id] === undefined && vis > 0 && lowVis(id)) {
+        const room = maxAffordable(l);
+        const boosted = Math.min(cap, rate + vis, room);
+        if (boosted > want + 0.001) want = Math.round(boosted * 2) / 2;
+      }
       if (Math.abs(want - rate) < 0.001) continue;
       if (!cfg.dry_run) {
         try {
