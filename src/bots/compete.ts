@@ -27,10 +27,12 @@ const STOP = new Set(["new","replacement","3d","printed","for","the","and","with
 const words = (t: string) => [...new Set(t.toLowerCase().replace(/[^a-z0-9\-\/ ]+/g, " ").split(/\s+/).filter((w) => w.length > 1 && !STOP.has(w)))];
 const strip = (h: string) => String(h || "").replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim();
 
+let calcEst = 5.51; // eBay doesn't return calculated shipping without a buyer address: use the store's estimate
 async function card(raw: any): Promise<Card> {
   const ships = (raw.shippingOptions || []).map((s: any) => Number(s.shippingCost?.value ?? 0)).filter(isFinite);
-  const ship = ships.length ? Math.min(...ships) : 0;
   const calc = (raw.shippingOptions || []).some((s: any) => s.shippingCostType === "CALCULATED");
+  let ship = ships.length ? Math.min(...ships) : 0;
+  if (calc && ship === 0) ship = calcEst;
   const price = Number(raw.price?.value || 0);
   const maxDate = (raw.shippingOptions || []).map((s: any) => Date.parse(s.maxEstimatedDeliveryDate || "")).filter(isFinite);
   const sold = Math.max(0, ...(raw.estimatedAvailabilities || []).map((a: any) => Number(a.estimatedSoldQuantity || 0)));
@@ -126,6 +128,7 @@ function diagnose(l: Listing, t: Traffic | undefined, mine: Card | null, top: Ca
 
 export async function competeReport(traffic?: Map<string, Traffic>, log: (s: string) => void = () => {}): Promise<Doctor[]> {
   const cfg = loadConfig();
+  calcEst = cfg.pricing.calc_ship_estimate ?? 5.51;
   const listings = await activeListings();
   const mineIds = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
   const ships = await shipInfo(cfg, listings).catch(() => new Map<string, Ship>());

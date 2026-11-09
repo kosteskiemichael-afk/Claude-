@@ -416,13 +416,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <span class="chip hide" id="clock">--:--:--</span>
     <span class="chip hide">NEXT RUN <span id="next">--</span></span>
     <button class="btn mg" id="find">Find products</button>
-    <a class="btn mg" id="listings" href="/listings/__SECRET__" target="_blank" style="text-decoration:none">📋 All listings</a>
-    <a class="btn mg" id="compete" href="/compete/__SECRET__" target="_blank" style="text-decoration:none">🏁 Competition watch</a>
-    <button class="btn mg" id="mkscan">🛠 Make-it scan</button>
-    <button class="btn mg" id="drscan">🚁 Drone parts scan</button>
-    <button class="btn mg" id="shscan">🎯 Shooting accessories scan</button>
-    <button class="btn mg" id="deep">Deep scan</button>
-    <button class="btn" id="run">Run bots →</button>
+    <button class="btn" id="run">Run all bots →</button>
   </div>
 </header>
 <div class="marquee"><div id="mq"></div></div>
@@ -440,6 +434,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
 <section class="panel" id="lsp"><div class="scan"></div><h2>All listings &amp; competition <small id="lsstat"></small></h2>
 <div class="cmpk" id="cmpk"></div>
+<div id="cmpop" style="margin:0 0 14px"></div>
 <div class="lsf"><input id="lsq" placeholder="Search title or item #" size="26">
 <select id="lsstage"><option value="">All stages</option><option>selling</option><option>not shown (search)</option><option>shown, not clicked</option><option>clicked, not bought</option><option>low traffic</option></select>
 <select id="lsship"><option value="">All shipping</option><option value="free">Free shipping</option><option value="calculated">Calculated</option><option value="flat">Flat</option></select>
@@ -473,6 +468,8 @@ function lsRender(){if(!LS)return;const all=LS.rows||[];
  const s=CMP&&CMP.summary;
  $("lsstat").textContent=all.length+" listings · eBay data "+new Date(LS.listingsAt).toLocaleTimeString()+(CMP&&CMP.finished?" · competition checked "+new Date(CMP.finished).toLocaleString():" · competition check runs 7am");
  const st=s?s.stages:{};
+ const opp=(CMP&&CMP.rows||[]).filter(r=>!r.protected&&r.fixes&&r.fixes.length&&r.fixes[0].what.indexOf("No competitor")<0).slice(0,10);
+ $("cmpop").innerHTML=opp.length?'<div style="font:500 10px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 6px">Top 10 opportunities · competition check</div>'+opp.map((r,i)=>'<div style="border:1px solid var(--line);background:var(--panel2);padding:8px 10px;margin:0 0 6px"><b style="color:var(--ink)">'+(i+1)+'. <a href="https://www.ebay.com/itm/'+r.item_id+'" target="_blank" style="color:var(--ink)">'+esc(r.title.slice(0,70))+'</a></b> <span class="'+lsStage(r.stage)+'" style="font-size:11px">'+esc(r.stage)+'</span>'+(r.top?'<span style="font-size:11px;color:var(--mute)"> · top seller '+esc(r.top.seller)+' '+r.top.sold+' sold @ '+money(r.top.delivered)+(r.top.freeShip?' free ship':'')+'</span>':'')+'<div style="font-size:12px;color:var(--mute);margin-top:3px">'+r.fixes.slice(0,3).map(f=>'→ '+esc(f.what)+' <i style="font-style:normal;opacity:.7">('+(f.who==="bot"?"bots":f.who==="claude"?"Claude":"you")+')</i>').join("<br>")+'</div></div>').join(""):'';
  $("cmpk").innerHTML=[["Photos / listing",s?s.you_photos:"–",s?"top sellers "+s.top_photos:""],["Free shipping",s?s.you_free_ship_pct+"%":"–",s?"top sellers "+s.top_free_ship_pct+"%":""],["Description words",s?s.you_desc_words:"–",s?"top sellers "+s.top_desc_words:""],["Item specifics",s?s.you_specifics:"–",s?"top sellers "+s.top_specifics:""],["Cheaper delivered",s?s.you_cheaper_pct+"%":"–","of compared listings"],["Not shown in search",st["not shown (search)"]||0,"listings"],["Shown, not clicked",st["shown, not clicked"]||0,"listings"],["Clicked, not bought",st["clicked, not bought"]||0,"listings"],["Selling",st["selling"]||0,"listings"]].map(([a,b,c])=>'<div><span>'+a+'</span><b>'+b+'</b><i>'+c+'</i></div>').join("");
  const q=$("lsq").value.toLowerCase(),sg=$("lsstage").value,sh=$("lsship").value,cp=$("lscomp").value,ad=$("lsads").value,wh=$("lswho").value;
  const fx=(r,re)=>r.fixes.some(f=>re.test(f));
@@ -544,7 +541,7 @@ function render(){
  if(D.ideas){$("ideatime").textContent=fmtT(D.ideas.time);$("ideas").innerHTML='<pre>'+linkify(D.ideas.message.replace(/^.*?PRODUCT IDEAS[^\n]*\n/s,""))+'</pre>'}
  else{$("ideatime").textContent="";$("ideas").innerHTML='<p class="empty">No scan in the last 12 hours. Hit “Find products” to scan now. Results list under Products found.</p>'}
  const DP=D.deep;$("deepbar").innerHTML=DP&&(DP.running||Date.now()-DP.finished<600000)&&DP.total?'<div class="dtrack"><i style="width:'+Math.round(DP.done/DP.total*100)+'%"></i></div><span>'+(DP.running?"Deep scan running: batch "+DP.done+" of "+DP.total+" done"+(DP.bot?" · now: "+DP.bot:""):"Deep scan finished")+" · "+DP.checked+" new listings checked · "+DP.found+" new products added"+(DP.running?" · new products appear below as they're found":"")+'</span>':"";
- $("deep").disabled=!!D.running;$("deep").textContent=DP&&DP.running?"Scanning… "+DP.done+"/"+DP.total:"Deep scan";
+ $("find").disabled=!!D.running||!!(DP&&DP.running);$("find").textContent=DP&&DP.running?"Finding products… "+DP.done+"/"+DP.total:"Find products";
  const P=D.products,PL0=showHidden?P.hidden:P.list,PL=makeOnly?PL0.filter(x=>/claude can make/i.test(x.status)):PL0;CUR=PL;
  $("pcount").innerHTML=(showHidden?P.hiddenCount+" hidden · ":P.total+" products · newest first · ")+'<button class="lnk" id="hidtog">'+(showHidden?"← back to list":"hidden ("+P.hiddenCount+")")+'</button> · <button class="lnk" id="mktog">'+(makeOnly?"show all":"🛠 Claude can make ("+P.list.filter(x=>/claude can make/i.test(x.status)).length+")")+'</button>';
  $("hidtog").onclick=()=>{showHidden=!showHidden;render()};$("mktog").onclick=()=>{makeOnly=!makeOnly;render()};
@@ -580,10 +577,6 @@ async function run(only,btn,label){btn.disabled=true;const old=btn.textContent;b
   toast(!j.ok?("Not run: "+(j.error||r.status)):j.finder?((j.finder.bot?j.finder.bot+": ":"")+"searched "+j.finder.searched.length+" ("+j.finder.searched.slice(0,2).join(", ").replace(/3d printed /g,"")+"…) · checked "+j.finder.checked+" printed listings · "+j.finder.found+" with 50+ sold"+(j.finder.makeable?" · "+j.finder.makeable+" Claude can make":"")+(j.finder.fresh?" · "+j.finder.fresh+" NEW on the board":"")):("Done in "+j.seconds+"s · "+j.changes+" changes · "+j.urgent+" alerts"));if(j.finder)setTimeout(()=>document.getElementById("prodp").scrollIntoView({behavior:"smooth"}),600)}catch(e){toast("Run failed: "+e.message)}
  btn.disabled=false;btn.textContent=old;load(true)}
 $("run").onclick=e=>run("",e.currentTarget,"Running…");
-$("find").onclick=e=>run("finder",e.currentTarget,"Searching eBay… (1–3 min)");
-$("mkscan").onclick=e=>run("finder&strategy=makeit",e.currentTarget,"Finding parts Claude can make…");
-$("drscan").onclick=e=>run("finder&strategy=drones",e.currentTarget,"Finding drone parts that sell…");
-$("shscan").onclick=e=>run("finder&strategy=shooting",e.currentTarget,"Finding shooting accessories that sell…");
-$("deep").onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch("/bots/deep/"+S,{method:"POST"});const j=await r.json();toast(j.ok?"Deep scan started: "+j.total+" batches (~"+Math.round(j.total*1.5)+" min). New products appear in the list as they're found. You can leave this page.":"Not started: "+(j.error||r.status))}catch(err){toast("Deep scan failed to start: "+err.message)}load(true)};
+$("find").onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch("/bots/deep/"+S,{method:"POST"});const j=await r.json();toast(j.ok?"Finding products: every finder bot, "+j.total+" batches (~"+Math.round(j.total*1.5)+" min). New products appear in the list as they're found. You can leave this page.":"Not started: "+(j.error||r.status))}catch(err){toast("Product search failed to start: "+err.message)}load(true)};
 load();setInterval(()=>load(false),20000);
 </script></body></html>`;
