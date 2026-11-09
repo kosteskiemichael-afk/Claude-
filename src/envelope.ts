@@ -39,7 +39,7 @@ async function removeFromSales(ids: Set<string>): Promise<string[]> {
     if (!changed) continue;
     const body: any = { ...m };
     if (!body.description) body.description = body.name || "Sale";
-    delete (body as any).promotionId; delete (body as any).promotionHref; delete (body as any).promotionStatus; delete (body as any).priority;
+    delete (body as any).promotionId; delete (body as any).promotionHref; delete (body as any).priority;
     await rest("PUT", `/sell/marketing/v1/item_price_markdown/${encodeURIComponent(pid)}`, { body });
     notes.push(`removed from sale "${m.name}"`);
   }

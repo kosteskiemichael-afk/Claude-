@@ -249,5 +249,18 @@
     ],
     "max_per_run": 40,
     "nylon_to_petg": true
+  },
+  "pending_envelope": {
+    "until": "2026-11-10",
+    "items": [
+      {
+        "item_id": "206575191783",
+        "price": 9.99
+      },
+      {
+        "item_id": "206555145319",
+        "price": 9.99
+      }
+    ]
   }
 }

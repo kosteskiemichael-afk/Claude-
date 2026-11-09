@@ -77,6 +77,14 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   const traffic = await trafficMap().catch(() => undefined);
   // Single listings you approved, made from options of multi-option listings. Each is made once
   // (skipped when a listing with that title already exists) and retried on later runs if eBay refuses.
+  // Approved large-envelope switch (with sale removal + price), done on the first run of the day until `until`.
+  const env = (cfg as any).pending_envelope;
+  if (env?.items?.length && firstRunOfDay && new Date().toISOString().slice(0, 10) <= env.until) await step("Envelope shipping", r, async () => {
+    const { toEnvelope } = await import("../envelope.js");
+    const res: any = await toEnvelope(env.items);
+    for (const x of res.results) (x.ok ? r.changes : r.info).push(x.ok ? `📮 Large-envelope free shipping at $${x.price}: item ${x.item_id}` : `Envelope switch not done on ${x.item_id}: ${x.error}`);
+    for (const n of res.sale) r.info.push(n);
+  });
   const splits = ((cfg as any).pending_splits || []) as { parent_item_id: string; option: string; title: string; price: number }[];
   if (splits.length) await step("New listings", r, async () => {
     const { splitOption } = await import("../split.js");
