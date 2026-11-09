@@ -245,6 +245,12 @@ app.post(`/pricing/options/${SECRET}`, async (req, res) => {
   res.json({ ok: true, results: out });
 });
 
+// Large-envelope free shipping for small flat parts (asked for). Body: {items:[{item_id, price?}]}
+app.post(`/shipping/envelope/${SECRET}`, async (req, res) => {
+  try { const { toEnvelope } = await import("./envelope.js"); res.json(await toEnvelope(req.body?.items || [])); invalidateDashboard(); }
+  catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 500) }); }
+});
+
 // Listings board: every listing with price, shipping, status, ads, traffic, profit and competition.
 app.get(`/listings/${SECRET}/data`, async (req, res) => {
   try { const { listingRows } = await import("./listingspage.js"); res.json(await listingRows(req.query.fresh === "1")); }
