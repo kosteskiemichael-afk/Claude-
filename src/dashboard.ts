@@ -65,6 +65,14 @@ function boardIdeas(): Idea[] {
   } catch { return []; }
 }
 
+// "Add these next": gears Claude picked from competitor sales (addnext.json). A row drops off once it's marked
+// listed / skipped, or once a live listing's title matches its `have` pattern.
+function addNextItems(): any[] {
+  const path = process.env.ADDNEXT_FILE || "addnext.json";
+  if (!existsSync(path)) return [];
+  try { return JSON.parse(readFileSync(path, "utf8")).items || []; } catch { return []; }
+}
+
 // All-time sales (eBay's order API keeps about 2 years of history).
 async function allTimeOrders() { return recentOrders(729, false, 20000); }
 
@@ -109,6 +117,11 @@ async function buildData() {
     });
   const productList = withNumbers(allProducts.filter((x) => !HIDDEN(x.decision) && !JUNK.test(x.title))); // no toys / gun parts
   const hiddenList = withNumbers(allProducts.filter((x) => HIDDEN(x.decision)));
+  const addNext = addNextItems().filter((x) => {
+    if (HIDDEN(decided.get(x.their) || "")) return false;
+    if (x.have) { try { const re = new RegExp(x.have, "i"); if (listings.some((l) => re.test(l.title))) return false; } catch { /* bad pattern: keep the row */ } }
+    return true;
+  });
 
   // All-time numbers.
   const months = new Map<string, { m: string; orders: number; rev: number }>();
@@ -216,6 +229,8 @@ async function buildData() {
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
+    addNext,
+    lateOrders: late.length, dueSoon: unshipped.filter((o) => o.ship_by && Date.parse(o.ship_by) >= now && Date.parse(o.ship_by) < now + 24 * 3600_000).length,
     products: { ok: sheet.ok, total: productList.length, list: productList.slice(0, 60), hidden: hiddenList.slice(0, 60), hiddenCount: hiddenList.length },
     allTime: {
       rev: allRev, orders: all.length, units: allUnits, first: isFinite(first) ? first : null,
@@ -356,7 +371,15 @@ td.m{font-family:var(--fm);white-space:nowrap;color:var(--ink)}.t2{max-width:360
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140px);background:var(--panel2);border:1px solid var(--line2);border-left:2px solid var(--ok);padding:13px 18px;border-radius:2px;font:500 13px var(--fd);transition:transform .45s var(--ease);z-index:9;max-width:calc(100% - 32px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .scan{height:1px;background:linear-gradient(90deg,transparent,var(--cy),transparent);position:absolute;left:0;right:0;top:0;animation:scan 2.4s linear infinite;opacity:0}.running .scan{opacity:1}
-.live{margin-bottom:28px}.ticker{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);max-height:340px;overflow:auto}
+.live{margin-bottom:28px}#lsp,#addp,#todayp,#profitp,#pricep{margin-bottom:28px}section[id],div[id].anc{scroll-margin-top:118px}
+.jump{display:flex;gap:6px;flex-wrap:wrap;width:100%}.jump a{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);text-decoration:none;padding:6px 10px;border:1px solid var(--line2);border-radius:2px;white-space:nowrap}
+.jump a:hover{border-color:var(--cy);color:var(--ink)}.jump a b{color:var(--bad);font-weight:600}
+.today{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.today>div{background:var(--panel2);padding:16px 18px;min-width:0}
+.today h3{font:500 10.5px var(--fm);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:0 0 8px}
+.td{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink2);align-items:baseline}.td b{min-width:30px;font:600 14px var(--fm);color:var(--ink)}.td span{min-width:0;overflow-wrap:anywhere}.td a{color:#7d9bff}
+.duo{grid-template-columns:1.6fr 1fr;margin-bottom:28px}.duo .live{margin-bottom:0}
+#addt td{white-space:normal;vertical-align:top}#addt td.m{white-space:nowrap}#addt .at{color:var(--ink);font-weight:500}#addt .ah{font-size:12px;color:var(--mute);max-width:380px}#addt .ag{font:500 10px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+#addt .pb{display:inline-block;padding:6px 9px;font-size:12px;margin:0 4px 4px 0;flex:none}.ticker{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);max-height:340px;overflow:auto}
 .sale{display:grid;grid-template-columns:96px 1fr auto 96px;gap:14px;align-items:center;padding:12px 14px;background:var(--panel2);font-size:13.5px}
 .sale .amt{font:500 16px var(--fd);letter-spacing:-.01em;color:var(--ink)}.sale .what{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
 .sale .st{font:500 10px var(--fm);letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(242,178,58,.45);color:var(--warn);border-radius:2px}.sale .st.ok{border-color:rgba(59,224,138,.4);color:var(--ok)}
@@ -404,8 +427,9 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 .dtrack{height:2px;background:var(--line2)}.dtrack i{display:block;height:100%;background:var(--cy);box-shadow:0 0 10px rgba(47,98,255,.6);transition:width .6s var(--ease)}
 @keyframes pulse{50%{opacity:.35}}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes mq{to{transform:translateX(-50%)}}
 @keyframes newsale{0%{background:rgba(59,224,138,.18)}100%{background:var(--panel2)}}
-@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three{grid-template-columns:1fr}}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.main,.three,.duo,.today{grid-template-columns:1fr}}
 @media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.hud{width:100%}.btn{flex:1}.chip.hide{display:none}.spec{text-align:left}
+.jump{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}section[id],div[id].anc{scroll-margin-top:150px}
 .sale{grid-template-columns:80px 1fr;row-gap:6px}.sale .st{justify-self:start}.sale time{text-align:left}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body><div class="wrap" id="app">
@@ -418,20 +442,15 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <button class="btn mg" id="find">Find products</button>
     <button class="btn" id="run">Run all bots →</button>
   </div>
+  <nav class="jump"><a href="#todayp">Today <b id="jlate"></b></a><a href="#livep">Live sales</a><a href="#queuep">Print queue</a><a href="#lsp">Listings &amp; competition</a><a href="#addp">Add next</a><a href="#prodp">Products found</a><a href="#salesp">Bots &amp; sales</a><a href="#allp">All-time</a><a href="#actp">Activity</a><a href="#profitp">Profit</a></nav>
 </header>
 <div class="marquee"><div id="mq"></div></div>
-<div class="hero"><div><div class="eyebrow">NEXA-MFG // eBay · nexamfgco</div><h2 class="big">Store operations,<br><em>running on autopilot.</em></h2></div>
-<div class="spec">Bots <b>7</b> online<br>Schedule <b>7AM · 1PM · 7PM</b><br>Status <b id="spec">—</b></div></div>
-<div class="grid kpis" id="kpis"></div>
-<div class="grid main">
-  <section class="panel"><div class="scan"></div><h2>Bot fleet <small id="lastrun"></small></h2><div class="bots" id="bots"></div></section>
-  <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
-</div>
-<section class="panel" id="allp"><div class="scan"></div><h2>Total sales ever <small id="since"></small></h2>
-<div class="grid atk" id="atk"></div>
-<div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
-<div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
+<span id="spec" hidden></span><div class="grid kpis" id="kpis"></div>
+<section class="panel" id="todayp"><div class="scan"></div><h2>Today <small id="todaystat"></small></h2><div class="today" id="today"></div></section>
+<div class="grid duo">
 <section class="panel live" id="livep"><h2>Live sales · eBay <small><span class="dot" style="display:inline-block;vertical-align:middle"></span> updating every 20s · <label style="cursor:pointer"><input type="checkbox" id="chime"> chime on new sale</label></small></h2><div class="ticker" id="ticker"></div></section>
+  <section class="panel" id="queuep"><h2>Print queue <small id="qcount"></small></h2><div id="queue"></div></section>
+</div>
 <section class="panel" id="lsp"><div class="scan"></div><h2>All listings &amp; competition <small id="lsstat"></small></h2>
 <div class="cmpk" id="cmpk"></div>
 <div id="cmpop" style="margin:0 0 14px"></div>
@@ -446,13 +465,22 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
 <th data-k="impressions">Shown 30d</th><th data-k="views">Clicks</th><th data-k="ctr">CTR %</th><th data-k="sold30">Sold 30d</th><th data-k="sold_total">Sold all</th>
 <th data-k="profit">Profit/sale</th><th data-k="margin">Margin</th><th data-k="photos">Photos</th><th data-k="topd">Top seller</th><th data-k="cheapd">Cheapest</th><th data-k="gap">You vs best</th><th>Fixes</th>
 </tr></thead><tbody id="lstb"></tbody></table></div></section>
+<section class="panel" id="addp"><div class="scan"></div><h2>Add these next <small id="addstat"></small></h2>
+<div class="scroll"><table id="addt"></table></div></section>
 <section class="panel" id="prodp"><h2>Products found <small id="pcount"></small></h2><div class="deepbar" id="deepbar"></div><div class="prods" id="prods"></div></section>
-<div class="grid three">
+<div class="grid main anc" id="salesp">
+  <section class="panel"><div class="scan"></div><h2>Bot fleet <small id="lastrun"></small></h2><div class="bots" id="bots"></div></section>
+  <section class="panel sales"><h2>Sales · 30 days</h2><div class="big" id="big"></div><svg class="chart" id="chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="top5" id="top"></div></section>
+</div>
+<section class="panel" id="allp"><div class="scan"></div><h2>Total sales ever <small id="since"></small></h2>
+<div class="grid atk" id="atk"></div>
+<div class="atwrap"><div><div class="sub2">Revenue by month</div><svg class="chart tall" id="mchart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div class="mlabels" id="mlabels"></div></div>
+<div><div class="sub2">Best sellers, all time</div><div class="scroll"><table id="attop"></table></div></div></div></section>
+<div class="grid main anc" id="actp">
   <section class="panel"><h2>Live activity <small>tap an entry to expand</small></h2><div class="feed" id="feed"></div></section>
   <section class="panel ideas"><h2>Product radar <small id="ideatime"></small></h2><div id="ideas"></div></section>
-  <section class="panel"><h2>Print queue <small id="qcount"></small></h2><div id="queue"></div></section>
 </div>
-<section class="panel"><h2>Price watch <small>bot-tracked listings</small></h2><div class="scroll"><table id="price"></table></div></section>
+<section class="panel" id="pricep"><h2>Price watch <small>bot-tracked listings</small></h2><div class="scroll"><table id="price"></table></div></section>
 <section class="panel" id="profitp"><h2>Profit per sale <small id="profsum"></small></h2><div class="scroll" style="max-height:520px"><table id="profit"></table></div></section>
 </div>
 <div class="toast" id="toast"></div>
@@ -483,11 +511,36 @@ function lsRender(){if(!LS)return;const all=LS.rows||[];
   '<td>'+(r.top?'<a href="'+esc(r.top.url)+'" target="_blank">'+esc(r.top.seller)+'</a><br>'+money(r.top.delivered)+(r.top.free?' <span class="sg">free</span>':'')+' · '+r.top.sold+' sold':'<span style="color:var(--mute)">–</span>')+'</td>'+
   '<td>'+(r.cheapest?'<a href="'+esc(r.cheapest.url)+'" target="_blank">'+esc(r.cheapest.seller)+'</a><br>'+money(r.cheapest.delivered)+(r.cheapest.free?' <span class="sg">free</span>':''):'<span style="color:var(--mute)">–</span>')+'</td>'+
   '<td class="'+(r.gap==null?"":r.gap>0.5?"sr":"sg")+'">'+(r.gap==null?"–":(r.gap>0?"+":"−")+money(Math.abs(r.gap)))+'</td><td class="fx">'+esc(r.fixes.join(" · "))+'</td></tr>').join("")||'<tr><td colspan="19" style="color:var(--mute)">Nothing matches.</td></tr>';}
-async function lsLoad(){try{const [a,b]=await Promise.all([fetch("/listings/"+S+"/data",{cache:"no-store"}).then(r=>r.json()),fetch("/report/compete/"+S,{cache:"no-store"}).then(r=>r.json()).catch(()=>null)]);if(a.error)throw new Error(a.error);LS=a;CMP=b;lsRender()}catch(e){$("lsstat").textContent="couldn't load: "+e.message}}
+async function lsLoad(){try{const [a,b]=await Promise.all([fetch("/listings/"+S+"/data",{cache:"no-store"}).then(r=>r.json()),fetch("/report/compete/"+S,{cache:"no-store"}).then(r=>r.json()).catch(()=>null)]);if(a.error)throw new Error(a.error);LS=a;CMP=b;lsRender();todayRender()}catch(e){$("lsstat").textContent="couldn't load: "+e.message}}
 document.querySelectorAll("#lsp th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;lsDir=lsK===k?-lsDir:-1;lsK=k;lsRender()});
 ["lsstage","lsship","lscomp","lsads","lswho"].forEach(i=>$(i).onchange=lsRender);$("lsq").oninput=lsRender;
 lsLoad();setInterval(lsLoad,60000);
 
+// ---- Today (what needs doing) + Add these next ----
+let LAST=null;
+async function lastLoad(){try{LAST=await fetch("/bots/last/"+S,{cache:"no-store"}).then(r=>r.json());todayRender()}catch(e){}}
+function todayRender(){if(!D)return;const k=D.kpis,rows=LS&&LS.rows||[];const row=(n,t,c)=>'<div class="td"><b class="'+(c||"")+'">'+n+'</b><span>'+t+'</span></div>';
+ const q=D.queue||[],qn=q.reduce((a,x)=>a+x.qty,0);
+ const ship=row(D.lateOrders||0,"orders past their ship-by date",D.lateOrders?"sr":"sg")+row(D.dueSoon||0,"more must ship within 24 hours",D.dueSoon?"sy":"")+row(k.unshipped,"orders to ship in total")+row(qn,'parts to print · <a href="#queuep">print queue</a>')+q.slice(0,5).map(x=>row(x.qty+"×",esc(x.title.slice(0,60)))).join("");
+ const ch=LAST&&LAST.changes||[],ur=LAST&&LAST.urgent||[];
+ const bots=(ur.map(x=>row("!",esc(x.split("\n")[0].slice(0,140)),"sr")).join(""))+(ch.length?ch.slice(0,8).map(x=>row("→",esc(x.slice(0,150)))).join("")+(ch.length>8?row("+"+(ch.length-8),'more in <a href="#actp">activity</a>'):""):row("0",LAST&&LAST.at?"changes in the last run":"No run since the server last restarted. Runs at 7am, 1pm and 7pm, or press Run all bots."));
+ const below=rows.filter(r=>r.floor&&r.price<r.floor-0.01&&!r.protected),locked=below.filter(r=>r.on_sale).length;
+ const ph=rows.filter(r=>(r.fixes||[]).some(f=>/photo/i.test(f))).length,ns=rows.filter(r=>r.stage==="not shown (search)").length,prot=rows.filter(r=>r.protected).length,an=(D.addNext||[]).length;
+ const you=(below.length?row(below.length,"listings priced below your profit floor. Bots raise them on the morning run"+(locked?"; "+locked+" locked in a sale event until removed from the sale":"")+": "+below.slice(0,4).map(r=>esc(r.title.slice(0,28))).join(", ")+(below.length>4?"…":""),"sy"):row(0,"listings below your profit floor","sg"))
+  +(an?row(an,'gears to list · <a href="#addp">see the list</a>',"sb"):"")
+  +(ph?row(ph,'listings need more photos · <a href="#lsp">filter “Needs photos”</a>'):"")
+  +(rows.length?row(ns,'listings barely shown in search · <a href="#lsp">filter by status</a>'):row("…","loading listings"))
+  +(prot?row(prot,"burr holder listings still live (bots never touch them; end them in Seller Hub if you are done with them)"):"")
+  +(k.lowStock?row(k.lowStock,"listings low on stock","sy"):"");
+ $("today").innerHTML='<div><h3>Ship now</h3>'+ship+'</div><div><h3>Bots did · last run</h3>'+bots+'</div><div><h3>Needs you</h3>'+you+'</div>';
+ $("todaystat").textContent=(LAST&&LAST.at?"last run "+fmtT(LAST.at):"")+(LS?" · listings "+new Date(LS.listingsAt).toLocaleTimeString():"");
+ $("jlate").textContent=D.lateOrders?D.lateOrders+" late":"";}
+function addRender(){if(!D)return;const A=D.addNext||[];$("addstat").textContent=A.length?A.length+" to list · proven sellers on eBay · most sold first within each lathe":"all listed";
+ $("addt").innerHTML=A.length?'<tr><th>List this (tap to copy title)</th><th>Proof it sells</th><th>Your price</th><th>CAD file</th><th></th></tr>'+A.map((x,i)=>'<tr><td><div class="ag">'+esc(x.group)+'</div><span class="at" data-cp="'+i+'" style="cursor:copy">'+esc(x.title)+'</span></td><td class="m"><a target="_blank" rel="noopener" href="'+esc(x.their)+'" style="color:#7d9bff">'+x.sold+' sold ↗</a><br><span style="color:var(--mute)">'+money(x.their_delivered)+' delivered</span></td><td class="m"><b style="color:var(--ok)">'+money(x.price)+'</b><br><span style="color:var(--mute)">free shipping</span></td><td class="ah">'+linkify(x.cad)+'</td><td><button class="pb ok2" data-al="'+i+'">✓ Listed it</button><button class="pb no2" data-as="'+i+'">✕ Skip</button></td></tr>').join(""):'<tr><td class="empty">Nothing waiting. Ask Claude for more gears to add.</td></tr>';
+ const go=async(i,d)=>{const x=A[i];D.addNext=A.filter(y=>y!==x);addRender();todayRender();try{const r=await fetch("/dashboard/"+S+"/decide",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ebay:x.their,decision:d,row:{found:new Date().toISOString().slice(0,10),title:x.title,sold:x.sold,price:x.price,status:"Add next list"}})});const j=await r.json();if(!j.ok)throw new Error(j.error||r.status);toast(d==="added"?"Marked as listed":"Skipped")}catch(e){toast("Couldn't save that choice: "+e.message)}};
+ document.querySelectorAll("#addt [data-al]").forEach(b=>b.onclick=()=>go(+b.dataset.al,"added"));document.querySelectorAll("#addt [data-as]").forEach(b=>b.onclick=()=>go(+b.dataset.as,"dismissed"));
+ document.querySelectorAll("#addt [data-cp]").forEach(b=>b.onclick=()=>{try{navigator.clipboard.writeText(A[+b.dataset.cp].title);toast("Title copied")}catch(e){}});}
+lastLoad();setInterval(lastLoad,60000);
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
 let D=null,open=new Set(),seen=null,showHidden=false,makeOnly=false,CUR=[];
 // Search links for a CAD file, free and paid. A paid file must still allow selling prints (commercial license).
@@ -569,6 +622,7 @@ function render(){
   $("profsum").textContent="est. profit 30d "+money(D.kpis.profit30||0)+" · "+bad+" under "+P.guardPct+"% · "+thin+" under "+P.floorPct+"%";
   $("profit").innerHTML='<tr><th>Listing</th><th>Price</th><th>Shipping</th><th>Ad</th><th>Profit / sale</th><th>Margin</th><th>Floor ('+P.floorPct+'%)</th><th>Sold 30d</th></tr>'+R.map(r=>{const c=r.margin<P.guardPct?"#FF5C5C":r.margin<P.floorPct?"#FFB020":"#3BE08A";
    return '<tr><td class="t2">'+esc(r.title)+(r.protected?' <span class="lic">locked</span>':'')+(r.variations?' <span class="lic">variations</span>':'')+'</td><td class="m">'+money(r.price)+'</td><td class="m">'+(r.ship==="free"?"free (you pay)":r.ship+" +"+money(r.buyerShip))+'</td><td class="m">'+r.ad+'%</td><td class="m" style="color:'+c+'">'+money(r.profit)+'</td><td class="m" style="color:'+c+'">'+r.margin+'%</td><td class="m">'+money(r.floor)+'</td><td class="m">'+r.sold30+'</td></tr>'}).join("")}
+ todayRender();addRender();
  tick();
 }
 async function load(fresh){try{const r=await fetch("/dashboard/"+S+"/data"+(fresh?"?fresh=1":""),{cache:"no-store"});if(!r.ok)throw new Error(r.status);D=await r.json();if(D.error)throw new Error(D.error);render()}catch(e){$("sys").textContent="LINK LOST · RETRYING";$("sysdot").className="dot bad"}}
