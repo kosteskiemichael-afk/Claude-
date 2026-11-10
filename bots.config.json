@@ -179,7 +179,15 @@
       }
     },
     "once_per_day": true,
-    "min_change": 0.5
+    "min_change": 0.5,
+    "costs": {
+      "206575191783": {
+        "label": 2.5
+      },
+      "206555145319": {
+        "label": 2.5
+      }
+    }
   },
   "pending_splits": [
     {
