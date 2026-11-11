@@ -26,8 +26,8 @@
     "small_item_price": 10,
     "small_item_margin": 0.5,
     "min_profit": 2.5,
-    "small_cut_max": 1.0,
-    "cooldown_days": 7,
+    "small_cut_max": 2.0,
+    "cooldown_days": 3,
     "max_step_pct": 0.1,
     "rules": {
       "206527145323": {
@@ -187,7 +187,9 @@
       "206555145319": {
         "label": 2.0
       }
-    }
+    },
+    "stale_views": 8,
+    "stale_cut_pct": 0.08
   },
   "pending_splits": [
     {
@@ -270,5 +272,11 @@
         "price": 9.99
       }
     ]
+  },
+  "gear_note": {
+    "enabled": true,
+    "marker": "custom gear",
+    "max_per_run": 25,
+    "html": "<br><br><p><b>Need a different gear, or don't see the one you need?</b> We make custom gears and replacement parts. Send us a message with your machine make and model, the tooth count, bore size and pitch (or a photo of your old gear), and we'll get back to you with a quote.</p>"
   }
 }

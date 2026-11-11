@@ -15,6 +15,9 @@ import { serviceBot } from "./service.js";
 import { finderBot, morningExtra, morningFocus, nextStrategy, Strategy } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
+// Gear listings that already carry the custom-gear note (refilled from eBay after a restart).
+const gearNoted = new Set<string>();
+
 export function localHour(tz: string, d = new Date()): number {
   const h = new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: tz }).format(d);
   return Number(h);
@@ -118,6 +121,32 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
       } catch (e) { r.info.push(`Title swap failed on ${l.title.slice(0, 40)}: ${(e as Error).message.slice(0, 120)}`); if (/usage limit|exceeded/i.test((e as Error).message)) break; }
     }
     if (skipped.length) r.info.push(`Title swap skipped ${skipped.length} that may not be PETG (outdoor/ASA/other material), tell Claude which are PETG: ${skipped.slice(0, 12).join("; ")}`);
+  });
+  // Custom-gear note you asked for: added once to the end of every gear listing's description.
+  // Listings that already have it are skipped; at most max_per_run per run so eBay's daily limits hold.
+  const gn = (cfg as any).gear_note;
+  if (gn?.enabled) await step("Gear note", r, async () => {
+    const { trading } = await import("../ebay.js");
+    const isGear = new RegExp(gn.match || "\\b(gears?|sprockets?|pulleys?|worm)\\b", "i");
+    const todo = listings.filter((l) => !l.protected && isGear.test(l.title) && !gearNoted.has(l.item_id));
+    let done = 0, already = 0;
+    for (const l of todo) {
+      if (done + already >= (gn.max_per_run ?? 25)) break;
+      try {
+        const it = await trading("GetItem", { ItemID: l.item_id, DetailLevel: "ReturnAll" });
+        const desc = String(it?.Item?.Description ?? "");
+        if (desc.toLowerCase().includes(String(gn.marker || "custom gear").toLowerCase())) { gearNoted.add(l.item_id); already++; continue; }
+        if (!cfg.dry_run) await trading("ReviseFixedPriceItem", { Item: { ItemID: l.item_id, Description: desc + gn.html } });
+        gearNoted.add(l.item_id); done++;
+      } catch (e) {
+        const m = (e as Error).message;
+        r.info.push(`Gear note failed on ${l.title.slice(0, 40)}: ${m.slice(0, 120)}`);
+        if (/usage limit|exceeded/i.test(m)) break;
+      }
+    }
+    const left = todo.length - done - already;
+    if (done) r.changes.push(`📝 Added the custom-gear note to ${done} gear listing description(s)${left > 0 ? `; ${left} left for the next runs` : ""}.`);
+    else if (left <= 0) r.info.push(`Custom-gear note is on every gear listing.`);
   });
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
