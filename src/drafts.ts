@@ -56,6 +56,8 @@ export async function listDrafts(): Promise<Draft[]> {
   return out;
 }
 
+// A live listing with free shipping (Atlas 10/12 20T gear) whose shipping setup every draft reuses.
+const FREE_SHIP_REF = "206674883733";
 const templates = new Map<string, any>();
 async function template(id: string) {
   if (!templates.has(id)) {
@@ -96,9 +98,12 @@ export async function submitDraft(q: DraftReq) {
     ConditionID: txt(it.ConditionID) || "1000",
     DispatchTimeMax: txt(it.DispatchTimeMax) || "3",
     ItemSpecifics: { NameValueList: [...specs.entries()].map(([Name, Value]) => ({ Name, Value })) },
-    ShippingDetails: { ShippingType: "Flat", ShippingServiceOptions: [{ ShippingServicePriority: 1, ShippingService: "USPSGroundAdvantage", ShippingServiceCost: "0.00", FreeShipping: "true" }] },
     ReturnPolicy: it.ReturnPolicy,
   };
+  // Free shipping: copy the shipping setup from one of your live free-shipping gear listings, which eBay already accepts.
+  const ship = await template(FREE_SHIP_REF);
+  item.ShippingDetails = ship.ShippingDetails;
+  if (ship.ShippingPackageDetails) item.ShippingPackageDetails = ship.ShippingPackageDetails;
   // Verify needs a photo; until real ones are added, check with the template's first photo (never listed).
   const verifyItem = { ...item, PictureDetails: { PictureURL: photos.length ? photos : arr(it.PictureDetails?.PictureURL).map(txt).slice(0, 1) } };
   const verify = await trading("VerifyAddFixedPriceItem", { Item: verifyItem });
