@@ -379,6 +379,13 @@ td.m{font-family:var(--fm);white-space:nowrap;color:var(--ink)}.t2{max-width:360
 .td{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink2);align-items:baseline}.td b{min-width:30px;font:600 14px var(--fm);color:var(--ink)}.td span{min-width:0;overflow-wrap:anywhere}.td a{color:#7d9bff}
 .duo{grid-template-columns:1.6fr 1fr;margin-bottom:28px}.duo .live{margin-bottom:0}
 #addt td{white-space:normal;vertical-align:top}#addt td.m{white-space:nowrap}#addt .at{color:var(--ink);font-weight:500}#addt .ah{font-size:12px;color:var(--mute);max-width:380px}#addt .ag{font:500 10px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+#drm .drbg{position:fixed;inset:0;background:#000a;z-index:60}#drm .drbox{position:fixed;z-index:61;top:50%;left:50%;transform:translate(-50%,-50%);width:min(640px,calc(100vw - 24px));max-height:90vh;overflow:auto;background:var(--panel2);border:1px solid var(--line2);padding:18px;border-radius:4px}
+#drm label{display:block;font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:12px 0 4px}#drm input[type=text],#drm input:not([type]),#drm input[type=number]{width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line2);padding:9px;font-size:15px;border-radius:2px;box-sizing:border-box}
+#drm .drrow{display:flex;gap:10px;margin-top:10px}#drm .drrow>div{flex:1}#drm small{color:var(--mute);font-size:11px}#drm .drs{font-size:13px;color:var(--ink2);margin:6px 0}
+#drm .drph{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}#drm .drph span{position:relative}#drm .drph img{width:84px;height:84px;object-fit:cover;border:1px solid var(--line2)}#drm .drph button{position:absolute;top:2px;right:2px;background:#000c;color:#fff;border:0;cursor:pointer}
+#drm .drx{float:right;background:none;border:0;color:var(--ink2);font-size:18px;cursor:pointer}#drm .drd{background:#fff;color:#111;padding:10px;margin-top:6px;max-height:300px;overflow:auto}#drm details{margin-top:10px;color:var(--ink2)}
+#drm .pb{flex:1;padding:11px 12px;background:var(--panel);color:var(--ink);border:1px solid var(--line2);font:500 13px var(--fm);cursor:pointer;border-radius:2px}#drm .pb.ok2{border-color:var(--ok);color:var(--ok)}
+#addt .pb.go2{border-color:var(--cy);color:var(--ink)}
 #addt .pb{display:inline-block;padding:6px 9px;font-size:12px;margin:0 4px 4px 0;flex:none}.ticker{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);max-height:340px;overflow:auto}
 .sale{display:grid;grid-template-columns:96px 1fr auto 96px;gap:14px;align-items:center;padding:12px 14px;background:var(--panel2);font-size:13.5px}
 .sale .amt{font:500 16px var(--fd);letter-spacing:-.01em;color:var(--ink)}.sale .what{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
@@ -536,10 +543,35 @@ function todayRender(){if(!D)return;const k=D.kpis,rows=LS&&LS.rows||[];const ro
  $("todaystat").textContent=(LAST&&LAST.at?"last run "+fmtT(LAST.at):"")+(LS?" · listings "+new Date(LS.listingsAt).toLocaleTimeString():"");
  $("jlate").textContent=D.lateOrders?D.lateOrders+" late":"";}
 function addRender(){if(!D)return;const A=D.addNext||[];$("addstat").textContent=A.length?A.length+" to list · proven sellers on eBay · most sold first within each lathe":"all listed";
- $("addt").innerHTML=A.length?'<tr><th>List this (tap to copy title)</th><th>Proof it sells</th><th>Your price</th><th>CAD file</th><th></th></tr>'+A.map((x,i)=>'<tr><td><div class="ag">'+esc(x.group)+'</div><span class="at" data-cp="'+i+'" style="cursor:copy">'+esc(x.title)+'</span></td><td class="m"><a target="_blank" rel="noopener" href="'+esc(x.their)+'" style="color:#7d9bff">'+x.sold+' sold ↗</a><br><span style="color:var(--mute)">'+money(x.their_delivered)+' delivered</span></td><td class="m"><b style="color:var(--ok)">'+money(x.price)+'</b><br><span style="color:var(--mute)">free shipping</span></td><td class="ah">'+linkify(x.cad)+'</td><td><button class="pb ok2" data-al="'+i+'">✓ Listed it</button><button class="pb no2" data-as="'+i+'">✕ Skip</button></td></tr>').join(""):'<tr><td class="empty">Nothing waiting. Ask Claude for more gears to add.</td></tr>';
+ $("addt").innerHTML=A.length?'<tr><th>List this (tap to copy title)</th><th>Proof it sells</th><th>Your price</th><th>CAD file</th><th></th></tr>'+A.map((x,i)=>'<tr><td><div class="ag">'+esc(x.group)+'</div><span class="at" data-cp="'+i+'" style="cursor:copy">'+esc(x.title)+'</span></td><td class="m"><a target="_blank" rel="noopener" href="'+esc(x.their)+'" style="color:#7d9bff">'+x.sold+' sold ↗</a><br><span style="color:var(--mute)">'+money(x.their_delivered)+' delivered</span></td><td class="m"><b style="color:var(--ok)">'+money(x.price)+'</b><br><span style="color:var(--mute)">free shipping</span></td><td class="ah">'+linkify(x.cad)+'</td><td>'+(DR[x.their]?'<button class="pb go2" data-dr="'+i+'">📝 Open draft</button>':'')+'<button class="pb ok2" data-al="'+i+'">✓ Listed it</button><button class="pb no2" data-as="'+i+'">✕ Skip</button></td></tr>').join(""):'<tr><td class="empty">Nothing waiting. Ask Claude for more gears to add.</td></tr>';
  const go=async(i,d)=>{const x=A[i];D.addNext=A.filter(y=>y!==x);addRender();todayRender();try{const r=await fetch("/dashboard/"+S+"/decide",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ebay:x.their,decision:d,row:{found:new Date().toISOString().slice(0,10),title:x.title,sold:x.sold,price:x.price,status:"Add next list"}})});const j=await r.json();if(!j.ok)throw new Error(j.error||r.status);toast(d==="added"?"Marked as listed":"Skipped")}catch(e){toast("Couldn't save that choice: "+e.message)}};
  document.querySelectorAll("#addt [data-al]").forEach(b=>b.onclick=()=>go(+b.dataset.al,"added"));document.querySelectorAll("#addt [data-as]").forEach(b=>b.onclick=()=>go(+b.dataset.as,"dismissed"));
+ document.querySelectorAll("#addt [data-dr]").forEach(b=>b.onclick=()=>drOpen(DR[A[+b.dataset.dr].their]));
  document.querySelectorAll("#addt [data-cp]").forEach(b=>b.onclick=()=>{try{navigator.clipboard.writeText(A[+b.dataset.cp].title);toast("Title copied")}catch(e){}});}
+// ---- Listing drafts: bot-written listings you check, add photos to, and submit ----
+let DR={};
+async function drLoad(){try{const j=await fetch("/drafts/"+S+"/data",{cache:"no-store"}).then(r=>r.json());DR={};(j.drafts||[]).forEach(d=>DR[d.key]=d);addRender()}catch(e){}}
+function drOpen(d){if(!d)return;let photos=[];let m=$("drm");if(!m){m=document.createElement("div");m.id="drm";document.body.appendChild(m)}
+ m.innerHTML='<div class="drbg"></div><div class="drbox"><button class="drx" id="drx">✕</button><div class="ag">'+esc(d.group)+' · draft</div>'+
+ '<label>Title <small id="drn"></small></label><input id="drt" maxlength="80" value="'+esc(d.title)+'">'+
+ '<div class="drrow"><div><label>Price (free shipping)</label><input id="drp" type="number" step="0.01" min="'+d.floor+'" value="'+d.price.toFixed(2)+'"><small>profit floor $'+d.floor.toFixed(2)+'</small></div><div><label>Quantity</label><input id="drq" type="number" min="1" value="'+d.quantity+'"></div></div>'+
+ '<label>Specs in the description</label><div class="drs">'+esc(d.specs)+'</div>'+
+ '<label>Photos <small>(at least 1 to submit · first is the main photo)</small></label><div id="drph" class="drph"></div><input id="drf" type="file" accept="image/*" multiple>'+
+ '<div class="drrow"><button class="pb" id="drv">Check with eBay</button><button class="pb ok2" id="drs">Submit listing</button></div><div id="drmsg" class="drs"></div>'+
+ '<details><summary>Description preview</summary><div class="drd">'+d.description+'</div></details>'+
+ '<div class="ah">Proof it sells: <a target="_blank" rel="noopener" href="'+esc(d.their)+'" style="color:#7d9bff">'+d.sold+' sold ↗</a></div></div>';
+ const msg=t=>$("drmsg").innerHTML=t;const cnt=()=>$("drn").textContent=$("drt").value.length+"/80";cnt();$("drt").oninput=cnt;
+ const ph=()=>$("drph").innerHTML=photos.map((u,i)=>'<span><img src="'+esc(u)+'"><button data-rm="'+i+'">✕</button></span>').join("")||'<span class="ah">No photos yet</span>';ph();
+ $("drph").onclick=e=>{const i=e.target.dataset&&e.target.dataset.rm;if(i!==undefined){photos.splice(+i,1);ph()}};
+ $("drx").onclick=()=>m.innerHTML="";m.querySelector(".drbg").onclick=()=>m.innerHTML="";
+ $("drf").onchange=async e=>{for(const f of [...e.target.files]){msg("Uploading "+esc(f.name)+"…");try{const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)});const j=await fetch("/drafts/"+S+"/photo",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({data,name:f.name})}).then(r=>r.json());if(!j.ok)throw new Error(j.error);photos.push(j.url);ph();msg("Photo added")}catch(err){msg("Photo upload failed: "+esc(err.message))}}e.target.value=""};
+ const send=async v=>{const body={key:d.key,title:$("drt").value,price:+$("drp").value,quantity:+$("drq").value,photos,verify_only:v};msg(v?"Checking with eBay…":"Submitting…");
+  try{const j=await fetch("/drafts/"+S+"/submit",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)}).then(r=>r.json());if(!j.ok)throw new Error(j.error);
+   if(v)msg("✓ eBay accepts this listing."+(j.fees&&j.fees.length?" Fees: "+esc(j.fees.join(", ")):" No listing fees."));
+   else{m.innerHTML="";delete DR[d.key];D.addNext=(D.addNext||[]).filter(x=>x.their!==d.key);addRender();todayRender();toast("Listed! "+j.url);window.open(j.url,"_blank")}}
+  catch(err){msg("✕ "+esc(err.message))}};
+ $("drv").onclick=()=>send(true);$("drs").onclick=()=>{if(!photos.length)return msg("Add at least one photo first.");if(confirm("List this on eBay now at $"+(+$("drp").value).toFixed(2)+"?"))send(false)};}
+drLoad();
 lastLoad();setInterval(lastLoad,60000);
 const fmtT=t=>new Date(t).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"});
 let D=null,open=new Set(),seen=null,showHidden=false,makeOnly=false,CUR=[];

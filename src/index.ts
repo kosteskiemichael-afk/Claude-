@@ -29,7 +29,7 @@ function buildServer() {
 }
 
 const app = express();
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "20mb" })); // listing-draft photos are sent as base64
 
 app.get("/", (_req, res) => { res.type("text").send("Nexa eBay connector is running."); });
 
@@ -249,6 +249,20 @@ app.post(`/pricing/options/${SECRET}`, async (req, res) => {
 app.post(`/shipping/envelope/${SECRET}`, async (req, res) => {
   try { const { toEnvelope } = await import("./envelope.js"); res.json(await toEnvelope(req.body?.items || [])); invalidateDashboard(); }
   catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 500) }); }
+});
+
+// Listing drafts ("Add these next" gears written as full listings; Michael adds photos and submits).
+app.get(`/drafts/${SECRET}/data`, async (_req, res) => {
+  try { const { listDrafts } = await import("./drafts.js"); res.set("Cache-Control", "no-store").json({ ok: true, drafts: await listDrafts() }); }
+  catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 400) }); }
+});
+app.post(`/drafts/${SECRET}/photo`, async (req, res) => {
+  try { const { uploadPhoto } = await import("./drafts.js"); res.json({ ok: true, url: await uploadPhoto(String(req.body?.data || ""), String(req.body?.name || "photo.jpg")) }); }
+  catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 400) }); }
+});
+app.post(`/drafts/${SECRET}/submit`, async (req, res) => {
+  try { const { submitDraft } = await import("./drafts.js"); const r = await submitDraft(req.body || {}); if (!req.body?.verify_only) invalidateDashboard(); res.json(r); }
+  catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 600) }); }
 });
 
 // Message buyers through eBay messages (order partners): {items:[{item_id, buyer, subject, body}]}.
