@@ -251,6 +251,21 @@ app.post(`/shipping/envelope/${SECRET}`, async (req, res) => {
   catch (e) { res.status(500).json({ ok: false, error: (e as Error).message.slice(0, 500) }); }
 });
 
+// Message buyers through eBay messages (order partners): {items:[{item_id, buyer, subject, body}]}.
+app.post(`/buyers/message/${SECRET}`, async (req, res) => {
+  const { trading } = await import("./ebay.js");
+  const out: any[] = [];
+  for (const m of (req.body?.items || []).slice(0, 20)) {
+    try {
+      await trading("AddMemberMessageAAQToPartner", { ItemID: String(m.item_id), MemberMessage: {
+        Subject: String(m.subject).slice(0, 100), Body: String(m.body).slice(0, 2000),
+        QuestionType: "General", RecipientID: String(m.buyer) } });
+      out.push({ buyer: m.buyer, ok: true });
+    } catch (e) { out.push({ buyer: m.buyer, ok: false, error: (e as Error).message.slice(0, 300) }); }
+  }
+  res.json({ ok: out.every((x) => x.ok), results: out });
+});
+
 // Listings board: every listing with price, shipping, status, ads, traffic, profit and competition.
 app.get(`/listings/${SECRET}/data`, async (req, res) => {
   try { const { listingRows } = await import("./listingspage.js"); res.json(await listingRows(req.query.fresh === "1")); }
