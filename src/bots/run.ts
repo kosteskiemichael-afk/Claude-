@@ -12,6 +12,7 @@ import { titleBot } from "./titles.js";
 import { feedbackBot } from "./feedback.js";
 import { productionBot } from "./production.js";
 import { serviceBot } from "./service.js";
+import { val } from "./shared.js";
 import { finderBot, morningExtra, morningFocus, nextStrategy, Strategy } from "./finder.js";
 import { activeListings, loadConfig, newReport, recentOrders, Report } from "./shared.js";
 
@@ -134,7 +135,9 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
       if (done + already >= (gn.max_per_run ?? 25)) break;
       try {
         const it = await trading("GetItem", { ItemID: l.item_id, DetailLevel: "ReturnAll" });
-        const desc = String(it?.Item?.Description ?? "");
+        const raw = it?.Item?.Description; const desc = typeof raw === "string" ? raw : String(val(raw) ?? "");
+        // Never write a description we couldn't read: an empty read would wipe the listing down to just the note.
+        if (desc.replace(/<[^>]*>/g, "").trim().length < 80) { r.info.push(`Gear note skipped (couldn't read description): ${l.title.slice(0, 40)}`); gearNoted.add(l.item_id); continue; }
         if (desc.toLowerCase().includes(String(gn.marker || "custom gear").toLowerCase())) { gearNoted.add(l.item_id); already++; continue; }
         if (!cfg.dry_run) await trading("ReviseFixedPriceItem", { Item: { ItemID: l.item_id, Description: desc + gn.html } });
         gearNoted.add(l.item_id); done++;
