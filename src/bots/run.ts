@@ -153,8 +153,8 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   const fs = (cfg as any).free_ship_switch;
   if (fs?.enabled && firstRunOfDay && traffic) await step("Free shipping switch", r, async () => {
     const { trading } = await import("../ebay.js");
-    const { shipInfo, floorPrice } = await import("./profit.js");
-    const { charm } = await import("./pricing.js");
+    const { shipInfo, floorPrice, setShip } = await import("./profit.js");
+    const { charm, markMoved } = await import("./pricing.js");
     const ships = await shipInfo(cfg as any, listings);
     const est = Number((cfg as any).pricing?.calc_ship_estimate ?? 5.51);
     const todo = listings.filter((l) => {
@@ -169,7 +169,9 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
       try {
         if (!cfg.dry_run) await trading("ReviseFixedPriceItem", { Item: { ItemID: l.item_id, StartPrice: price.toFixed(2),
           ShippingDetails: { ShippingType: "Flat", ShippingServiceOptions: [{ ShippingServicePriority: 1, ShippingService: "USPSFirstClass", ShippingServiceCost: "0.00", FreeShipping: "true" }] } } });
-        done++; r.changes.push(`🚚 Free shipping: $${l.price.toFixed(2)} + $${(sh.buyer || est).toFixed(2)} ship → $${price.toFixed(2)} free: ${l.title.slice(0, 50)}`);
+        // Later steps in this run (pricing, ads) must see the new price and free shipping.
+        setShip(l.item_id, { kind: "free", buyer: 0 }); markMoved(l.item_id); const oldPrice = l.price; l.price = price; l.shipping_cost = 0;
+        done++; r.changes.push(`🚚 Free shipping: $${oldPrice.toFixed(2)} + $${(sh.buyer || est).toFixed(2)} ship → $${price.toFixed(2)} free: ${l.title.slice(0, 50)}`);
       } catch (e) {
         const m = (e as Error).message; r.info.push(`Free shipping switch failed on ${l.title.slice(0, 40)}: ${m.slice(0, 120)}`);
         if (/usage limit|exceeded/i.test(m)) break;

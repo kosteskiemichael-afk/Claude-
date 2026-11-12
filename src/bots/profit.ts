@@ -10,6 +10,8 @@ export type Ship = { kind: "free" | "calculated" | "flat"; buyer: number };
 export type Profit = { total: number; fees: number; profit: number; margin: number; floor: number };
 
 const shipCache = new Map<string, { at: number; ship: Ship }>();
+/** Record a shipping change made by a bot so later steps in the same run see it. */
+export function setShip(id: string, ship: Ship) { shipCache.set(id, { at: Date.now(), ship }); }
 const SHIP_TTL = 24 * 3600_000;
 
 // Reads shipping from the Browse API (5,000 calls/day) instead of GetItem, whose small daily limit

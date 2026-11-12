@@ -113,6 +113,8 @@ export function decidePrice(
 // Listings that already had a real (non-penny) price move today. Kept in memory while the server is
 // awake, so 3 runs a day (or extra manual runs) don't stack cuts on the same listing.
 const movedOn = new Map<string, number>();
+/** Another bot changed this listing's price today: pricing leaves it alone until tomorrow. */
+export function markMoved(id: string) { movedOn.set(id, Math.floor(Date.now() / 86400000)); }
 
 export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   const byId = new Map(listings.map((l) => [l.item_id, l]));
