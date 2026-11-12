@@ -1,306 +1,146 @@
 {
- "_note": "Gears to list next, shown in Nexa Command under 'Add these next'. 'their' is the competitor listing that proves demand; 'have' is a pattern that hides the row once a live listing matches.",
- "checked": "2026-11-10",
- "items": [
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Sony WH-1000XM3 Replacement Hinge Slider Brackets Pair Headphone Repair HD PETG",
-   "their": "https://www.ebay.com/itm/233577759143",
-   "sold": 429,
-   "their_delivered": 21.49,
-   "price": 17.99,
-   "cad": "Best match for the burr ring: popular product, known to break. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "WH-1000XM3.{0,40}Hinge"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Garmin Edge Replacement Mount Broken Tab Repair Quarter Turn Bike Computer HD PETG",
-   "their": "https://www.ebay.com/itm/293942601823",
-   "sold": 692,
-   "their_delivered": 13.43,
-   "price": 11.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Garmin Edge.{0,40}(Mount|Tab)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
-   "their": "https://www.ebay.com/itm/294135354033",
-   "sold": 616,
-   "their_delivered": 13.43,
-   "price": 11.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Wahoo Elemnt.{0,40}Mount"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Garmin Edge Quarter Turn Tab Repair Part Replacement Insert HD PETG",
-   "their": "https://www.ebay.com/itm/353205541794",
-   "sold": 326,
-   "their_delivered": 14.69,
-   "price": 11.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Garmin.{0,40}Quarter Turn"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
-   "their": "https://www.ebay.com/itm/166737869849",
-   "sold": 234,
-   "their_delivered": 14.77,
-   "price": 12.99,
-   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Festool.{0,40}(Latch|Catch)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Eero 6 / 6+ Plus Wall Mount Bracket Holder HD PETG",
-   "their": "https://www.ebay.com/itm/256746988520",
-   "sold": 183,
-   "their_delivered": 8.7,
-   "price": 8.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Eero.{0,30}Mount"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "KitchenAid Stand Mixer Speed Control Lever Knob Replacement HD PETG",
-   "their": "https://www.ebay.com/itm/295986962381",
-   "sold": 164,
-   "their_delivered": 6.71,
-   "price": 8.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "KitchenAid.{0,40}(Lever|Knob)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Beyerdynamic DT 770 880 990 Headband Slider Replacement Part Pair HD PETG",
-   "their": "https://www.ebay.com/itm/166394889862",
-   "sold": 136,
-   "their_delivered": 6.71,
-   "price": 9.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Beyerdynamic.{0,40}Slider"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
-   "their": "https://www.ebay.com/itm/264237953059",
-   "sold": 94,
-   "their_delivered": 21.08,
-   "price": 15.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "WM-D6.{0,40}Battery"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
-   "their": "https://www.ebay.com/itm/386314787292",
-   "sold": 91,
-   "their_delivered": 29.56,
-   "price": 24.99,
-   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 20 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/202069640381",
-   "sold": 141,
-   "their_delivered": 13.72,
-   "price": 12.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b20 (tooth|T)\\b"
-  },
-  {
-   "group": "Atlas 618 / Craftsman 101",
-   "title": "Atlas 618 Craftsman 101 6\" Lathe 20 Tooth Change Gear M6-101-20 HD PETG",
-   "their": "https://www.ebay.com/itm/360359095143",
-   "sold": 155,
-   "their_delivered": 14.37,
-   "price": 12.99,
-   "cad": "Same gear family as your Atlas 618 24T listing (M6-101 series): change the tooth count in your file, or ask Claude to model it.",
-   "have": "618.{0,40}\\b20 tooth change|M6-101-20"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 18 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/200527959217",
-   "sold": 100,
-   "their_delivered": 12.87,
-   "price": 11.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b18 Tooth"
-  },
-  {
-   "group": "Atlas 10/12",
-   "title": "Atlas Craftsman 10\" 12\" Metal Lathe 40 Tooth Change Gear 16DP HD PETG",
-   "their": "https://www.ebay.com/itm/125225229659",
-   "sold": 77,
-   "their_delivered": 21.34,
-   "price": 16.49,
-   "cad": "Already in your Atlas 10\"/12\" change gear set listing: you have the file, it just needs its own single listing.",
-   "have": "Atlas Craftsman 10\" 12\" Metal Lathe 40 Tooth"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 16 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/202203505496",
-   "sold": 68,
-   "their_delivered": 12.87,
-   "price": 11.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b16 (tooth|T)\\b"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 56 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/360845544478",
-   "sold": 48,
-   "their_delivered": 24.94,
-   "price": 22.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b56 (tooth|T)\\b"
-  },
-  {
-   "group": "Atlas 618 / Craftsman 101",
-   "title": "Atlas 618 Craftsman 101 6\" Lathe 32 Tooth Change Gear M6-101-32 HD PETG",
-   "their": "https://www.ebay.com/itm/201577073849",
-   "sold": 41,
-   "their_delivered": 12.96,
-   "price": 11.99,
-   "cad": "Same gear family as your Atlas 618 24T listing (M6-101 series): change the tooth count in your file, or ask Claude to model it.",
-   "have": "618.{0,40}\\b32 tooth change|M6-101-32"
-  },
-  {
-   "group": "Atlas 618 / Craftsman 101",
-   "title": "Atlas 618 Craftsman 101 6\" Lathe 40 Tooth Change Gear M6-101-40 HD PETG",
-   "their": "https://www.ebay.com/itm/201601327394",
-   "sold": 38,
-   "their_delivered": 17.42,
-   "price": 15.99,
-   "cad": "Same gear family as your Atlas 618 24T listing (M6-101 series): change the tooth count in your file, or ask Claude to model it.",
-   "have": "618.{0,40}\\b40 tooth change|M6-101-40"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 60 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/202249095819",
-   "sold": 31,
-   "their_delivered": 29.74,
-   "price": 26.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b60 Tooth"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 42 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/360670617626",
-   "sold": 24,
-   "their_delivered": 28.88,
-   "price": 25.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b42 (tooth|T)\\b"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 24 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/364396483567",
-   "sold": 14,
-   "their_delivered": 18.87,
-   "price": 16.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b24 Tooth"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 48 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/202442601280",
-   "sold": 12,
-   "their_delivered": 25.93,
-   "price": 22.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b48 (tooth|T)\\b"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 64 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/203485908993",
-   "sold": 11,
-   "their_delivered": 31.76,
-   "price": 28.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b64 Tooth"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 24 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/360810352202",
-   "sold": 10,
-   "their_delivered": 16.47,
-   "price": 14.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b24 (tooth|T)\\b"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 42 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/363627438092",
-   "sold": 9,
-   "their_delivered": 22.87,
-   "price": 20.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b42 Tooth"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12",
-   "title": "55T (55 Tooth) Change Gear 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
-   "their": "https://www.ebay.com/itm/161228264524",
-   "sold": 26,
-   "their_delivered": 23.79,
-   "price": 16.99,
-   "cad": "Same gear family as your 57T/65T/80T mini lathe listings: change the tooth count in your file, or ask Claude to model it.",
-   "have": "\\b55T\\b"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12",
-   "title": "Set of 7 Change Gears for 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 41.12,
-   "price": 36.99,
-   "cad": "Check the seller's listing for the 7 tooth counts, then print them from your mini lathe gear file. Claude can model any you don't have.",
-   "have": "Set of 7 Change Gears"
-  },
-  {
-   "group": "Other gears",
-   "title": "Saitek Pro Flight Rudder Pedal Replacement Gear 2-Pack Heavy Duty HD PETG",
-   "their": "https://www.ebay.com/itm/144475992937",
-   "sold": 71,
-   "their_delivered": 19.84,
-   "price": 13.99,
-   "cad": "You already print this gear (your single is listed at $7.58 with 0 sold). The 2-pack is what sells.",
-   "have": "Saitek.{0,40}(2-Pack|x 2|2 Pack)"
-  },
-  {
-   "group": "Other gears",
-   "title": "Thompson Sears Traveling Tractor Lawn Sprinkler Gear Set & Top Bushing HD PETG",
-   "their": "https://www.ebay.com/itm/285288930781",
-   "sold": 512,
-   "their_delivered": 28.24,
-   "price": 24.99,
-   "cad": "No full file exists. Worm gear only: https://www.printables.com/model/356222 (CC BY, credit the designer). Claude can model the full set once you have an old gear set to measure.",
-   "have": "Thompson"
-  },
-  {
-   "group": "Other gears",
-   "title": "Atlas 618 Craftsman 101 109 Lathe Change Gear Set HD PETG (full set)",
-   "their": "https://www.ebay.com/itm/187023095610",
-   "sold": 76,
-   "their_delivered": 44.0,
-   "price": 41.99,
-   "cad": "Built from the same Atlas 618 gear family as the singles above. Check the seller's listing for the tooth counts. Claude can model any you don't have.",
-   "have": "618.{0,60}(Change Gear Set|17 Gears)"
-  }
- ]
+  "_note": "Gears to list next, shown in Nexa Command under 'Add these next'. 'their' is the competitor listing that proves demand; 'have' is a pattern that hides the row once a live listing matches.",
+  "checked": "2026-11-10",
+  "items": [
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
+      "their": "https://www.ebay.com/itm/294135354033",
+      "sold": 616,
+      "their_delivered": 13.43,
+      "price": 11.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Wahoo Elemnt.{0,40}Mount"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
+      "their": "https://www.ebay.com/itm/166737869849",
+      "sold": 234,
+      "their_delivered": 14.77,
+      "price": 12.99,
+      "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Festool.{0,40}(Latch|Catch)"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "KitchenAid Stand Mixer Speed Control Lever Knob Replacement HD PETG",
+      "their": "https://www.ebay.com/itm/295986962381",
+      "sold": 164,
+      "their_delivered": 6.71,
+      "price": 8.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "KitchenAid.{0,40}(Lever|Knob)"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Beyerdynamic DT 770 880 990 Headband Slider Replacement Part Pair HD PETG",
+      "their": "https://www.ebay.com/itm/166394889862",
+      "sold": 136,
+      "their_delivered": 6.71,
+      "price": 9.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Beyerdynamic.{0,40}Slider"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
+      "their": "https://www.ebay.com/itm/264237953059",
+      "sold": 94,
+      "their_delivered": 21.08,
+      "price": 15.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "WM-D6.{0,40}Battery"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
+      "their": "https://www.ebay.com/itm/386314787292",
+      "sold": 91,
+      "their_delivered": 29.56,
+      "price": 24.99,
+      "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
+    },
+    {
+      "group": "South Bend 9/10K",
+      "title": "South Bend 9A 10K Lathe 48 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
+      "their": "https://www.ebay.com/itm/202442601280",
+      "sold": 12,
+      "their_delivered": 25.93,
+      "price": 22.99,
+      "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
+      "have": "South Bend 9.{0,30}\\b48 (tooth|T)\\b"
+    },
+    {
+      "group": "Logan 9/10/11",
+      "title": "Logan 9\" 10\" 11\" Lathe 64 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
+      "their": "https://www.ebay.com/itm/203485908993",
+      "sold": 11,
+      "their_delivered": 31.76,
+      "price": 28.99,
+      "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
+      "have": "Logan.{0,40}\\b64 Tooth"
+    },
+    {
+      "group": "South Bend 9/10K",
+      "title": "South Bend 9A 10K Lathe 24 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
+      "their": "https://www.ebay.com/itm/360810352202",
+      "sold": 10,
+      "their_delivered": 16.47,
+      "price": 14.99,
+      "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
+      "have": "South Bend 9.{0,30}\\b24 (tooth|T)\\b"
+    },
+    {
+      "group": "Logan 9/10/11",
+      "title": "Logan 9\" 10\" 11\" Lathe 42 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
+      "their": "https://www.ebay.com/itm/363627438092",
+      "sold": 9,
+      "their_delivered": 22.87,
+      "price": 20.99,
+      "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
+      "have": "Logan.{0,40}\\b42 Tooth"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12",
+      "title": "55T (55 Tooth) Change Gear 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
+      "their": "https://www.ebay.com/itm/161228264524",
+      "sold": 26,
+      "their_delivered": 23.79,
+      "price": 16.99,
+      "cad": "Same gear family as your 57T/65T/80T mini lathe listings: change the tooth count in your file, or ask Claude to model it.",
+      "have": "\\b55T\\b"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12",
+      "title": "Set of 7 Change Gears for 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 41.12,
+      "price": 36.99,
+      "cad": "Check the seller's listing for the 7 tooth counts, then print them from your mini lathe gear file. Claude can model any you don't have.",
+      "have": "Set of 7 Change Gears"
+    },
+    {
+      "group": "Other gears",
+      "title": "Thompson Sears Traveling Tractor Lawn Sprinkler Gear Set & Top Bushing HD PETG",
+      "their": "https://www.ebay.com/itm/285288930781",
+      "sold": 512,
+      "their_delivered": 28.24,
+      "price": 24.99,
+      "cad": "No full file exists. Worm gear only: https://www.printables.com/model/356222 (CC BY, credit the designer). Claude can model the full set once you have an old gear set to measure.",
+      "have": "Thompson"
+    },
+    {
+      "group": "Other gears",
+      "title": "Atlas 618 Craftsman 101 109 Lathe Change Gear Set HD PETG (full set)",
+      "their": "https://www.ebay.com/itm/187023095610",
+      "sold": 76,
+      "their_delivered": 44.0,
+      "price": 41.99,
+      "cad": "Built from the same Atlas 618 gear family as the singles above. Check the seller's listing for the tooth counts. Claude can model any you don't have.",
+      "have": "618.{0,60}(Change Gear Set|17 Gears)"
+    }
+  ]
 }
