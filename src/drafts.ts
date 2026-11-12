@@ -56,14 +56,11 @@ export async function listDrafts(): Promise<Draft[]> {
   return out;
 }
 
-// A live listing with free shipping (Atlas 10/12 20T gear) whose shipping setup every draft reuses.
-const FREE_SHIP_REF = "206674883733";
+// Settings are copied from a live listing in the same family through the Browse API (5,000 calls/day),
+// not GetItem, whose small daily limit kept running out.
 const templates = new Map<string, any>();
 async function template(id: string) {
-  if (!templates.has(id)) {
-    const r = await trading("GetItem", { ItemID: id, DetailLevel: "ReturnAll", IncludeItemSpecifics: "true" });
-    templates.set(id, Array.isArray(r.Item) ? r.Item[0] : r.Item);
-  }
+  if (!templates.has(id)) { const { browseItem } = await import("./bots/profit.js"); templates.set(id, await browseItem(id)); }
   return templates.get(id);
 }
 
@@ -82,30 +79,35 @@ export async function submitDraft(q: DraftReq) {
   if (!q.verify_only && !photos.length) throw new Error("add at least one photo before submitting");
   const it = await template(d.template);
   const specs = new Map<string, string[]>();
-  for (const nv of arr(it.ItemSpecifics?.NameValueList)) specs.set(txt(nv.Name), arr(nv.Value).map(txt));
+  for (const a of it.localizedAspects || []) if (a?.name && a?.value) specs.set(String(a.name), [String(a.value).slice(0, 65)]);
   const n = teeth(title);
   for (const k of [...specs.keys()]) if (/teeth|tooth/i.test(k) && n) specs.set(k, [String(n)]);
   for (const k of [...specs.keys()]) if (/^(mpn|manufacturer part number)$/i.test(k)) specs.set(k, ["Does Not Apply"]);
+  const rt = it.returnTerms || {};
+  const loc = it.itemLocation || {};
   const item: any = {
     Title: title,
     Description: d.description.replace(/<h2>[^<]*<\/h2>/, `<h2>${esc(title)}</h2>`),
-    PrimaryCategory: { CategoryID: txt(it.PrimaryCategory?.CategoryID) },
+    PrimaryCategory: { CategoryID: String(it.categoryId || "") },
     StartPrice: price.toFixed(2),
     Quantity: Math.max(1, Math.round(q.quantity ?? d.quantity)),
-    Currency: "USD", Country: txt(it.Country) || "US", Site: "US",
-    Location: txt(it.Location) || undefined, PostalCode: txt(it.PostalCode) || undefined,
+    Currency: "USD", Country: loc.country || "US", Site: "US",
+    Location: [loc.city, loc.stateOrProvince].filter(Boolean).join(", ") || undefined, PostalCode: loc.postalCode || undefined,
     ListingType: "FixedPriceItem", ListingDuration: "GTC",
-    ConditionID: txt(it.ConditionID) || "1000",
-    DispatchTimeMax: txt(it.DispatchTimeMax) || "3",
+    ConditionID: String(it.conditionId || "1000"),
+    DispatchTimeMax: "3",
     ItemSpecifics: { NameValueList: [...specs.entries()].map(([Name, Value]) => ({ Name, Value })) },
-    ReturnPolicy: it.ReturnPolicy,
+    // Free shipping, same service the large-envelope switch uses successfully.
+    ShippingDetails: { ShippingType: "Flat", ShippingServiceOptions: [{ ShippingServicePriority: 1, ShippingService: "USPSFirstClass", ShippingServiceCost: "0.00", FreeShipping: "true" }] },
+    ReturnPolicy: rt.returnsAccepted === false ? { ReturnsAcceptedOption: "ReturnsNotAccepted" } : {
+      ReturnsAcceptedOption: "ReturnsAccepted",
+      ReturnsWithinOption: `Days_${rt.returnPeriod?.value || 30}`,
+      ShippingCostPaidByOption: /SELLER/i.test(rt.returnShippingCostPayer || "") ? "Seller" : "Buyer",
+    },
   };
-  // Free shipping: copy the shipping setup from one of your live free-shipping gear listings, which eBay already accepts.
-  const ship = await template(FREE_SHIP_REF);
-  item.ShippingDetails = ship.ShippingDetails;
-  if (ship.ShippingPackageDetails) item.ShippingPackageDetails = ship.ShippingPackageDetails;
+  const tplPhoto = (it.image?.imageUrl ? [it.image.imageUrl] : []);
   // Verify needs a photo; until real ones are added, check with the template's first photo (never listed).
-  const verifyItem = { ...item, PictureDetails: { PictureURL: photos.length ? photos : arr(it.PictureDetails?.PictureURL).map(txt).slice(0, 1) } };
+  const verifyItem = { ...item, PictureDetails: { PictureURL: photos.length ? photos : tplPhoto } };
   const verify = await trading("VerifyAddFixedPriceItem", { Item: verifyItem });
   const fees = arr(verify.Fees?.Fee).filter((f: any) => Number(txt(f.Fee) || 0) > 0).map((f: any) => `${txt(f.Name)} $${txt(f.Fee)}`);
   if (q.verify_only) return { ok: true, verified: true, fees, specifics: specs.size };

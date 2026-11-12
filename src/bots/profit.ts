@@ -10,23 +10,27 @@ export type Ship = { kind: "free" | "calculated" | "flat"; buyer: number };
 export type Profit = { total: number; fees: number; profit: number; margin: number; floor: number };
 
 const shipCache = new Map<string, { at: number; ship: Ship }>();
-const SHIP_TTL = 6 * 3600_000;
+const SHIP_TTL = 24 * 3600_000;
 
+// Reads shipping from the Browse API (5,000 calls/day) instead of GetItem, whose small daily limit
+// was being used up re-reading all ~160 listings after every restart.
+async function browseItem(itemId: string): Promise<any> {
+  try { return await rest("GET", "/buy/browse/v1/item/get_item_by_legacy_id", { app: true, query: { legacy_item_id: itemId }, timeoutMs: 15000 }); }
+  catch {
+    const g = await rest("GET", "/buy/browse/v1/item/get_items_by_item_group", { app: true, query: { item_group_id: itemId }, timeoutMs: 15000 });
+    const it = (g.items || [])[0]; if (!it) throw new Error("item not found"); return it;
+  }
+}
 async function readShip(cfg: BotConfig, itemId: string): Promise<Ship> {
-  const r = await trading("GetItem", { ItemID: itemId, DetailLevel: "ReturnAll" });
-  const item = Array.isArray(r.Item) ? r.Item[0] : r.Item;
-  const sd = item?.ShippingDetails;
-  if (!sd) throw new Error("no shipping details");
-  const type = String(val(Array.isArray(sd.ShippingType) ? sd.ShippingType[0] : sd.ShippingType) || "");
-  const opts = sd.ShippingServiceOptions ? (Array.isArray(sd.ShippingServiceOptions) ? sd.ShippingServiceOptions : [sd.ShippingServiceOptions]) : [];
-  const first = opts[0] || {};
-  const free = String(val(first.FreeShipping) || "") === "true" || /free/i.test(String(val(first.ShippingService) || ""));
-  if (free) return { kind: "free", buyer: 0 };
-  if (/calculated/i.test(type) && !/^flat/i.test(type)) return { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 };
-  const cost = Number(val(first.ShippingServiceCost) ?? NaN);
+  const it = await browseItem(itemId);
+  const o = (it.shippingOptions || [])[0];
+  if (!o) throw new Error("no shipping options");
+  const cost = Number(o.shippingCost?.value ?? NaN);
+  if (/CALCULATED/i.test(o.shippingCostType || "")) return { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 };
   if (isFinite(cost) && cost === 0) return { kind: "free", buyer: 0 };
   return { kind: "flat", buyer: isFinite(cost) ? cost : (cfg.pricing.calc_ship_estimate ?? 5.51) };
 }
+export { browseItem };
 
 /** Shipping setup for each listing (cached). Unknown listings fall back to the listing's own shipping cost. */
 export async function shipInfo(cfg: BotConfig, listings: Listing[]): Promise<Map<string, Ship>> {
