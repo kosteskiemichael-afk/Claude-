@@ -92,7 +92,7 @@ export async function submitDraft(q: DraftReq) {
     StartPrice: price.toFixed(2),
     Quantity: Math.max(1, Math.round(q.quantity ?? d.quantity)),
     Currency: "USD", Country: loc.country || "US", Site: "US",
-    Location: [loc.city, loc.stateOrProvince].filter(Boolean).join(", ") || undefined, PostalCode: loc.postalCode || undefined,
+    Location: [loc.city, loc.stateOrProvince].filter(Boolean).join(", ") || undefined, PostalCode: /^\d{5}$/.test(loc.postalCode || "") ? loc.postalCode : ((loadConfig() as any).ship_from_zip || undefined), // Browse masks the ZIP (463**)
     ListingType: "FixedPriceItem", ListingDuration: "GTC",
     ConditionID: String(it.conditionId || "1000"),
     DispatchTimeMax: "3",

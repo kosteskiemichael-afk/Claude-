@@ -278,5 +278,6 @@
     "marker": "custom gear",
     "max_per_run": 25,
     "html": "<br><br><p><b>Need a different gear, or don't see the one you need?</b> We make custom gears and replacement parts. Send us a message with your machine make and model, the tooth count, bore size and pitch (or a photo of your old gear), and we'll get back to you with a quote.</p>"
-  }
+  },
+  "ship_from_zip": "46368"
 }
