@@ -108,11 +108,15 @@ export async function submitDraft(q: DraftReq) {
   const tplPhoto = (it.image?.imageUrl ? [it.image.imageUrl] : []);
   // Verify needs a photo; until real ones are added, check with the template's first photo (never listed).
   const verifyItem = { ...item, PictureDetails: { PictureURL: photos.length ? photos : tplPhoto } };
-  const verify = await trading("VerifyAddFixedPriceItem", { Item: verifyItem });
-  const fees = arr(verify.Fees?.Fee).filter((f: any) => Number(txt(f.Fee) || 0) > 0).map((f: any) => `${txt(f.Name)} $${txt(f.Fee)}`);
-  if (q.verify_only) return { ok: true, verified: true, fees, specifics: specs.size };
+  if (q.verify_only) {
+    const verify = await trading("VerifyAddFixedPriceItem", { Item: verifyItem });
+    const fees = arr(verify.Fees?.Fee).filter((f: any) => Number(txt(f.Fee) || 0) > 0).map((f: any) => `${txt(f.Name)} $${txt(f.Fee)}`);
+    return { ok: true, verified: true, fees, specifics: specs.size };
+  }
+  // Submit goes straight to AddFixedPriceItem (eBay checks it there too), so the separate check's small daily limit never blocks a listing.
   item.PictureDetails = { PictureURL: photos };
   const add = await trading("AddFixedPriceItem", { Item: item });
+  const fees = arr(add.Fees?.Fee).filter((f: any) => Number(txt(f.Fee) || 0) > 0).map((f: any) => `${txt(f.Name)} $${txt(f.Fee)}`);
   return { ok: true, item_id: txt(add.ItemID), url: `https://www.ebay.com/itm/${txt(add.ItemID)}`, fees };
 }
 
