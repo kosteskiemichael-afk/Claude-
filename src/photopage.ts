@@ -18,8 +18,10 @@ input[type=range]{width:150px}button,.file{background:var(--panel);color:var(--i
 a{color:var(--acc)}
 </style></head><body><div class="wrap">
 <h1>📸 Photo studio</h1>
-<div class="mut">Add 1 or more renders or photos taken on a plain background. Each one comes out with the part in black on pure white, centered, 1600 × 1600 (eBay's recommended size). Nothing is uploaded: it all happens on this device. <a href="/dashboard/${secret}">← Nexa Command</a></div>
+<script src="/vendor/three.min.js"></script><script src="/vendor/STLLoader.js"></script>
+<div class="mut">Add an STL to get the part rendered from every angle, or add renders / photos taken on a plain background. Each one comes out with the part in black on pure white, centered, 1600 × 1600 (eBay's recommended size). Nothing is uploaded: it all happens on this device. <a href="/dashboard/${secret}">← Nexa Command</a></div>
 <div class="bar">
+ <label class="file">＋ Add STL (every angle)<input id="stl" type="file" accept=".stl" hidden></label>
  <label class="file">＋ Add images<input id="f" type="file" accept="image/*" multiple hidden></label>
  <label>Background cut-out <input id="tol" type="range" min="8" max="120" value="40"></label>
  <label>Black level <input id="dark" type="range" min="0" max="80" value="18"></label>
@@ -33,7 +35,7 @@ a{color:var(--acc)}
 </div>
 <script>
 const $=id=>document.getElementById(id);const items=[];
-function process(it){
+function process(it){if(it.render)return;
  const img=it.img,W0=img.naturalWidth,H0=img.naturalHeight,sc=Math.min(1,2000/Math.max(W0,H0));
  const W=Math.round(W0*sc),H=Math.round(H0*sc);const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(img,0,0,W,H);
  const d=x.getImageData(0,0,W,H),p=d.data,tol=+$('tol').value,dark=+$('dark').value,shade=+$('shade').value;
@@ -71,6 +73,24 @@ function add(file){const it={name:file.name,img:new Image(),out:document.createE
  const rm=document.createElement('button');rm.textContent='✕';rm.onclick=()=>{card.remove();items.splice(items.indexOf(it),1)};row.append(dl,rm);card.appendChild(row);$('g').appendChild(card);
  it.img.onload=()=>process(it);it.img.src=URL.createObjectURL(file);items.push(it)}
 $('f').onchange=e=>{[...e.target.files].forEach(add);e.target.value=''};
+// STL -> black part on white, from every angle, 1600 x 1600 each.
+const VIEWS=[["front-right",45,25],["front-left",-45,25],["back",180,20],["top",0,89],["side",90,0],["bottom",30,-60]];
+function card(it){const card=document.createElement('div');card.className='card';card.appendChild(it.out);const nm=document.createElement('div');nm.className='nm';nm.textContent=it.name;card.appendChild(nm);
+ const row=document.createElement('div');row.className='row';const dl=document.createElement('button');dl.textContent='⬇ Download';dl.onclick=()=>save(it);const rm=document.createElement('button');rm.textContent='✕';rm.onclick=()=>{card.remove();items.splice(items.indexOf(it),1)};row.append(dl,rm);card.appendChild(row);$('g').appendChild(card);items.push(it)}
+function renderSTL(buf,base){
+ const T=THREE,geo=new T.STLLoader().parse(buf);geo.computeVertexNormals();geo.center();geo.computeBoundingSphere();
+ const r=geo.boundingSphere.radius,S=1600;
+ const ren=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});ren.setSize(S,S);ren.setPixelRatio(1);ren.setClearColor(0xffffff,1);
+ const sc=new T.Scene();const mat=new T.MeshStandardMaterial({color:0x1c1c1c,roughness:0.55,metalness:0.15});
+ const mesh=new T.Mesh(geo,mat);mesh.rotation.x=-Math.PI/2;sc.add(mesh); // STLs are Z-up; show them upright
+ sc.add(new T.HemisphereLight(0xffffff,0x444444,0.9));const k=new T.DirectionalLight(0xffffff,1.1);sc.add(k);const fill=new T.DirectionalLight(0xffffff,0.45);sc.add(fill);
+ const cam=new T.PerspectiveCamera(30,1,r/100,r*100);const pad=1+(+$('pad').value)/100*2;const dist=r*pad/Math.sin(30/2*Math.PI/180);
+ for(const [nm,az,el] of VIEWS){const a=az*Math.PI/180,e=el*Math.PI/180;cam.position.set(dist*Math.cos(e)*Math.sin(a),dist*Math.sin(e),dist*Math.cos(e)*Math.cos(a));cam.up.set(0,el>80?0:1,el>80?-1:0);cam.lookAt(0,0,0);
+  k.position.copy(cam.position).add(new T.Vector3(r*2,r*3,r));fill.position.set(-cam.position.x,cam.position.y*0.3,-cam.position.z);
+  ren.render(sc,cam);const out=document.createElement('canvas');out.width=S;out.height=S;out.getContext('2d').drawImage(ren.domElement,0,0);
+  card({name:base+'_'+nm,render:true,out})}
+ ren.dispose();}
+$('stl').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{renderSTL(r.result,f.name.replace(/\.stl$/i,''))}catch(err){alert('Could not read that STL: '+err.message)}};r.readAsArrayBuffer(f);e.target.value=''};
 ['tol','dark','shade','pad','holes'].forEach(k=>{$(k).oninput=()=>items.forEach(process);$(k).onchange=()=>items.forEach(process)});
 $('all').onclick=()=>items.forEach((it,i)=>setTimeout(()=>save(it),i*400));
 </script></body></html>`;

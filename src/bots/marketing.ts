@@ -48,7 +48,23 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
       const id = String(ad.listingId);
       promoted.add(id);
       const l = byId.get(id);
-      if (!l || l.protected) continue;
+      if (!l) continue;
+      if (l.protected) {
+        // Burr holders stay off-limits to the bots, except an ad rate Michael set himself (V2 relaunch push).
+        const pr = (cfg.marketing as any).protected_ad_rates || {};
+        const until = (cfg.marketing as any).protected_ad_until;
+        const rateNow = Number(ad.bidPercentage);
+        let wantP: number | null = null;
+        if (pr[id] !== undefined) wantP = until && new Date().toISOString().slice(0, 10) > until ? Number((cfg.marketing as any).protected_ad_after ?? 2) : Number(pr[id]);
+        if (wantP !== null && isFinite(rateNow) && Math.abs(wantP - rateNow) > 0.001) {
+          if (!cfg.dry_run) {
+            try { await rest("POST", `/sell/marketing/v1/ad_campaign/${c.campaignId}/ad/${ad.adId}/update_bid`, { body: { bidPercentage: wantP.toFixed(1) } }); }
+            catch (e) { r.info.push(`Couldn't change ad on ${short(l.title)}: ${(e as Error).message.slice(0, 100)}`); continue; }
+          }
+          r.changes.push(`Ad rate ${rateNow}% → ${wantP}% (V2 relaunch${until ? ", until " + until : ""}): ${short(l.title)}`);
+        }
+        continue;
+      }
       const rate = Number(ad.bidPercentage);
       if (!isFinite(rate)) continue;
       const selling = (traffic?.get(id)?.sold ?? 0) > 0;

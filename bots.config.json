@@ -18,7 +18,16 @@
     "boost_sellers_rate": 7.0,
     "ad_rates": {},
     "add_unpromoted": true,
-    "visibility_boost": 4.0
+    "visibility_boost": 4.0,
+    "protected_ad_rates": {
+      "206531844850": 8.0,
+      "206612334348": 8.0,
+      "206453290362": 8.0,
+      "206595114694": 8.0,
+      "206612358806": 8.0
+    },
+    "protected_ad_until": "2026-11-26",
+    "protected_ad_after": 2.0
   },
   "pricing": {
     "min_margin": 0.3,

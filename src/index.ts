@@ -322,6 +322,9 @@ app.get(`/report/compete/${SECRET}`, async (_req, res) => {
   const { competeJob, summary } = await import("./bots/compete.js");
   res.json({ ...competeJob, summary: competeJob.rows ? summary(competeJob.rows) : null });
 });
+// three.js for the photo studio's STL renders (served locally so nothing depends on a CDN).
+app.get("/vendor/three.min.js", (_req, res) => res.sendFile("node_modules/three/build/three.min.js", { root: process.cwd(), maxAge: "7d" }));
+app.get("/vendor/STLLoader.js", (_req, res) => res.sendFile("node_modules/three/examples/js/loaders/STLLoader.js", { root: process.cwd(), maxAge: "7d" }));
 app.get(`/photos/${SECRET}`, async (_req, res) => {
   const { photoPage } = await import("./photopage.js");
   res.type("html").send(photoPage(SECRET));
