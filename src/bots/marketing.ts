@@ -59,6 +59,10 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
         const boosted = Math.min(cap, rate + vis, room);
         if (boosted > want + 0.001) want = Math.round(boosted * 2) / 2;
       }
+      // Every ad gets at least the target rate (more visibility = more sales)...
+      if (fixed[id] === undefined && want < target - 0.001) want = target;
+      // ...but a raise never pushes a listing under its profit floor.
+      if (fixed[id] === undefined && want > rate + 0.001 && vis > 0) want = Math.max(rate, Math.min(want, maxAffordable(l)));
       if (Math.abs(want - rate) < 0.001) continue;
       if (!cfg.dry_run) {
         try {

@@ -322,6 +322,10 @@ app.get(`/report/compete/${SECRET}`, async (_req, res) => {
   const { competeJob, summary } = await import("./bots/compete.js");
   res.json({ ...competeJob, summary: competeJob.rows ? summary(competeJob.rows) : null });
 });
+app.get(`/photos/${SECRET}`, async (_req, res) => {
+  const { photoPage } = await import("./photopage.js");
+  res.type("html").send(photoPage(SECRET));
+});
 app.get(`/compete/${SECRET}`, async (_req, res) => {
   const { competePage } = await import("./competepage.js");
   res.type("html").send(competePage(SECRET));

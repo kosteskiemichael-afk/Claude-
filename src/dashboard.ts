@@ -449,7 +449,7 @@ h2 small .lnk{font:500 10.5px var(--fm);letter-spacing:.12em;text-transform:uppe
     <button class="btn mg" id="find">Find products</button>
     <button class="btn" id="run">Run all bots →</button>
   </div>
-  <nav class="jump"><a href="#todayp">Today <b id="jlate"></b></a><a href="#livep">Live sales</a><a href="#queuep">Print queue</a><a href="#lsp">Listings &amp; competition</a><a href="#addp">Add next</a><a href="#prodp">Products found</a><a href="#salesp">Bots &amp; sales</a><a href="#allp">All-time</a><a href="#actp">Activity</a><a href="#profitp">Profit</a></nav>
+  <nav class="jump"><a href="#todayp">Today <b id="jlate"></b></a><a href="#livep">Live sales</a><a href="#queuep">Print queue</a><a href="#lsp">Listings &amp; competition</a><a href="#addp">Add next</a><a href="#prodp">Products found</a><a href="#salesp">Bots &amp; sales</a><a href="#allp">All-time</a><a href="#actp">Activity</a><a href="#profitp">Profit</a><a href="/photos/__SECRET__" target="_blank" rel="noopener">📸 Photo studio</a></nav>
 </header>
 <div class="marquee"><div id="mq"></div></div>
 <span id="spec" hidden></span><div class="grid kpis" id="kpis"></div>
@@ -556,7 +556,7 @@ function drOpen(d){if(!d)return;let photos=[];let m=$("drm");if(!m){m=document.c
  '<label>Title <small id="drn"></small></label><input id="drt" maxlength="80" value="'+esc(d.title)+'">'+
  '<div class="drrow"><div><label>Price (free shipping)</label><input id="drp" type="number" step="0.01" min="'+d.floor+'" value="'+d.price.toFixed(2)+'"><small>profit floor $'+d.floor.toFixed(2)+'</small></div><div><label>Quantity</label><input id="drq" type="number" min="1" value="'+d.quantity+'"></div></div>'+
  '<label>Specs in the description</label><div class="drs">'+esc(d.specs)+'</div>'+
- '<label>Photos <small>(at least 1 to submit · first is the main photo)</small></label><div id="drph" class="drph"></div><input id="drf" type="file" accept="image/*" multiple>'+
+ '<label>Photos <small>(at least 1 to submit · first is the main photo · <a href="/photos/'+S+'" target="_blank" style="color:#7d9bff">make renders black on white</a>)</small></label><div id="drph" class="drph"></div><input id="drf" type="file" accept="image/*" multiple>'+
  '<div class="drrow"><button class="pb" id="drv">Check with eBay</button><button class="pb ok2" id="drs">Submit listing</button></div><div id="drmsg" class="drs"></div>'+
  '<details><summary>Description preview</summary><div class="drd">'+d.description+'</div></details>'+
  '<div class="ah">Proof it sells: <a target="_blank" rel="noopener" href="'+esc(d.their)+'" style="color:#7d9bff">'+d.sold+' sold ↗</a></div></div>';

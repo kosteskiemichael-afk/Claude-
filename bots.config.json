@@ -13,12 +13,12 @@
     ]
   },
   "marketing": {
-    "target_ad_rate": 2.0,
-    "max_ad_rate": 8.0,
-    "boost_sellers_rate": 4.0,
+    "target_ad_rate": 5.0,
+    "max_ad_rate": 10.0,
+    "boost_sellers_rate": 7.0,
     "ad_rates": {},
     "add_unpromoted": true,
-    "visibility_boost": 3.0
+    "visibility_boost": 4.0
   },
   "pricing": {
     "min_margin": 0.3,
