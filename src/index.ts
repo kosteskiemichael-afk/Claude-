@@ -175,6 +175,26 @@ app.post(`/bots/run/${SECRET}`, async (req, res) => {
 });
 
 // Title changes Claude makes for you (burr holders refused). Body: {changes:[{item_id,title}]}
+// Burr holder V2 relaunch (Michael approved on Nov 12): new title + a note put at the top of the description.
+// Only these listings, only when Michael asks; the bots stay locked out of them.
+const BURR_V2_ALLOWED = new Set(["206531844850", "206612334348", "206453290362", "206595114694", "206612358806"]);
+app.post(`/listing/burr-v2/${SECRET}`, async (req, res) => {
+  const { trading } = await import("./ebay.js");
+  const out: any[] = [];
+  for (const m of (req.body?.items || []).slice(0, 5)) {
+    const id = String(m.item_id);
+    if (!BURR_V2_ALLOWED.has(id)) { out.push({ id, ok: false, error: "not a burr holder listing" }); continue; }
+    try {
+      const Item: any = { ItemID: id };
+      if (m.title) Item.Title = String(m.title).slice(0, 80);
+      if (m.prepend_html) Item.Description = String(m.prepend_html);
+      await trading("ReviseFixedPriceItem", { Item, ...(m.prepend_html ? { DescriptionReviseMode: "Prepend" } : {}) });
+      out.push({ id, ok: true });
+    } catch (e) { out.push({ id, ok: false, error: (e as Error).message.slice(0, 300) }); }
+  }
+  res.json({ ok: out.every((x) => x.ok), results: out });
+});
+
 app.post(`/listing/titles/${SECRET}`, async (req, res) => {
   const out: any[] = [];
   for (const c of (req.body?.changes || []) as { item_id: string; title: string }[]) {
