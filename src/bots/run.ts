@@ -148,6 +148,35 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
     if (done) r.changes.push(`📝 Added the custom-gear note to ${done} gear listing description(s)${left > 0 ? `; ${left} left for the next runs` : ""}.`);
     else if (left <= 0) r.info.push(`Custom-gear note is on every gear listing.`);
   });
+  // Free-shipping switch (Michael, Nov 12): slow, cheap listings that charge shipping go free, with the price
+  // raised to cover the label so profit stays the same (never under the profit floor). First run of the day only.
+  const fs = (cfg as any).free_ship_switch;
+  if (fs?.enabled && firstRunOfDay && traffic) await step("Free shipping switch", r, async () => {
+    const { trading } = await import("../ebay.js");
+    const { shipInfo, floorPrice } = await import("./profit.js");
+    const { charm } = await import("./pricing.js");
+    const ships = await shipInfo(cfg as any, listings);
+    const est = Number((cfg as any).pricing?.calc_ship_estimate ?? 5.51);
+    const todo = listings.filter((l) => {
+      const sh = ships.get(l.item_id);
+      return !l.protected && !l.has_variations && sh && sh.kind !== "free" && l.price < (fs.max_price ?? 12) && (traffic.get(l.item_id)?.sold ?? 0) === 0;
+    });
+    let done = 0;
+    for (const l of todo.slice(0, fs.max_per_run ?? 15)) {
+      const sh = ships.get(l.item_id)!;
+      const floor = floorPrice(cfg as any, l.item_id, { kind: "free", buyer: 0 }, (cfg as any).marketing?.target_ad_rate ?? 5);
+      const price = Math.max(charm(l.price + (sh.buyer || est), floor), Math.ceil(floor * 100) / 100);
+      try {
+        if (!cfg.dry_run) await trading("ReviseFixedPriceItem", { Item: { ItemID: l.item_id, StartPrice: price.toFixed(2),
+          ShippingDetails: { ShippingType: "Flat", ShippingServiceOptions: [{ ShippingServicePriority: 1, ShippingService: "USPSFirstClass", ShippingServiceCost: "0.00", FreeShipping: "true" }] } } });
+        done++; r.changes.push(`🚚 Free shipping: $${l.price.toFixed(2)} + $${(sh.buyer || est).toFixed(2)} ship → $${price.toFixed(2)} free: ${l.title.slice(0, 50)}`);
+      } catch (e) {
+        const m = (e as Error).message; r.info.push(`Free shipping switch failed on ${l.title.slice(0, 40)}: ${m.slice(0, 120)}`);
+        if (/usage limit|exceeded/i.test(m)) break;
+      }
+    }
+    if (todo.length > done) r.info.push(`Free shipping switch: ${todo.length - done} more slow listing(s) left for the next mornings.`);
+  });
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
   if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
   // Competition watch: every morning (or on demand), compare every listing to the sellers winning the same part.
