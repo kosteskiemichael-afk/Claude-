@@ -27,7 +27,11 @@
       "206612358806": 8.0
     },
     "protected_ad_until": "2026-11-26",
-    "protected_ad_after": 2.0
+    "protected_ad_after": 2.0,
+    "no_sale_boost": {
+      "rate": 9.0,
+      "until": "2026-12-12"
+    }
   },
   "pricing": {
     "min_margin": 0.3,

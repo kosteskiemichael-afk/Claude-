@@ -75,6 +75,13 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
         const boosted = Math.min(cap, rate + vis, room);
         if (boosted > want + 0.001) want = Math.round(boosted * 2) / 2;
       }
+      // No-sale push (Michael, Nov 12): listings with no sales in 30 days get a higher rate for one month.
+      const ns = (cfg.marketing as any).no_sale_boost;
+      if (fixed[id] === undefined && ns && traffic?.get(id) && (traffic.get(id)!.sold ?? 0) === 0) {
+        const today = new Date().toISOString().slice(0, 10);
+        if (today <= ns.until) want = Math.max(want, Number(ns.rate));
+        else if (want > target && rate > target) want = target; // month over: back to the normal rate
+      }
       // Every ad gets at least the target rate (more visibility = more sales)...
       if (fixed[id] === undefined && want < target - 0.001) want = target;
       // ...but a raise never pushes a listing under its profit floor.
