@@ -199,10 +199,23 @@
       },
       "206555145319": {
         "label": 2.0
+      },
+      "206690812878": {
+        "label": 2.0
+      },
+      "206690779461": {
+        "label": 2.0
+      },
+      "206690378940": {
+        "label": 2.0
+      },
+      "206621942166": {
+        "label": 2.0
       }
     },
     "stale_views": 8,
-    "stale_cut_pct": 0.08
+    "stale_cut_pct": 0.08,
+    "free_ship_label_cost": 6.51
   },
   "pending_splits": [
     {
