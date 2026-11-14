@@ -189,6 +189,16 @@
           "spindle"
         ],
         "min": 12.99
+      },
+      "206572089650": {
+        "note": "LG Magic Remote battery cover: Michael wants $9.98 (Nov 13)",
+        "query": "lg magic remote battery cover",
+        "must_include": [
+          "lg",
+          "cover"
+        ],
+        "min": 9.98,
+        "max": 9.98
       }
     },
     "once_per_day": true,
