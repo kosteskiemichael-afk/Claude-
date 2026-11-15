@@ -40,7 +40,7 @@
     "small_item_margin": 0.5,
     "min_profit": 2.5,
     "small_cut_max": 2.0,
-    "cooldown_days": 3,
+    "cooldown_days": 1,
     "max_step_pct": 0.1,
     "rules": {
       "206527145323": {
@@ -225,7 +225,8 @@
     },
     "stale_views": 8,
     "stale_cut_pct": 0.08,
-    "free_ship_label_cost": 6.51
+    "free_ship_label_cost": 6.51,
+    "price_weekday": "Sun"
   },
   "pending_splits": [
     {

@@ -72,6 +72,10 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   const ws = windowStart(cfg.run_hours_local, cfg.timezone);
   const since = ws.since;
   const firstRunOfDay = ws.firstRunOfDay || !!opts.force; // force = a manual 'run everything now' (pricing, ad boosts, morning report)
+  // Weekly pricing: prices only move on the configured weekday (Sunday) so each price gets a full week to work.
+  const todayName = new Date().toLocaleDateString("en-US", { weekday: "short", timeZone: cfg.timezone });
+  const priceDayCfg = (cfg.pricing as any).price_weekday as string | undefined;
+  const priceDay = !priceDayCfg || priceDayCfg === todayName || only.includes("pricing");
   const r = newReport();
 
   const listings = await activeListings();
@@ -83,7 +87,7 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   // (skipped when a listing with that title already exists) and retried on later runs if eBay refuses.
   // Approved large-envelope switch (with sale removal + price), done on the first run of the day until `until`.
   const env = (cfg as any).pending_envelope;
-  if (env?.items?.length && firstRunOfDay && new Date().toISOString().slice(0, 10) <= env.until) await step("Envelope shipping", r, async () => {
+  if (env?.items?.length && firstRunOfDay && priceDay && new Date().toISOString().slice(0, 10) <= env.until) await step("Envelope shipping", r, async () => {
     const { toEnvelope } = await import("../envelope.js");
     const res: any = await toEnvelope(env.items);
     for (const x of res.results) (x.ok ? r.changes : r.info).push(x.ok ? `📮 Large-envelope free shipping at $${x.price}: item ${x.item_id}` : `Envelope switch not done on ${x.item_id}: ${x.error}`);
@@ -154,7 +158,7 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
   // Free-shipping switch (Michael, Nov 12): slow, cheap listings that charge shipping go free, with the price
   // raised to cover the label so profit stays the same (never under the profit floor). First run of the day only.
   const fs = (cfg as any).free_ship_switch;
-  if (fs?.enabled && firstRunOfDay && traffic) await step("Free shipping switch", r, async () => {
+  if (fs?.enabled && firstRunOfDay && priceDay && traffic) await step("Free shipping switch", r, async () => {
     const { trading } = await import("../ebay.js");
     const { shipInfo, floorPrice, setShip } = await import("./profit.js");
     const { charm, markMoved } = await import("./pricing.js");
@@ -183,7 +187,8 @@ export async function runBots(opts: { only?: string[]; silent?: boolean; strateg
     if (todo.length > done) r.info.push(`Free shipping switch: ${todo.length - done} more slow listing(s) left for the next mornings.`);
   });
   if (on("inventory")) await step("Inventory", r, () => inventoryBot(cfg, listings, r, firstRunOfDay ? traffic : undefined));
-  if (on("pricing") && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
+  if (on("pricing") && priceDay && (firstRunOfDay || !cfg.pricing.once_per_day)) await step("Pricing", r, () => pricingBot(cfg, listings, r, traffic));
+  else if (on("pricing") && firstRunOfDay && !priceDay) r.info.push(`💲 Pricing: holding all prices until ${priceDayCfg} (weekly price changes).`);
   // Competition watch: every morning (or on demand), compare every listing to the sellers winning the same part.
   if (on("compete") && (firstRunOfDay || only.includes("compete"))) await step("Competition watch", r, async () => {
     const { runCompete, summary } = await import("./compete.js");
