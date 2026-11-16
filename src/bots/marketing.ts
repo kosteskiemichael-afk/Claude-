@@ -56,6 +56,7 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
         const rateNow = Number(ad.bidPercentage);
         let wantP: number | null = null;
         if (pr[id] !== undefined) wantP = until && new Date().toISOString().slice(0, 10) > until ? Number((cfg.marketing as any).protected_ad_after ?? 2) : Number(pr[id]);
+        if (wantP !== null) wantP = Math.min(wantP, cfg.marketing.max_ad_rate ?? 5);
         if (wantP !== null && isFinite(rateNow) && Math.abs(wantP - rateNow) > 0.001) {
           if (!cfg.dry_run) {
             try { await rest("POST", `/sell/marketing/v1/ad_campaign/${c.campaignId}/ad/${ad.adId}/update_bid`, { body: { bidPercentage: wantP.toFixed(1) } }); }
@@ -86,6 +87,8 @@ export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Repor
       if (fixed[id] === undefined && want < target - 0.001) want = target;
       // ...but a raise never pushes a listing under its profit floor.
       if (fixed[id] === undefined && want > rate + 0.001 && vis > 0) want = Math.max(rate, Math.min(want, maxAffordable(l)));
+      // Hard ceiling (Michael, Nov 16): no ad ever goes over max_ad_rate, whatever boost asked for it.
+      want = Math.min(want, cap);
       if (Math.abs(want - rate) < 0.001) continue;
       if (!cfg.dry_run) {
         try {
