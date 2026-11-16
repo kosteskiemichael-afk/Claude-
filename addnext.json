@@ -43,6 +43,46 @@
       "have": "South Bend.*9C.*(Complete|Full)?.*Set"
     },
     {
+      "group": "Higher-end ($25+)",
+      "title": "South Bend 9\" 10K Lathe Metric Transposing Gear 47/37 Compound 18DP HD PETG",
+      "their": "https://www.ebay.com/itm/263768456232",
+      "sold": 44,
+      "their_delivered": 41.7,
+      "price": 36.99,
+      "cad": "47T + 37T compound, 18DP 14.5°, 9/16\" bore. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "South Bend.{0,40}47.?/.?37"
+    },
+    {
+      "group": "Higher-end ($25+)",
+      "title": "Logan 10\" 11\" Lathe Metric Transposing Gear 47/37 Compound 16DP 7/16\" Face PETG",
+      "their": "https://www.ebay.com/itm/263365824193",
+      "sold": 29,
+      "their_delivered": 38.7,
+      "price": 34.99,
+      "cad": "47T + 37T compound, 16DP 14.5°, 7/16\" face, 5/8\" bore. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "Logan.{0,40}47.?/.?37"
+    },
+    {
+      "group": "Higher-end ($25+)",
+      "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
+      "their": "https://www.ebay.com/itm/263674841715",
+      "sold": 7,
+      "their_delivered": 74.7,
+      "price": 64.99,
+      "cad": "Gear set with 5/8\" face width; confirm the tooth counts from the Logan 2500 metric chart. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "Logan.{0,20}(12|14).{0,40}Transpos"
+    },
+    {
+      "group": "Higher-end ($25+)",
+      "title": "Atlas Craftsman Commercial 12\" Lathe Reverse Tumbler Gear Set Dual 36 Tooth PETG",
+      "their": "https://www.ebay.com/itm/276480445412",
+      "sold": 12,
+      "their_delivered": 39.0,
+      "price": 36.99,
+      "cad": "Two 36T tumbler gears, 16DP; confirm bore/hub from the Atlas Commercial 12 parts list. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "Commercial.{0,30}Tumbler|Tumbler.{0,40}36 ?T"
+    },
+    {
       "group": "Next burr ring (UK sellers, US demand)",
       "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
       "their": "https://www.ebay.com/itm/294135354033",
