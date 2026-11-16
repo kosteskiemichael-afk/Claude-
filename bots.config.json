@@ -225,7 +225,7 @@
     },
     "stale_views": 8,
     "stale_cut_pct": 0.08,
-    "free_ship_label_cost": 6.51,
+    "free_ship_label_cost": 8.0,
     "price_weekday": "Sun"
   },
   "pending_splits": [
