@@ -133,6 +133,46 @@
       "have": "2DWL"
     },
     {
+      "group": "Car parts ($20-$55)",
+      "title": "Dual 52mm Gauge Pod Mount MINI Cooper R56 R55 R57 2007-2013 Tach Mount ASA",
+      "their": "https://www.ebay.com/itm/202667010871",
+      "sold": 284,
+      "their_delivered": 55.0,
+      "price": 52.99,
+      "cad": "No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "MINI.{0,40}(R56|R55|R57).{0,40}Gauge Pod|Gauge Pod.{0,40}R56"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "Dual 52mm Gauge Pod Mount Cup MINI Cooper R53 R50 R52 2002-2006 Tach Mount ASA",
+      "their": "https://www.ebay.com/itm/113729150571",
+      "sold": 156,
+      "their_delivered": 55.0,
+      "price": 52.99,
+      "cad": "No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "MINI.{0,40}(R53|R50|R52).{0,40}Gauge Pod|Gauge Pod.{0,40}R53"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "88-91 Honda CRX Door Garnish Clips 91510-SH2-000 Set Heavy Duty ASA",
+      "their": "https://www.ebay.com/itm/313773502956",
+      "sold": 293,
+      "their_delivered": 22.5,
+      "price": 21.99,
+      "cad": "Match OEM Honda 91510-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "91510-SH2"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "88-91 Honda CRX Lower Door Garnish Clips 91512-SH2-000 Set Heavy Duty ASA",
+      "their": "https://www.ebay.com/itm/313913829959",
+      "sold": 108,
+      "their_delivered": 26.0,
+      "price": 24.99,
+      "cad": "Match OEM Honda 91512-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "91512-SH2"
+    },
+    {
       "group": "Next burr ring (UK sellers, US demand)",
       "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
       "their": "https://www.ebay.com/itm/294135354033",
