@@ -44,26 +44,6 @@
     },
     {
       "group": "Higher-end ($25+)",
-      "title": "South Bend 9\" 10K Lathe Metric Transposing Gear 47/37 Compound 18DP HD PETG",
-      "their": "https://www.ebay.com/itm/263768456232",
-      "sold": 44,
-      "their_delivered": 41.7,
-      "price": 36.99,
-      "cad": "47T + 37T compound, 18DP 14.5°, 9/16\" bore. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-      "have": "South Bend.{0,40}47.?/.?37"
-    },
-    {
-      "group": "Higher-end ($25+)",
-      "title": "Logan 10\" 11\" Lathe Metric Transposing Gear 47/37 Compound 16DP 7/16\" Face PETG",
-      "their": "https://www.ebay.com/itm/263365824193",
-      "sold": 29,
-      "their_delivered": 38.7,
-      "price": 34.99,
-      "cad": "47T + 37T compound, 16DP 14.5°, 7/16\" face, 5/8\" bore. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-      "have": "Logan.{0,40}47.?/.?37"
-    },
-    {
-      "group": "Higher-end ($25+)",
       "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
       "their": "https://www.ebay.com/itm/263674841715",
       "sold": 7,
@@ -161,16 +141,6 @@
       "price": 22.49,
       "cad": "Match OEM Honda 91510-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
       "have": "91510-SH2"
-    },
-    {
-      "group": "Car parts ($20-$55)",
-      "title": "88-91 Honda CRX Lower Door Garnish Clips 91512-SH2-000 Set Heavy Duty ASA",
-      "their": "https://www.ebay.com/itm/313913829959",
-      "sold": 108,
-      "their_delivered": 26.0,
-      "price": 24.99,
-      "cad": "Match OEM Honda 91512-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
-      "have": "91512-SH2"
     },
     {
       "group": "Next burr ring (UK sellers, US demand)",
