@@ -31,6 +31,12 @@
     "no_sale_boost": {
       "rate": 8,
       "until": "2026-12-12"
+    },
+    "ad_taper": {
+      "start": "2026-11-17",
+      "step_per_week": 0.5,
+      "min_rate": 2,
+      "min_max_rate": 4
     }
   },
   "pricing": {

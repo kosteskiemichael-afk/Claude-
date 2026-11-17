@@ -8,6 +8,26 @@ import { floorPrice, shipInfo, Ship } from "./profit.js";
 import type { Traffic } from "./inventory.js";
 
 export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
+  // Ad taper (Michael, Nov 17): every ad setting steps down by step_per_week each week from `start`,
+  // never below the floors. Week 1 starts on the start date; the next step lands each 7 days after.
+  const tp = (cfg.marketing as any).ad_taper;
+  if (tp?.start) {
+    const days = Math.floor((Date.now() - Date.parse(tp.start + "T00:00:00Z")) / 86400000);
+    if (days >= 0) {
+      const cut = (Math.floor(days / 7) + 1) * Number(tp.step_per_week ?? 0.5);
+      const lo = Number(tp.min_rate ?? 2), loCap = Number(tp.min_max_rate ?? 4);
+      const m: any = { ...cfg.marketing };
+      const dn = (v: any, floor: number) => (v == null ? v : Math.max(floor, Number(v) - cut));
+      m.target_ad_rate = dn(m.target_ad_rate, lo);
+      m.max_ad_rate = dn(m.max_ad_rate, loCap);
+      m.boost_sellers_rate = dn(m.boost_sellers_rate, lo);
+      m.visibility_boost = Math.max(0, Number(m.visibility_boost ?? 0) - cut);
+      if (m.no_sale_boost) m.no_sale_boost = { ...m.no_sale_boost, rate: dn(m.no_sale_boost.rate, lo) };
+      // Burr holder rates are left alone: Michael set them explicitly (8% to Nov 26, then 2%).
+      cfg = { ...cfg, marketing: m };
+      r.info.push(`📉 Ad taper week ${Math.floor(days / 7) + 1}: target ${m.target_ad_rate}%, cap ${m.max_ad_rate}%, sellers ${m.boost_sellers_rate}%, no-sale ${m.no_sale_boost?.rate ?? "-"}% (floors ${lo}% / cap ${loCap}%).`);
+    }
+  }
   const target = cfg.marketing.target_ad_rate;
   const cap = cfg.marketing.max_ad_rate ?? 5;
   const fixed = cfg.marketing.ad_rates || {};
