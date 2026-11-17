@@ -143,6 +143,26 @@
       "have": "91510-SH2"
     },
     {
+      "group": "Seneca Falls / Star lathe (we have the files)",
+      "title": "Seneca Falls Star Lathe Change Gear Set 7pc 24 30 38 42 46 48 72T 16DP 5/8 Bore",
+      "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
+      "sold": 1,
+      "their_delivered": 127.44,
+      "price": 127.44,
+      "cad": "Our own set sold Nov 14 at $127.44; relist with quantity. Own design, already made: Nexa gear generator, 16DP 14.5°, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
+      "have": "Seneca Falls.{0,40}Set"
+    },
+    {
+      "group": "Seneca Falls / Star lathe (we have the files)",
+      "title": "Seneca Falls Star Lathe Change Gear 16DP 5/8\" Bore 9/16\" Face - Choose Teeth",
+      "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
+      "sold": 5,
+      "their_delivered": 40.0,
+      "price": 29.99,
+      "cad": "One listing with a tooth-count dropdown: 24T $24.99, 30-48T $29.99, 72T $39.99. Used originals sell at $30-$40 for single gears, and $75 for a tumbler gear. Own design, already made: Nexa gear generator, 16DP 14.5°, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
+      "have": "Seneca Falls.{0,60}(Choose|Tooth|\\d+T)(?!.*Set)"
+    },
+    {
       "group": "Next burr ring (UK sellers, US demand)",
       "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
       "their": "https://www.ebay.com/itm/294135354033",
