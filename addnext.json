@@ -3,6 +3,66 @@
   "checked": "2026-11-10",
   "items": [
     {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "Mini Lathe Change Gear Set of 7 40 45 50 55 57 60 80T 7x10 7x12 Harbor Freight",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 36.99,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "Set of 7|7 ?(pc|piece|gear).{0,30}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "40T (40 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 8.99,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b40T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "45T (45 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.47,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b45T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "50T (50 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.47,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b50T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "55T (55 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.97,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b55T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "60T (60 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.97,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b60T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
       "group": "Gear sets ($20+)",
       "title": "Atlas 618 Craftsman 101 6\" Lathe Complete Change Gear Set 14 Gears 24DP HD PETG",
       "their": "https://www.ebay.com/itm/187023095610",
