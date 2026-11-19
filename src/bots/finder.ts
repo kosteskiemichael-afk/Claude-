@@ -59,7 +59,7 @@ export const JUNK = /\b(toys?|hasbro|kenner|mattel|lego|star wars|gi ?joe|action
 export const JUNK_CATEGORY = /\b(toys|collectibles|dolls|action figures|crafts|art|home d[eé]cor|holiday|guns|firearms?|hunting|airsoft|video games|3d printers?|3d printing)\b/i;
 const BASE_FILTER = "buyingOptions:{FIXED_PRICE},itemLocationCountry:US,conditions:{NEW}";
 /** Run Browse searches and keep 3D-printed listings from other sellers. */
-async function collect(cfg: BotConfig, searches: { q: string; filter?: string; category?: string; keep?: number; must?: (title: string) => boolean }[]): Promise<Hit[]> {
+async function collect(cfg: BotConfig, searches: { q: string; filter?: string; category?: string; keep?: number; must?: (title: string) => boolean; allowGunNames?: boolean }[]): Promise<Hit[]> {
   const mine = new Set(cfg.my_seller_ids.map((s) => s.toLowerCase()));
   const seen = new Map<string, Hit>();
   for (const sch of searches) {
@@ -73,7 +73,11 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
         const title = String(it.title || "");
         const seller = String(it.seller?.username || "");
         if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
-        if (JUNK.test(title) || JUNK_CATEGORY.test(String(it.categories?.map((c: any) => c.categoryName).join(" ") || ""))) continue;
+        // Shooting Accessories bot: gun names alone don't make a listing junk (a holster or scope cap names the gun it fits).
+        // Functional/prohibited parts are still thrown out by GUN_BLOCK below; AR/AK names stay blocked.
+        const junkTitle = sch.allowGunNames ? title.replace(GUN_NAMES, " ") : title;
+        const cats = String(it.categories?.map((c: any) => c.categoryName).join(" ") || "");
+        if (JUNK.test(junkTitle) || (!sch.allowGunNames && JUNK_CATEGORY.test(cats))) continue;
         if (Number(it.price?.value || 0) < (cfg.finder.min_price ?? 0)) continue;
         if ((cfg.finder as any).skip_gears && /\b(gears?|lathe|change gear|\d{2,3} ?(t|tooth|teeth))\b/i.test(title)) continue; // gears paused: they stopped selling
         if (sch.must && !sch.must(title)) continue;
@@ -131,6 +135,7 @@ export const STRATEGY_NAMES: Record<Strategy, string> = {
 // (receivers/frames/jigs, triggers, sears, suppressors/solvent traps, flash hiders, magazines/extenders,
 // bump stocks, braces, forward grips, barrel shrouds, conversion kits) is thrown out before it reaches you.
 const GUN_WORDS = /\b(gun|guns|pistol|rifle|shotgun|firearm|ar-?15|ar-?10|ak-?47|glock|sig sauer|smith ?& ?wesson|ruger|picatinny|m-?lok|keymod|holster|9mm|5\.56|\.223|\.308|12 ?ga)\b/i;
+const GUN_NAMES = /\b(guns?|pistols?|handguns?|rifles?|shotguns?|revolvers?|firearms?|glock|walther|kel-?tec|sig sauer|ruger|smith ?& ?wesson|taurus|rossi|mossberg|remington|winchester|beretta|henry|savage arms|marlin|springfield|colt|holsters?|reloading|ammo)\b/gi;
 const GUN_BLOCK = /receiver|lower|upper|frame|jig|80%|sear|switch|auto ?key|trigger|suppress|silencer|solvent|flash ?hider|muzzle|compensator|brake|magazine|\bmags?\b|extension|extender|bump|brace|forward grip|vertical grip|shroud|barrel|conversion|drop.?in|lightning link|bolt|slide|firing pin|hammer|buffer|stock kit/i;
 
 // Focused search pools for the three specialist bots.
@@ -169,6 +174,12 @@ const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit" | "drones" | "sh
     "bore guide", "picatinny rail cover", "rail cover", "flashlight rail mount", "sling mount", "sling swivel",
     "bipod adapter", "phone scope adapter", "target holder", "target stand bracket", "shell holder", "choke tube case",
     "range bag organizer", "gun cleaning stand", "magazine loader", "speed loader",
+    "garmin xero c1", "chronograph mount", "chronograph case", "labradar mount", "primer catcher", "rcbs press",
+    "lee precision press", "hornady lock n load", "dillon 550", "dillon 650", "powder funnel", "powder trickler",
+    "case gauge", "case trimmer", "reloading die holder", "reloading press mount", "bullet puller", "shell plate holder",
+    "scope caps burris", "scope caps vortex", "leupold scope cap", "rangefinder mount", "night vision mount",
+    "thermal scope mount", "shooting rest", "rifle rest", "bench rest", "gun vise", "cleaning mat holder",
+    "holster mount", "holster wedge", "mag pouch", "holster for", "lever action", "shotgun shell holder", "clay thrower",
   ],
   // Make-it bot: parts Claude can model from specs (no physical part needed)
   makeit: [
@@ -300,7 +311,7 @@ async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" 
   // Make-it searches both "3d printed X" and plain "X" (eBay's matching is narrow); collect() keeps printed listings only.
   const pick = key === "makeit" ? base.flatMap((q) => ["3d printed " + q, q + " printed"]) : base.map((q) => "3d printed " + q);
   const must = key === "shooting" ? (t: string) => !GUN_BLOCK.test(t.replace(/magazine loader|speed loader|mag loader/gi, "")) : undefined;
-  return { hits: await collect(cfg, pick.map((q) => ({ q, keep: key === "makeit" ? 80 : 50, must }))), searched: pick, presetCad: new Map() };
+  return { hits: await collect(cfg, pick.map((q) => ({ q, keep: key === "makeit" ? 80 : 50, must, allowGunNames: key === "shooting" }))), searched: pick, presetCad: new Map() };
 }
 
 async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered> {
@@ -309,14 +320,14 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["niche", "makeit", "cadfirst", "niche", "autoboat", "premium", "niche", "keywords", "competitors", "niche", "drones", "cadfirst", "niche", "makeit", "categories", "shooting"];
+const ORDER: Strategy[] = ["niche", "shooting", "makeit", "cadfirst", "niche", "shooting", "autoboat", "premium", "niche", "shooting", "keywords", "competitors", "niche", "drones", "cadfirst", "shooting", "makeit", "categories"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["niche", "makeit", "niche", "autoboat", "niche", "premium", "niche", "cadfirst"];
+const FOCUS: Strategy[] = ["niche", "shooting", "makeit", "niche", "shooting", "autoboat", "niche", "shooting", "premium", "cadfirst"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["niche", "niche", "makeit", "cadfirst", "niche", "autoboat", "premium", "niche", "competitors", "niche", "keywords", "cadfirst", "niche", "drones", "makeit", "niche", "categories", "premium", "niche", "shooting"];
+export const DEEP_PLAN: Strategy[] = ["niche", "shooting", "niche", "shooting", "makeit", "cadfirst", "niche", "shooting", "autoboat", "premium", "niche", "shooting", "competitors", "niche", "keywords", "shooting", "cadfirst", "drones", "makeit", "niche"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
