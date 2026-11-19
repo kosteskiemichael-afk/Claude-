@@ -3,6 +3,76 @@
  "checked": "2026-11-10",
  "items": [
   {
+   "group": "Camera",
+   "title": "Chain Link Fence Mount for GoPro Hero & Action Cameras - Backstop Recording Clip",
+   "their": "https://www.ebay.com/itm/184359998227",
+   "sold": 223,
+   "their_delivered": 25.0,
+   "price": 22.99,
+   "cad": "https://www.printables.com/model/1009719 (CC0) or 866966 (CC-BY). Proof: 'Universal GoPro Hero Chain Link Fence Mount 3D Print' 223 sold @ $25",
+   "have": "Fence Mount"
+  },
+  {
+   "group": "Gaming",
+   "title": "Vertical Stand for PlayStation 2 PS2 Console - Upright Display Stand",
+   "their": "https://www.ebay.com/itm/305318390284",
+   "sold": 255,
+   "their_delivered": 20.0,
+   "price": 19.99,
+   "cad": "https://www.printables.com/model/152524 slim / 152497 slim 2 / 152501 (CC-BY, credit designer). Check which PS2 (fat or slim) the proof sells for. Proof: 'PlayStation 2 vertical stand 3D Printed' 255 sold @ $20",
+   "have": "PS2.{0,30}Stand|PlayStation 2.{0,30}Stand"
+  },
+  {
+   "group": "Camera",
+   "title": "Tripod & GoPro Mount Adapter for DJI Osmo Pocket 1 2 3 - 1/4-20 Clip Mount",
+   "their": "https://www.ebay.com/itm/323601646650",
+   "sold": 145,
+   "their_delivered": 20.0,
+   "price": 17.99,
+   "cad": "https://www.printables.com/model/94474 (CC-BY) / 672757 Pocket 3 (CC-BY-SA) / 19394 tripod (CC-BY). Proof: 'DJI OSMO Pocket Adapter Mount for Tripod or GoPro' 145 sold @ $20",
+   "have": "Osmo Pocket.{0,40}(Mount|Adapter)"
+  },
+  {
+   "group": "Gaming",
+   "title": "Super Nintendo SNES Game Cartridge Drawer - Holds 18 Games Storage",
+   "their": "https://www.ebay.com/itm/406462532707",
+   "sold": 111,
+   "their_delivered": 50.0,
+   "price": 44.99,
+   "cad": "No sellable file found: we model it. Box with dividers sized to an SNES cart (about 120 x 89 x 20 mm, to confirm). Proof: 111 sold @ $50; NES 18-slot drawer 92 sold @ $40 (405978022276)",
+   "have": "SNES.{0,30}Drawer"
+  },
+  {
+   "group": "Gaming",
+   "title": "Nintendo NES Game Cartridge Drawer - Holds 18 Games Storage Organizer",
+   "their": "https://www.ebay.com/itm/405978022276",
+   "sold": 92,
+   "their_delivered": 40.0,
+   "price": 37.99,
+   "cad": "No sellable file found: we model it. Box sized to an NES cart (about 133 x 120 x 17 mm, to confirm). Proof: 'Nintendo NES 18 Slot Game Drawer. 3D Printed' 92 sold @ $40",
+   "have": "NES.{0,30}Drawer"
+  },
+  {
+   "group": "RV",
+   "title": "Door Bin for Dometic RV Refrigerator NDR1292 Replacement 2932583038",
+   "their": "https://www.ebay.com/itm/375803040173",
+   "sold": 81,
+   "their_delivered": 40.0,
+   "price": 36.99,
+   "cad": "No sellable file found: we model it. Need the bin size (from the proof listing / Dometic parts diagram). Proof: 'Dometic Refrigerator NDR 1292 Door Bin 2932583038' 81 sold @ $40",
+   "have": "2932583038|NDR ?1292"
+  },
+  {
+   "group": "Aquarium",
+   "title": "Bristle Worm Trap for Reef Aquarium - Fireworm Bait Trap Box",
+   "their": "https://www.ebay.com/itm/284108784080",
+   "sold": 191,
+   "their_delivered": 15.0,
+   "price": 14.99,
+   "cad": "No sellable file found: we model it. Simple bait box with one-way entry holes. Proof: 'Bristle Worm Trap Box pest Fireworm' 191 sold @ $15",
+   "have": "Bristle ?Worm"
+  },
+  {
    "group": "Shooting accessories",
    "title": "Brass Catcher for Ruger 10/22 - Holds 100 .22LR Shells - Clip On Shell Catcher",
    "their": "https://www.ebay.com/itm/256519387183",
