@@ -4,6 +4,86 @@
  "items": [
   {
    "group": "Audio",
+   "title": "Stand for TC Helicon GoXLR Mixer - Angled Desk Stand 3D Printed PETG",
+   "their": "https://www.ebay.com/itm/264925263736",
+   "sold": 63,
+   "their_delivered": 110.99,
+   "price": 79.99,
+   "cad": "https://www.printables.com/model/125571 (CC-BY, credit alpine; normal + mini sizes). Proof: 'Black 3D Printed Stand. For Helicon GOXLR Mixer' 63 sold @ $110.99",
+   "have": "GoXLR"
+  },
+  {
+   "group": "Home",
+   "title": "Dishwasher Holder for 20 Glass Communion Cups 1.5\" - Church Cup Washing Rack",
+   "their": "https://www.ebay.com/itm/255601524672",
+   "sold": 175,
+   "their_delivered": 59.95,
+   "price": 49.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). Simple tray. Proof: blue 133 sold @ $59.95 + red 42 sold @ $59.95 (195944100822)",
+   "have": "Communion"
+  },
+  {
+   "group": "Car parts",
+   "title": "Velocity Stacks Ram Pipes Set of 4 for Weber 40 DCOE Dellorto DHLA ASA",
+   "their": "https://www.ebay.com/itm/186831948916",
+   "sold": 84,
+   "their_delivered": 42.08,
+   "price": 39.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). Print in ASA (engine heat). Proof: '4 X WEBER 40x55mm DCOE / DELLORTO 3D PRINTED RAM PIPE' 84 sold @ $42.08",
+   "have": "DCOE.{0,40}(Stack|Ram|Trumpet)"
+  },
+  {
+   "group": "Fitness",
+   "title": "Rocker Plate Feet for Wahoo Kickr V5 V6 Trainer - Pair Movement Stabilizer",
+   "their": "https://www.ebay.com/itm/276812294805",
+   "sold": 85,
+   "their_delivered": 35.0,
+   "price": 32.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). Printables Kickr files are all non-commercial. Proof: 85 sold @ $35 (one pair)",
+   "have": "Kickr.{0,40}(Rocker|Feet)"
+  },
+  {
+   "group": "Car parts",
+   "title": "Fender Molding Clip 75305-SR3-003 Set of 2 for Honda Civic EG EK",
+   "their": "https://www.ebay.com/itm/314205126350",
+   "sold": 155,
+   "their_delivered": 17.5,
+   "price": 15.99,
+   "cad": "https://www.printables.com/model/867562 (CC0, 6th-gen Civic EK fender clips): check it matches 75305-SR3-003 before listing. Proof: 155 sold @ $17.50 (set of 2)",
+   "have": "75305"
+  },
+  {
+   "group": "Tools",
+   "title": "Primer Catcher Upgrade for RCBS Partner JR2 JR3 Reloading Press",
+   "their": "https://www.ebay.com/itm/254960522566",
+   "sold": 302,
+   "their_delivered": 18.0,
+   "price": 16.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). (Printables only has a Rockchucker version, 76877 CC-BY). Proof: 302 sold @ $18",
+   "have": "Primer Catcher"
+  },
+  {
+   "group": "Motorcycle",
+   "title": "Ignition Switch Plate 71422-03 for Harley Davidson Replacement",
+   "their": "https://www.ebay.com/itm/146097123690",
+   "sold": 111,
+   "their_delivered": 30.0,
+   "price": 27.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). Proof: '3D Printed Harley Davidson Ignition Switch Plate - Part # 71422-03' 111 sold @ $30",
+   "have": "71422"
+  },
+  {
+   "group": "Powersports",
+   "title": "Glovebox Extension for Ski-Doo XS XM REV Storage Upgrade ASA",
+   "their": "https://www.ebay.com/itm/167495503792",
+   "sold": 84,
+   "their_delivered": 120.0,
+   "price": 99.99,
+   "cad": "No file we can sell: we model it (dimensions researched first). Big part, print in ASA (cold/UV). Proof: 'Ski-Doo XS XM Glovebox Extension 3d printed' 84 sold @ $120",
+   "have": "Ski-?Doo.{0,40}Glove"
+  },
+  {
+   "group": "Audio",
    "title": "Technics SL-1200 SL-1210 Tonearm Rest with Working Lock Replacement MK2 MK3 MK5",
    "their": "https://www.ebay.com/itm/115842979787",
    "sold": 261,
