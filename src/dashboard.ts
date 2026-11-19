@@ -117,9 +117,17 @@ async function buildData() {
     });
   const productList = withNumbers(allProducts.filter((x) => !HIDDEN(x.decision) && !JUNK.test(x.title))); // no toys / gun parts
   const hiddenList = withNumbers(allProducts.filter((x) => HIDDEN(x.decision)));
-  const addNext = addNextItems().filter((x) => {
-    if (HIDDEN(decided.get(x.their) || "")) return false;
-    if (x.have) { try { const re = new RegExp(x.have, "i"); if (listings.some((l) => re.test(l.title))) return false; } catch { /* bad pattern: keep the row */ } }
+  // Each row is keyed by link + title, because several rows can share one competitor link (the 7 mini lathe
+  // gears all point at one set listing): marking one row listed must not hide the others. An older decision
+  // saved under the bare link still counts when only one row uses that link.
+  const anItems = addNextItems().map((x) => ({ ...x, key: `${x.their}#${x.title}` }));
+  const linkUses = new Map<string, number>();
+  for (const x of anItems) linkUses.set(x.their, (linkUses.get(x.their) || 0) + 1);
+  const addNextSkipped: { title: string; why: string }[] = [];
+  const addNext = anItems.filter((x) => {
+    const d = decided.get(x.key) || (linkUses.get(x.their) === 1 ? decided.get(x.their) || "" : "");
+    if (HIDDEN(d)) { addNextSkipped.push({ title: x.title, why: d }); return false; }
+    if (x.have) { try { const re = new RegExp(x.have, "i"); const hit = listings.find((l) => re.test(l.title)); if (hit) { addNextSkipped.push({ title: x.title, why: `already listed: ${hit.title}` }); return false; } } catch { /* bad pattern: keep the row */ } }
     return true;
   });
 
@@ -229,7 +237,7 @@ async function buildData() {
     bots,
     runs: runs.slice(0, 20),
     ideas: lastFinder ? { time: lastFinder.time, message: lastFinder.message } : null,
-    addNext,
+    addNext, addNextSkipped,
     lateOrders: late.length, dueSoon: unshipped.filter((o) => o.ship_by && Date.parse(o.ship_by) >= now && Date.parse(o.ship_by) < now + 24 * 3600_000).length,
     products: { ok: sheet.ok, total: productList.length, list: productList.slice(0, 60), hidden: hiddenList.slice(0, 60), hiddenCount: hiddenList.length },
     allTime: {
@@ -544,7 +552,7 @@ function todayRender(){if(!D)return;const k=D.kpis,rows=LS&&LS.rows||[];const ro
  $("jlate").textContent=D.lateOrders?D.lateOrders+" late":"";}
 function addRender(){if(!D)return;const A=D.addNext||[];$("addstat").textContent=A.length?A.length+" to list · proven sellers on eBay · most sold first within each lathe":"all listed";
  $("addt").innerHTML=A.length?'<tr><th>List this (tap to copy title)</th><th>Proof it sells</th><th>Your price</th><th>CAD file</th><th></th></tr>'+A.map((x,i)=>'<tr><td><div class="ag">'+esc(x.group)+'</div><span class="at" data-cp="'+i+'" style="cursor:copy">'+esc(x.title)+'</span></td><td class="m"><a target="_blank" rel="noopener" href="'+esc(x.their)+'" style="color:#7d9bff">'+x.sold+' sold ↗</a><br><span style="color:var(--mute)">'+money(x.their_delivered)+' delivered</span></td><td class="m"><b style="color:var(--ok)">'+money(x.price)+'</b><br><span style="color:var(--mute)">free shipping</span></td><td class="ah">'+linkify(x.cad)+'</td><td>'+(DR[x.their]?'<button class="pb go2" data-dr="'+i+'">📝 Open draft</button>':'')+'<button class="pb ok2" data-al="'+i+'">✓ Listed it</button><button class="pb no2" data-as="'+i+'">✕ Skip</button></td></tr>').join(""):'<tr><td class="empty">Nothing waiting. Ask Claude for more gears to add.</td></tr>';
- const go=async(i,d)=>{const x=A[i];D.addNext=A.filter(y=>y!==x);addRender();todayRender();try{const r=await fetch("/dashboard/"+S+"/decide",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ebay:x.their,decision:d,row:{found:new Date().toISOString().slice(0,10),title:x.title,sold:x.sold,price:x.price,status:"Add next list"}})});const j=await r.json();if(!j.ok)throw new Error(j.error||r.status);toast(d==="added"?"Marked as listed":"Skipped")}catch(e){toast("Couldn't save that choice: "+e.message)}};
+ const go=async(i,d)=>{const x=A[i];D.addNext=A.filter(y=>y!==x);addRender();todayRender();try{const r=await fetch("/dashboard/"+S+"/decide",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ebay:x.key||x.their,decision:d,row:{found:new Date().toISOString().slice(0,10),title:x.title,sold:x.sold,price:x.price,status:"Add next list"}})});const j=await r.json();if(!j.ok)throw new Error(j.error||r.status);toast(d==="added"?"Marked as listed":"Skipped")}catch(e){toast("Couldn't save that choice: "+e.message)}};
  document.querySelectorAll("#addt [data-al]").forEach(b=>b.onclick=()=>go(+b.dataset.al,"added"));document.querySelectorAll("#addt [data-as]").forEach(b=>b.onclick=()=>go(+b.dataset.as,"dismissed"));
  document.querySelectorAll("#addt [data-dr]").forEach(b=>b.onclick=()=>drOpen(DR[A[+b.dataset.dr].their]));
  document.querySelectorAll("#addt [data-cp]").forEach(b=>b.onclick=()=>{try{navigator.clipboard.writeText(A[+b.dataset.cp].title);toast("Title copied")}catch(e){}});}
