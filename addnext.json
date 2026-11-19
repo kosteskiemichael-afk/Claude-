@@ -29,7 +29,7 @@
    "sold": 84,
    "their_delivered": 42.08,
    "price": 39.99,
-   "cad": "No file we can sell: we model it (dimensions researched first). Print in ASA (engine heat). Proof: '4 X WEBER 40x55mm DCOE / DELLORTO 3D PRINTED RAM PIPE' 84 sold @ $42.08",
+   "cad": "Our own design, files ready: Weber_40_DCOE_DHLA_velocity_stack_55mm_set.zip (55 mm long, 43.4 mm bore, 82 mm flange, M6 slots at 65-67 mm centres, flat-base + spigot versions). Print 4 in ASA. Test-fit one before the first sale. Proof: 84 sold @ $42.08",
    "have": "DCOE.{0,40}(Stack|Ram|Trumpet)"
   },
   {
