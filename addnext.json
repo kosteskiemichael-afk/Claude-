@@ -3,6 +3,66 @@
  "checked": "2026-11-10",
  "items": [
   {
+   "group": "Gaming",
+   "title": "Display Stand for Sony PSP 1000 2000 3000 & PS Vita - Desk Stand",
+   "their": "https://www.ebay.com/itm/115759325514",
+   "sold": 365,
+   "their_delivered": 15.85,
+   "price": 15.99,
+   "cad": "https://www.printables.com/model/234263 (CC0) or 62819 (CC-BY). Proof: 'PSP Display Stand Custom 3D Printed PlayStation Portable 1000 - 3000 PS Vita' 365 sold @ $15.85",
+   "have": "PSP.{0,30}Stand"
+  },
+  {
+   "group": "Gaming",
+   "title": "Display Stand for Nintendo 3DS 3DS XL DS DSi - Angled Desk Stand",
+   "their": "https://www.ebay.com/itm/403924960892",
+   "sold": 186,
+   "their_delivered": 18.0,
+   "price": 15.99,
+   "cad": "https://www.printables.com/model/1858887 (CC0) or 473148 (CC0). Proof: 'Custom 3DS Display Stand, 3d Printed' 186 sold @ $18",
+   "have": "3DS.{0,30}Stand"
+  },
+  {
+   "group": "Car parts",
+   "title": "Door Protector Molding Clips 75328-SH2-003 Set of 10 for 90-91 Honda CRX",
+   "their": "https://www.ebay.com/itm/313744977378",
+   "sold": 272,
+   "their_delivered": 22.5,
+   "price": 21.99,
+   "cad": "No sellable file found: we model it. (Printables 1170230 CC0 is the garnish clip, not this one). Proof: '90-91 CRX Door Protector/Molding Clips 75328-SH2-003 (3d Printed, Set of 10)' 272 sold @ $22.50",
+   "have": "75328"
+  },
+  {
+   "group": "Car parts",
+   "title": "Door Protector Clip Assembly for 88-91 Honda CRX & Civic Hatchback",
+   "their": "https://www.ebay.com/itm/314723194373",
+   "sold": 212,
+   "their_delivered": 30.0,
+   "price": 27.99,
+   "cad": "No sellable file found: we model it. Proof: '90-91 Civic Hatchback Door Protector Clip Assembly' 118 sold @ $30 + '88-89 Honda CRX Door Protector Clip Assembly' 94 sold @ $30 (314723193921)",
+   "have": "Door Protector Clip Assembly"
+  },
+  {
+   "group": "Tools",
+   "title": "AC Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20 - Power Brick Mount",
+   "their": "https://www.ebay.com/itm/124856740844",
+   "sold": 172,
+   "their_delivered": 20.0,
+   "price": 18.99,
+   "cad": "No sellable file found: we model it. Proof: '3D PRINTED AC Power Wall Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20' 172 sold @ $20",
+   "have": "0886-20"
+  },
+  {
+   "group": "Powersports",
+   "title": "Cup Holder Adapter & Phone Holder for Kawasaki Teryx 4 Teryx 2",
+   "their": "https://www.ebay.com/itm/318288646535",
+   "sold": 46,
+   "their_delivered": 60.0,
+   "price": 49.99,
+   "cad": "No sellable file found: we model it. Print in ASA. Proof: 'Teryx 4 / Teryx 2 CupHolder Adapter, Phone Holder' 46 sold @ $60",
+   "have": "Teryx"
+  },
+  {
    "group": "Camera",
    "title": "Chain Link Fence Mount for GoPro Hero & Action Cameras - Backstop Recording Clip",
    "their": "https://www.ebay.com/itm/184359998227",
@@ -14,12 +74,12 @@
   },
   {
    "group": "Gaming",
-   "title": "Vertical Stand for PlayStation 2 PS2 Console - Upright Display Stand",
-   "their": "https://www.ebay.com/itm/305318390284",
-   "sold": 255,
+   "title": "Vertical Stand for PlayStation 2 Slim PS2 Console - Upright Display Stand",
+   "their": "https://www.ebay.com/itm/305459141924",
+   "sold": 310,
    "their_delivered": 20.0,
    "price": 19.99,
-   "cad": "https://www.printables.com/model/152524 slim / 152497 slim 2 / 152501 (CC-BY, credit designer). Check which PS2 (fat or slim) the proof sells for. Proof: 'PlayStation 2 vertical stand 3D Printed' 255 sold @ $20",
+   "cad": "https://www.printables.com/model/152524 (slim 1) / 152497 (slim 2) (CC-BY, credit designer). Proof: 'PlayStation 2 Slim vertical stand 3D Printed' 310 sold @ $20; fat PS2 stand 255 @ $20 (305318390284)",
    "have": "PS2.{0,30}Stand|PlayStation 2.{0,30}Stand"
   },
   {
