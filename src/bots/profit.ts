@@ -50,7 +50,10 @@ export async function shipInfo(cfg: BotConfig, listings: Listing[]): Promise<Map
         shipCache.set(l.item_id, { at: Date.now(), ship });
         out.set(l.item_id, ship);
       } catch {
-        out.set(l.item_id, { kind: "flat", buyer: l.shipping_cost }); // couldn't read it: use what the listing data shows
+        // Couldn't read it: use the listing's own shipping setup. A $0 cost means free shipping, so the label
+        // is ours; treating it as buyer-paid made every floor about $4 too low.
+        const k = l.ship_kind ?? (l.shipping_cost > 0 ? "flat" : "free");
+        out.set(l.item_id, k === "calculated" ? { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 } : k === "free" ? { kind: "free", buyer: 0 } : { kind: "flat", buyer: l.shipping_cost });
       }
     }));
   }
