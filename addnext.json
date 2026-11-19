@@ -4,6 +4,46 @@
  "items": [
   {
    "group": "Shooting accessories",
+   "title": "Brass Catcher for Ruger 10/22 - Holds 100 .22LR Shells - Clip On Shell Catcher",
+   "their": "https://www.ebay.com/itm/256519387183",
+   "sold": 453,
+   "their_delivered": 18.0,
+   "price": 17.99,
+   "cad": "https://www.printables.com/model/1533644 (CC-BY, credit KSM Design). Proof: '3D Printed Ruger 10/22 Brass Catcher .22LR' 453 sold @ $18",
+   "have": "10/22.{0,30}Brass"
+  },
+  {
+   "group": "Tools",
+   "title": "8 Pack Battery Holder for Milwaukee M18 - Wall Mount Battery Storage Rack",
+   "their": "https://www.ebay.com/itm/156917406955",
+   "sold": 144,
+   "their_delivered": 35.0,
+   "price": 24.99,
+   "cad": "https://www.printables.com/model/1035768 (CC0) or 53684 with lock (CC-BY, credit vikgr). Proof: 8-bay M18 holder 144 sold @ $35; printed 10-pack 1,646 sold @ $18 (274885526758)",
+   "have": "M18.{0,30}(Battery Holder|Battery Mount)"
+  },
+  {
+   "group": "Golf",
+   "title": "Battery Door for Bushnell Medalist Pinseeker 20-1354 Golf Rangefinder",
+   "their": "https://www.ebay.com/itm/164532842210",
+   "sold": 266,
+   "their_delivered": 16.0,
+   "price": 15.99,
+   "cad": "No sellable file: we model it (need the door size from the rangefinder). Proof: '3D Printed Battery Door for Bushnell Golf Rangefinder Medalist Pinseeker 20-1354' 266 sold @ $16",
+   "have": "Pinseeker|20-1354"
+  },
+  {
+   "group": "Shooting accessories",
+   "title": "Case Feeder for Hornady Lock-N-Load AP Reloading Press - Complete Kit",
+   "their": "https://www.ebay.com/itm/256440307212",
+   "sold": 298,
+   "their_delivered": 100.0,
+   "price": 89.99,
+   "cad": "No full commercial file (Printables has only small CC-BY/CC0 feeder parts, e.g. 527568, 1854316): big job to model and test. Proof: 180 sold @ $100 + 118 sold @ $100 (235818482162)",
+   "have": "Case Feeder"
+  },
+  {
+   "group": "Shooting accessories",
    "title": "Compact Hard Case for Garmin Xero C1 Pro Chronograph - Protective Carry Case",
    "their": "https://www.ebay.com/itm/186323819914",
    "sold": 99,
@@ -54,12 +94,12 @@
   },
   {
    "group": "Fitness",
-   "title": "Rocker Plate Feet for Wahoo Kickr V5 V6 Trainer - Pair Movement Stabilizer",
-   "their": "https://www.ebay.com/itm/276812294805",
-   "sold": 85,
-   "their_delivered": 35.0,
-   "price": 32.99,
-   "cad": "No file we can sell: we model it (dimensions researched first). Printables Kickr files are all non-commercial. Proof: 85 sold @ $35 (one pair)",
+   "title": "Rocker Plate Feet x4 for Wahoo Kickr Core V5 V6 - Tennis Ball Movement Kit",
+   "their": "https://www.ebay.com/itm/387422040036",
+   "sold": 267,
+   "their_delivered": 46.01,
+   "price": 44.99,
+   "cad": "No sellable file (Printables Kickr files are non-commercial): we model it. Proof: 'WAHOO KICKR CORE Movement Tennis Ball Rocker Plate Feet x 4' 267 sold @ $46.01; also 78 @ $72 (387444883381), 66 @ $79 Kickr Core 2/Zwift Ride (406695724055), 126 @ $75 Zwift Ride (387846743492)",
    "have": "Kickr.{0,40}(Rocker|Feet)"
   },
   {
