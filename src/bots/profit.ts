@@ -38,7 +38,13 @@ export { browseItem };
 export async function shipInfo(cfg: BotConfig, listings: Listing[]): Promise<Map<string, Ship>> {
   const out = new Map<string, Ship>();
   const todo: Listing[] = [];
+  // Listing data already says how each listing ships, so the Browse API (5,000 calls/day, shared with the
+  // product finder) is only used for listings that don't say. Every restart used to re-read all ~177.
+  const freeIds = new Set(((cfg.pricing as any).free_ship_ids || []) as string[]);
   for (const l of listings) {
+    if (freeIds.has(l.item_id)) { out.set(l.item_id, { kind: "free", buyer: 0 }); continue; }
+    if (l.ship_kind === "calculated") { out.set(l.item_id, { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 }); continue; }
+    if (l.ship_kind === "flat" && l.shipping_cost > 0) { out.set(l.item_id, { kind: "flat", buyer: l.shipping_cost }); continue; }
     const hit = shipCache.get(l.item_id);
     if (hit && Date.now() - hit.at < SHIP_TTL) out.set(l.item_id, hit.ship);
     else todo.push(l);

@@ -232,7 +232,14 @@
     "stale_views": 8,
     "stale_cut_pct": 0.08,
     "free_ship_label_cost": 8.0,
-    "price_weekday": "Sun"
+    "price_weekday": "Sun",
+    "free_ship_ids": [
+      "206575191783",
+      "206555145319",
+      "206690812878",
+      "206690779461",
+      "206690378940"
+    ]
   },
   "pending_splits": [
     {
