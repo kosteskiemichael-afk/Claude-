@@ -186,6 +186,17 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
 
+  // 0) One-time raises you approved (pricing.raise_to): applied on the price day only while the listing is still
+  //    below that price, so it never pulls a price back down and never fires twice.
+  for (const [itemId, to] of Object.entries(((cfg.pricing as any).raise_to || {}) as Record<string, number>)) {
+    const l = byId.get(itemId);
+    if (!l || l.protected || l.has_variations || sale.has(itemId) || !(l.price < to - 0.01)) continue;
+    if (!morning || movedOn.get(itemId) === today) continue;
+    movedOn.set(itemId, today);
+    changes.push({ item_id: l.item_id, title: l.title, price: to });
+    r.changes.push(`🛡 Price ${money(l.price)} → ${money(to)} (free shipping was losing money; ${profitNote(l, to)}): ${short(l.title)}`);
+  }
+
   // 1) Items with hand-written rules.
   for (const [itemId, rule] of Object.entries(cfg.pricing.rules)) {
     const l = byId.get(itemId);
