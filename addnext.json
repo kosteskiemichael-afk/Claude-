@@ -4,6 +4,36 @@
  "items": [
   {
    "group": "Audio",
+   "title": "Technics SL-1200 SL-1210 Tonearm Rest with Working Lock Replacement MK2 MK3 MK5",
+   "their": "https://www.ebay.com/itm/115842979787",
+   "sold": 261,
+   "their_delivered": 14.25,
+   "price": 14.99,
+   "cad": "https://www.printables.com/model/1180310 (CC-BY-SA, credit Gurgel). Proof: 261 sold @ $14.25; 213 @ $14.95 (115456114076); 170 @ $14.95 (354150300491)",
+   "have": "Tonearm Rest"
+  },
+  {
+   "group": "Audio",
+   "title": "Technics SL-1200 SL-1210 Power On/Off Knob Cap Replacement MK2 MK3 MK5",
+   "their": "https://www.ebay.com/itm/221602694803",
+   "sold": 430,
+   "their_delivered": 34.99,
+   "price": 24.99,
+   "cad": "No sellable file: we model it (need the knob's exact size from the SL-1200 service manual / a real knob). Proof: 430 sold @ $34.99; 179 @ $46.99 (221184612161)",
+   "have": "Technics.{0,40}(Power|On/Off).{0,20}(Knob|Cap)"
+  },
+  {
+   "group": "Camera",
+   "title": "Mamiya Universal Press / Polaroid 600SE to 4x5 Graflok Back Adapter",
+   "their": "https://www.ebay.com/itm/133268377976",
+   "sold": 131,
+   "their_delivered": 98.0,
+   "price": 89.99,
+   "cad": "No sellable file (Printables ones are non-commercial): we model it. Proof: same seller, Mamiya Universal 68 sold @ $98 + Polaroid 600SE 63 sold @ $98 (133268375605). Fits your Polaroid 600SE buyers",
+   "have": "Graflo(c)?k"
+  },
+  {
+   "group": "Audio",
    "title": "Audio-Technica ATH-M50x M50 Hinge Repair Kit Pair - Broken Earcup Fix No Solder",
    "their": "https://www.ebay.com/itm/283974047847",
    "sold": 2360,
@@ -15,9 +45,9 @@
   {
    "group": "Audio",
    "title": "Dust Cover Hinge Pair for Audio-Technica AT-LP120 LP120X LP60X LP3 LP5 Turntable",
-   "their": "https://www.ebay.com/itm/186387008873",
-   "sold": 67,
-   "their_delivered": 26.99,
+   "their": "https://www.ebay.com/itm/115750412759",
+   "sold": 204,
+   "their_delivered": 33.99,
    "price": 24.99,
    "cad": "https://www.printables.com/model/1536406 (CC0) or https://www.printables.com/model/374412 (CC-BY-SA). Proof: dicoay printed pair 67 sold @ $26.99; Hi-Fi Heaven OEM pair 204 sold @ $33.99 (115750412759), single 212 @ $16.99",
    "have": "LP120.{0,40}Hinge|Hinge.{0,40}LP120"
