@@ -3,64 +3,44 @@
  "checked": "2026-11-10",
  "items": [
   {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "Mini Lathe Change Gear Set of 7 40 45 50 55 57 60 80T 7x10 7x12 Harbor Freight",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 36.99,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "Set of 7|7 ?(pc|piece|gear).{0,30}(Mini Lathe|7x10|7x12)"
+   "group": "Car parts",
+   "title": "Fisker Ocean Door Handle Light Cover Set of 4 UV Safe ASA 2023 2024 Replacement",
+   "their": "https://www.ebay.com/itm/387231600158",
+   "sold": 193,
+   "their_delivered": 29.99,
+   "price": 27.99,
+   "cad": "https://www.printables.com/model/945466 (CC0 public domain, commercial OK). Print in ASA. Also sold: 128 @ $26.99 (226314797128), 131 @ $12.95 (167811428034)",
+   "have": "Fisker.{0,40}(Handle|Light Cover)"
   },
   {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "40T (40 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 8.99,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b40T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+   "group": "Car parts",
+   "title": "Fisker Ocean Inner Door Handle Insert Replacement 2023 2024 - 3D Printed",
+   "their": "https://www.printables.com/model/961122",
+   "sold": 0,
+   "their_delivered": 0,
+   "price": 19.99,
+   "cad": "https://www.printables.com/model/961122 (CC0, commercial OK). Demand not proven on eBay yet: add-on for Fisker buyers",
+   "have": "Fisker.{0,40}Inner"
   },
   {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "45T (45 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.47,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b45T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+   "group": "Car parts",
+   "title": "2012-2018 Ford Focus Sync 3 Radio Swap Mounting Bracket Kit - 3D Printed",
+   "their": "https://www.ebay.com/itm/202725919988",
+   "sold": 121,
+   "their_delivered": 35.0,
+   "price": 34.99,
+   "cad": "https://www.printables.com/model/96447 (GPL 3.0: commercial OK, credit the designer and link the file in the listing)",
+   "have": "Focus.{0,40}Sync ?3"
   },
   {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "50T (50 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.47,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b50T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "55T (55 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.97,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b55T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "60T (60 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.97,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b60T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+   "group": "Tools",
+   "title": "Husky Tool Box Latch Replacement Large - Heavy Duty 3D Printed PETG",
+   "their": "https://www.ebay.com/itm/316108595549",
+   "sold": 235,
+   "their_delivered": 14.0,
+   "price": 14.99,
+   "cad": "https://www.printables.com/model/444047 (CC-BY: commercial OK with credit). Check it matches the large latch before listing",
+   "have": "Husky.{0,40}Latch"
   },
   {
    "group": "Car parts ($20-$55)",
@@ -101,76 +81,6 @@
    "price": 20.49,
    "cad": "No sellable file found: model our own from the OEM part / customer measurements.",
    "have": "Cub Cadet.{0,40}Hook|MA-10322629001"
-  },
-  {
-   "group": "Music gear",
-   "title": "Rock Band Drum Cymbal Bracket 90 Degree Replacement Heavy Duty HD PETG",
-   "their": "https://www.ebay.com/itm/134643265103",
-   "sold": 87,
-   "their_delivered": 27.99,
-   "price": 26.99,
-   "cad": "No sellable file found: model our own from the OEM part / customer measurements. Pairs with your Pearl cymbal bushing buyers.",
-   "have": "Rock Band.{0,40}Cymbal"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Atlas 618 Craftsman 101 6\" Lathe Complete Change Gear Set 14 Gears 24DP HD PETG",
-   "their": "https://www.ebay.com/itm/187023095610",
-   "sold": 78,
-   "their_delivered": 44.75,
-   "price": 49.99,
-   "cad": "Own design: Nexa gear generator (24DP, 14.5°, 3/8\" face, 1/2\" bore) Gears: 20, 24, 2x32, 36, 40, 44, 46, 48, 52, 54, 56, 2x64T.",
-   "have": "(618|Craftsman 101).*(Complete|Full|14).*(Set|Gears)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Mini Lathe 7x10 7x12 Complete Change Gear Set 12 Gears Module 1 Harbor Freight",
-   "their": "https://ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 41.59,
-   "price": 44.99,
-   "cad": "Own design: Nexa gear generator (Module 1, 20°, 12 mm bore, 3 mm key) Gears: 20, 30, 35, 2x40, 45, 50, 55, 57, 60, 65, 80T.",
-   "have": "(7x10|7x12|Mini Lathe).*(Complete|Full|12).*(Set|Gears)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Atlas Craftsman 10\" 12\" Metal Lathe Complete Change Gear Set 16DP 3/4\" Bore PETG",
-   "their": "https://www.ebay.com/itm/227217131470",
-   "sold": 6,
-   "their_delivered": 125.0,
-   "price": 79.99,
-   "cad": "Own design: Nexa gear generator (16DP, 14.5°, 1/2\" face, 3/4\" bore, two 3/16\" keys) Gear list: confirm from Atlas 10/12 threading chart before printing.",
-   "have": "Atlas.*(10|12).*(Complete|Full).*(Set)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "South Bend 9C Model C Lathe Complete Change Gear Set 18DP 9/16\" Bore HD PETG",
-   "their": "https://www.ebay.com/itm/168181655048",
-   "sold": 3,
-   "their_delivered": 87.35,
-   "price": 74.99,
-   "cad": "Own design: Nexa gear generator (18DP, 14.5°, 3/8\" face, 9/16\" bore, 1/8\" key) Gear list: confirm from South Bend 9C threading chart before printing.",
-   "have": "South Bend.*9C.*(Complete|Full)?.*Set"
-  },
-  {
-   "group": "Higher-end ($25+)",
-   "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
-   "their": "https://www.ebay.com/itm/263674841715",
-   "sold": 7,
-   "their_delivered": 74.7,
-   "price": 64.99,
-   "cad": "Gear set with 5/8\" face width; confirm the tooth counts from the Logan 2500 metric chart. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-   "have": "Logan.{0,20}(12|14).{0,40}Transpos"
-  },
-  {
-   "group": "Higher-end ($25+)",
-   "title": "Atlas Craftsman Commercial 12\" Lathe Reverse Tumbler Gear Set Dual 36 Tooth PETG",
-   "their": "https://www.ebay.com/itm/276480445412",
-   "sold": 12,
-   "their_delivered": 39.0,
-   "price": 36.99,
-   "cad": "Two 36T tumbler gears, 16DP; confirm bore/hub from the Atlas Commercial 12 parts list. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-   "have": "Commercial.{0,30}Tumbler|Tumbler.{0,40}36 ?T"
   },
   {
    "group": "Craftsman miter saw parts ($20+)",
@@ -253,6 +163,168 @@
    "have": "91510-SH2"
   },
   {
+   "group": "Next burr ring (UK sellers, US demand)",
+   "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
+   "their": "https://www.ebay.com/itm/166737869849",
+   "sold": 234,
+   "their_delivered": 14.77,
+   "price": 12.99,
+   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+   "have": "Festool.{0,40}(Latch|Catch)"
+  },
+  {
+   "group": "Next burr ring (UK sellers, US demand)",
+   "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
+   "their": "https://www.ebay.com/itm/264237953059",
+   "sold": 94,
+   "their_delivered": 21.08,
+   "price": 15.99,
+   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+   "have": "WM-D6.{0,40}Battery"
+  },
+  {
+   "group": "Next burr ring (UK sellers, US demand)",
+   "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
+   "their": "https://www.ebay.com/itm/386314787292",
+   "sold": 91,
+   "their_delivered": 29.56,
+   "price": 24.99,
+   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+   "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
+  }
+ ],
+ "paused": [
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "Mini Lathe Change Gear Set of 7 40 45 50 55 57 60 80T 7x10 7x12 Harbor Freight",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 36.99,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "Set of 7|7 ?(pc|piece|gear).{0,30}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "40T (40 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 8.99,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "\\b40T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "45T (45 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 9.47,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "\\b45T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "50T (50 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 9.47,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "\\b50T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "55T (55 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 9.97,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "\\b55T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Mini lathe 7x10 / 7x12 (files ready)",
+   "title": "60T (60 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+   "their": "https://www.ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 40.97,
+   "price": 9.97,
+   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+   "have": "\\b60T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+  },
+  {
+   "group": "Music gear",
+   "title": "Rock Band Drum Cymbal Bracket 90 Degree Replacement Heavy Duty HD PETG",
+   "their": "https://www.ebay.com/itm/134643265103",
+   "sold": 87,
+   "their_delivered": 27.99,
+   "price": 26.99,
+   "cad": "No sellable file found: model our own from the OEM part / customer measurements. Pairs with your Pearl cymbal bushing buyers.",
+   "have": "Rock Band.{0,40}Cymbal"
+  },
+  {
+   "group": "Gear sets ($20+)",
+   "title": "Atlas 618 Craftsman 101 6\" Lathe Complete Change Gear Set 14 Gears 24DP HD PETG",
+   "their": "https://www.ebay.com/itm/187023095610",
+   "sold": 78,
+   "their_delivered": 44.75,
+   "price": 49.99,
+   "cad": "Own design: Nexa gear generator (24DP, 14.5°, 3/8\" face, 1/2\" bore) Gears: 20, 24, 2x32, 36, 40, 44, 46, 48, 52, 54, 56, 2x64T.",
+   "have": "(618|Craftsman 101).*(Complete|Full|14).*(Set|Gears)"
+  },
+  {
+   "group": "Gear sets ($20+)",
+   "title": "Mini Lathe 7x10 7x12 Complete Change Gear Set 12 Gears Module 1 Harbor Freight",
+   "their": "https://ebay.com/itm/116298829828",
+   "sold": 47,
+   "their_delivered": 41.59,
+   "price": 44.99,
+   "cad": "Own design: Nexa gear generator (Module 1, 20°, 12 mm bore, 3 mm key) Gears: 20, 30, 35, 2x40, 45, 50, 55, 57, 60, 65, 80T.",
+   "have": "(7x10|7x12|Mini Lathe).*(Complete|Full|12).*(Set|Gears)"
+  },
+  {
+   "group": "Gear sets ($20+)",
+   "title": "Atlas Craftsman 10\" 12\" Metal Lathe Complete Change Gear Set 16DP 3/4\" Bore PETG",
+   "their": "https://www.ebay.com/itm/227217131470",
+   "sold": 6,
+   "their_delivered": 125.0,
+   "price": 79.99,
+   "cad": "Own design: Nexa gear generator (16DP, 14.5°, 1/2\" face, 3/4\" bore, two 3/16\" keys) Gear list: confirm from Atlas 10/12 threading chart before printing.",
+   "have": "Atlas.*(10|12).*(Complete|Full).*(Set)"
+  },
+  {
+   "group": "Gear sets ($20+)",
+   "title": "South Bend 9C Model C Lathe Complete Change Gear Set 18DP 9/16\" Bore HD PETG",
+   "their": "https://www.ebay.com/itm/168181655048",
+   "sold": 3,
+   "their_delivered": 87.35,
+   "price": 74.99,
+   "cad": "Own design: Nexa gear generator (18DP, 14.5°, 3/8\" face, 9/16\" bore, 1/8\" key) Gear list: confirm from South Bend 9C threading chart before printing.",
+   "have": "South Bend.*9C.*(Complete|Full)?.*Set"
+  },
+  {
+   "group": "Higher-end ($25+)",
+   "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
+   "their": "https://www.ebay.com/itm/263674841715",
+   "sold": 7,
+   "their_delivered": 74.7,
+   "price": 64.99,
+   "cad": "Gear set with 5/8\" face width; confirm the tooth counts from the Logan 2500 metric chart. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+   "have": "Logan.{0,20}(12|14).{0,40}Transpos"
+  },
+  {
+   "group": "Higher-end ($25+)",
+   "title": "Atlas Craftsman Commercial 12\" Lathe Reverse Tumbler Gear Set Dual 36 Tooth PETG",
+   "their": "https://www.ebay.com/itm/276480445412",
+   "sold": 12,
+   "their_delivered": 39.0,
+   "price": 36.99,
+   "cad": "Two 36T tumbler gears, 16DP; confirm bore/hub from the Atlas Commercial 12 parts list. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+   "have": "Commercial.{0,30}Tumbler|Tumbler.{0,40}36 ?T"
+  },
+  {
    "group": "Seneca Falls / Star lathe (we have the files)",
    "title": "Seneca Falls Star Lathe Change Gear Set 7pc 24 30 38 42 46 48 72T 16DP 5/8 Bore",
    "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
@@ -284,16 +356,6 @@
   },
   {
    "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
-   "their": "https://www.ebay.com/itm/166737869849",
-   "sold": 234,
-   "their_delivered": 14.77,
-   "price": 12.99,
-   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Festool.{0,40}(Latch|Catch)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
    "title": "KitchenAid Stand Mixer Speed Control Lever Knob Replacement HD PETG",
    "their": "https://www.ebay.com/itm/295986962381",
    "sold": 164,
@@ -311,26 +373,6 @@
    "price": 9.99,
    "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
    "have": "Beyerdynamic.{0,40}Slider"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
-   "their": "https://www.ebay.com/itm/264237953059",
-   "sold": 94,
-   "their_delivered": 21.08,
-   "price": 15.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "WM-D6.{0,40}Battery"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
-   "their": "https://www.ebay.com/itm/386314787292",
-   "sold": 91,
-   "their_delivered": 29.56,
-   "price": 24.99,
-   "cad": "Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
   },
   {
    "group": "South Bend 9/10K",
