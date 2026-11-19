@@ -70,20 +70,15 @@
         "max": 16.99
       },
       "206460157900": {
-        "note": "Breville main gear: printed competitor $16.49",
-        "query": "breville main drive gear",
+        "note": "Breville main gear: competitors $30 (Nov 19 decision: $24.99)",
+        "query": "breville grinder main gear",
         "must_include": [
           "breville",
           "gear"
         ],
-        "exclude": [
-          "genuine",
-          "oem",
-          "sub gear",
-          "and sub"
-        ],
-        "min": 14.99,
-        "max": 24.99
+        "min": 24.99,
+        "max": 24.99,
+        "set": 24.99
       },
       "206451166902": {
         "note": "GE Opal ice maker gear",
@@ -205,6 +200,16 @@
         ],
         "min": 9.98,
         "max": 9.98
+      },
+      "206531692726": {
+        "note": "CRX HVAC/climate control: competitor ~$200 (Nov 19 decision: $149.99)",
+        "query": "crx climate control",
+        "must_include": [
+          "crx"
+        ],
+        "min": 149.99,
+        "max": 149.99,
+        "set": 149.99
       }
     },
     "once_per_day": true,

@@ -192,6 +192,14 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     if (sale.has(itemId)) continue;
     if (!l) { r.info.push(`Price rule for ${itemId} skipped: listing not active.`); continue; }
     if (l.protected || l.has_variations) continue;
+    if (rule.set !== undefined) { // your exact price: no competitor math, no 10% step cap
+      if (Math.abs(l.price - rule.set) >= 0.01 && morning && movedOn.get(l.item_id) !== today) {
+        movedOn.set(l.item_id, today);
+        changes.push({ item_id: l.item_id, title: l.title, price: rule.set });
+        r.changes.push(`📌 Price ${money(l.price)} → ${money(rule.set)} (your price; ${profitNote(l, rule.set)}): ${short(l.title)}`);
+      }
+      continue;
+    }
     try { apply(l, rule, await findCompetitors(cfg, rule), ""); }
     catch (e) { r.info.push(`Pricing check failed for ${short(l.title)}: ${(e as Error).message.slice(0, 120)}`); }
   }

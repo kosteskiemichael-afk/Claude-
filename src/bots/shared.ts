@@ -5,6 +5,8 @@ import { rest, trading, tradingWarnings } from "../ebay.js";
 
 // ---------------- config ----------------
 export type PriceRule = {
+  /** Exact price you chose: applied on the next price day in one step, then held. */
+  set?: number;
   query: string;              // eBay search used to find competitors
   must_include?: string[];    // competitor title must contain all of these words
   exclude?: string[];         // ignore competitor titles containing any of these
