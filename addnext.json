@@ -4,6 +4,26 @@
  "items": [
   {
    "group": "Audio",
+   "title": "Audio-Technica ATH-M50x M50 Hinge Repair Kit Pair - Broken Earcup Fix No Solder",
+   "their": "https://www.ebay.com/itm/283974047847",
+   "sold": 2360,
+   "their_delivered": 13.97,
+   "price": 14.99,
+   "cad": "https://www.printables.com/model/1706238 (CC0, reinforced clip-on) or https://www.printables.com/model/824299 (CC-BY, credit NotARealDragon). Proof: mikeilliam 'Audio-Technica ATH-M50/M50x Hinge Repair Kit (Version 2)' 2,360 sold @ $13.97",
+   "have": "M50.{0,40}Hinge|Hinge.{0,40}M50"
+  },
+  {
+   "group": "Audio",
+   "title": "Dust Cover Hinges Pair for Audio-Technica AT-LP120 LP120X LP60X LP3 LP5 Turntable",
+   "their": "https://www.ebay.com/itm/186387008873",
+   "sold": 67,
+   "their_delivered": 26.99,
+   "price": 24.99,
+   "cad": "https://www.printables.com/model/1536406 (CC0) or https://www.printables.com/model/374412 (CC-BY-SA). Proof: dicoay printed pair 67 sold @ $26.99; Hi-Fi Heaven OEM pair 204 sold @ $33.99 (115750412759), single 212 @ $16.99",
+   "have": "LP120.{0,40}Hinge|Hinge.{0,40}LP120"
+  },
+  {
+   "group": "Audio",
    "title": "Turntable Headshell Spacer Shim Set 14pc 0.5-4.5mm 1/2\" Cartridge VTA Align",
    "their": "https://www.ebay.com/itm/255381617341",
    "sold": 300,
