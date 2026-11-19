@@ -120,11 +120,11 @@ export function makeSpecs(title: string, text = ""): MakeSpecs | null {
 }
 
 // ---------- the strategies ----------
-export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting";
+export type Strategy = "keywords" | "competitors" | "categories" | "cadfirst" | "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting" | "niche";
 export const STRATEGY_NAMES: Record<Strategy, string> = {
   keywords: "Keyword bot", competitors: "Competitor bot", categories: "Category bot", cadfirst: "CAD-first bot",
   gears: "Gears & Brackets bot", autoboat: "Auto & Boat bot", premium: "Premium Equipment bot", makeit: "Make-it bot",
-  drones: "Drone Parts bot", shooting: "Shooting Accessories bot",
+  drones: "Drone Parts bot", shooting: "Shooting Accessories bot", niche: "Winners bot",
 };
 
 // Shooting Accessories bot: accessories only. Anything that is part of how a gun fires or is eBay-prohibited
@@ -134,7 +134,20 @@ const GUN_WORDS = /\b(gun|guns|pistol|rifle|shotgun|firearm|ar-?15|ar-?10|ak-?47
 const GUN_BLOCK = /receiver|lower|upper|frame|jig|80%|sear|switch|auto ?key|trigger|suppress|silencer|solvent|flash ?hider|muzzle|compensator|brake|magazine|\bmags?\b|extension|extender|bump|brace|forward grip|vertical grip|shroud|barrel|conversion|drop.?in|lightning link|bolt|slide|firing pin|hammer|buffer|stock kit/i;
 
 // Focused search pools for the three specialist bots.
-const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting", string[]> = {
+const POOLS: Record<"gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting" | "niche", string[]> = {
+  // Winners bot: the niches where this store already wins (Baratza burr holder, Breville gear, turntable shims):
+  // enthusiast gear whose small plastic part breaks and the maker no longer sells it.
+  niche: [
+    "baratza", "breville grinder", "breville espresso", "fellow ode", "delonghi", "gaggia", "rancilio", "la marzocco", "rocket espresso",
+    "niche zero", "df64", "eureka mignon", "hario", "comandante", "1zpresso", "timemore", "aeropress", "chemex", "moccamaster", "bodum",
+    "audio technica turntable", "technics turntable", "pioneer turntable", "dual turntable", "thorens", "rega", "pro-ject", "denon turntable",
+    "headshell", "tonearm", "turntable hinge", "dust cover hinge", "cassette deck", "reel to reel", "walkman", "discman", "minidisc",
+    "ath-m50", "sennheiser hd", "beyerdynamic", "sony headphone", "akg headphone", "headphone hinge", "headphone slider",
+    "marantz", "mcintosh", "nakamichi", "teac", "tascam", "akai", "yamaha receiver", "receiver knob", "amplifier knob",
+    "polaroid", "mamiya", "hasselblad", "pentax", "nikon f", "canon ae-1", "film camera", "120 film", "35mm film", "darkroom",
+    "roland", "korg", "moog", "teenage engineering", "elektron", "synth knob", "drum module", "guitar pedal", "fender amp",
+    "kitchenaid mixer", "vitamix", "thermomix", "dyson", "roomba", "herman miller", "steelcase", "aeron", "peloton", "concept2",
+  ],
   drones: [
     "dji phantom 3 lens cap", "dji phantom 3 gimbal lock", "dji phantom 4 gimbal lock", "dji phantom 2 gimbal guard",
     "dji avata 2 flashlight mount", "dji avata 2 gopro mount", "dji neo flashlight mount", "dji neo 2 case", "dji neo 2 mount",
@@ -281,7 +294,7 @@ async function gatherCadFirst(cfg: BotConfig): Promise<Gathered> {
   return { hits: [...all.values()], searched: pick.map((q) => `Printables: ${q}`), presetCad };
 }
 
-async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting"): Promise<Gathered> {
+async function gatherPool(cfg: BotConfig, key: "gears" | "autoboat" | "premium" | "makeit" | "drones" | "shooting" | "niche"): Promise<Gathered> {
   const pool = POOLS[key], per = key === "makeit" ? 12 : 18, batches = Math.ceil(pool.length / per), k = nextK(key) % batches;
   const base = pool.filter((_, i) => i % batches === k);
   // Make-it searches both "3d printed X" and plain "X" (eBay's matching is narrow); collect() keeps printed listings only.
@@ -296,14 +309,14 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["makeit", "cadfirst", "drones", "autoboat", "premium", "shooting", "makeit", "keywords", "competitors", "cadfirst", "drones", "makeit", "autoboat", "premium", "shooting", "categories", "cadfirst"];
+const ORDER: Strategy[] = ["niche", "makeit", "cadfirst", "niche", "autoboat", "premium", "niche", "keywords", "competitors", "niche", "drones", "cadfirst", "niche", "makeit", "categories", "shooting"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["makeit", "cadfirst", "drones", "autoboat", "premium", "shooting"];
+const FOCUS: Strategy[] = ["niche", "makeit", "niche", "autoboat", "niche", "premium", "niche", "cadfirst"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["makeit", "cadfirst", "drones", "shooting", "autoboat", "premium", "makeit", "competitors", "cadfirst", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "cadfirst", "autoboat", "premium", "makeit"];
+export const DEEP_PLAN: Strategy[] = ["niche", "niche", "makeit", "cadfirst", "niche", "autoboat", "premium", "niche", "competitors", "niche", "keywords", "cadfirst", "niche", "drones", "makeit", "niche", "categories", "premium", "niche", "shooting"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
@@ -387,7 +400,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   const g = strategy === "competitors" ? await gatherCompetitors(cfg)
     : strategy === "categories" ? await gatherCategories(cfg)
     : strategy === "cadfirst" ? await gatherCadFirst(cfg)
-    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" || strategy === "makeit" || strategy === "drones" || strategy === "shooting" ? await gatherPool(cfg, strategy)
+    : strategy === "gears" || strategy === "autoboat" || strategy === "premium" || strategy === "makeit" || strategy === "drones" || strategy === "shooting" || strategy === "niche" ? await gatherPool(cfg, strategy)
     : await gatherKeywords(cfg, manual);
   const queries = g.searched;
   const botName = STRATEGY_NAMES[strategy];
@@ -409,7 +422,7 @@ export async function finderBot(cfg: BotConfig, myListings: Listing[], r: Report
   // Parts Claude builds to spec are unique (little competition), so 20+ sold is enough proof for them.
   const minSold = (h: Hit) => (make.has(h.legacy) ? Math.min(cfg.finder.min_sold, 20) : cfg.finder.min_sold);
   let top = hits.filter((h) => (h.sold || 0) >= minSold(h) && (strategy !== "makeit" || make.has(h.legacy)))
-    .sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 25);
+    .sort((a, b) => (b.sold || 0) * b.price - (a.sold || 0) * a.price).slice(0, 25);
   summary.makeable = top.filter((h) => make.has(h.legacy)).length;
   if (!top.length) { r.info.push(`🔎 ${botName}: checked ${hits.length} new printed listings, none with ${cfg.finder.min_sold}+ sold (searched: ${queries.slice(0, 4).join(", ")}…).`); return summary; }
 
