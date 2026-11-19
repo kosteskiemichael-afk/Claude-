@@ -327,5 +327,9 @@
     "enabled": false,
     "max_price": 12,
     "max_per_run": 15
+  },
+  "finder": {
+    "min_price": 15,
+    "skip_gears": true
   }
 }

@@ -75,6 +75,7 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
         if (!/3d|printed/i.test(title) || /not 3d printed/i.test(title) || mine.has(seller.toLowerCase())) continue;
         if (JUNK.test(title) || JUNK_CATEGORY.test(String(it.categories?.map((c: any) => c.categoryName).join(" ") || ""))) continue;
         if (Number(it.price?.value || 0) < (cfg.finder.min_price ?? 0)) continue;
+        if ((cfg.finder as any).skip_gears && /\b(gears?|lathe|change gear|\d{2,3} ?(t|tooth|teeth))\b/i.test(title)) continue; // gears paused: they stopped selling
         if (sch.must && !sch.must(title)) continue;
         // Every bot: no functional/prohibited gun parts, whatever search found them.
         if (GUN_WORDS.test(title) && GUN_BLOCK.test(title.replace(/magazine loader|speed loader|mag loader/gi, ""))) continue;
@@ -295,14 +296,14 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 }
 
 // Find-products clicks cycle through the four bots; the morning run does keywords + one other.
-const ORDER: Strategy[] = ["makeit", "gears", "drones", "autoboat", "premium", "shooting", "makeit", "keywords", "competitors", "gears", "drones", "makeit", "autoboat", "premium", "shooting", "categories", "cadfirst"];
+const ORDER: Strategy[] = ["makeit", "cadfirst", "drones", "autoboat", "premium", "shooting", "makeit", "keywords", "competitors", "cadfirst", "drones", "makeit", "autoboat", "premium", "shooting", "categories", "cadfirst"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["makeit", "gears", "drones", "autoboat", "premium", "shooting"];
+const FOCUS: Strategy[] = ["makeit", "cadfirst", "drones", "autoboat", "premium", "shooting"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["makeit", "gears", "drones", "shooting", "autoboat", "premium", "makeit", "competitors", "gears", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "gears", "autoboat", "premium", "makeit"];
+export const DEEP_PLAN: Strategy[] = ["makeit", "cadfirst", "drones", "shooting", "autoboat", "premium", "makeit", "competitors", "cadfirst", "autoboat", "premium", "makeit", "keywords", "categories", "cadfirst", "makeit", "cadfirst", "autoboat", "premium", "makeit"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
