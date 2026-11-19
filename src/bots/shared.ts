@@ -250,8 +250,9 @@ async function fetchListings(): Promise<Listing[]> {
         quantity_available: num(it.QuantityAvailable) ?? num(it.Quantity) ?? 0,
         sold: num(it.SellingStatus?.QuantitySold) ?? 0,
         shipping_cost: opt ? num(opt.ShippingServiceCost) ?? 0 : 0,
-        ship_kind: /calculated/i.test(String(val(it.ShippingDetails?.ShippingType) || "")) && !/^Flat/i.test(String(val(it.ShippingDetails?.ShippingType) || "")) ? "calculated"
-          : opt && (String(val(opt.FreeShipping)) === "true" || (num(opt.ShippingServiceCost) ?? 0) === 0) ? "free" : "flat",
+        ship_kind: opt && String(val(opt.FreeShipping)) === "true" ? "free"
+          : /calculated/i.test(String(val(it.ShippingDetails?.ShippingType) || "")) && !/^Flat/i.test(String(val(it.ShippingDetails?.ShippingType) || "")) ? "calculated"
+          : (opt ? num(opt.ShippingServiceCost) ?? 0 : 0) === 0 ? "free" : "flat",
         has_variations: !!it.Variations,
         protected: isProtected(id, title),
         on_sale: !!it.SellingStatus?.PromotionalSaleDetails,
