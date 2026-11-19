@@ -3,12 +3,18 @@
 //  - Free shipping: you pay the label (pricing.free_ship_label_cost).
 //  - Calculated / flat shipping: the buyer pays the label, but eBay still charges fees on that shipping.
 // Shipping setup is read from each listing (GetItem) and cached for 6 hours.
+import { readFileSync } from "node:fs";
 import { rest, trading } from "../ebay.js";
 import { BotConfig, Listing, val } from "./shared.js";
 
 export type Ship = { kind: "free" | "calculated" | "flat"; buyer: number };
 export type Profit = { total: number; fees: number; profit: number; margin: number; floor: number };
 
+// Shipping read from each live item page (eBay's listing data reports free-shipping listings as "calculated",
+// so it can't be trusted). New listings not in the file fall back to the Browse API.
+const SHIP_FILE: Record<string, "free" | number> = (() => {
+  try { return JSON.parse(readFileSync(process.env.SHIPPING_FILE || "shipping.json", "utf8")).ship || {}; } catch { return {}; }
+})();
 const shipCache = new Map<string, { at: number; ship: Ship }>();
 /** Record a shipping change made by a bot so later steps in the same run see it. */
 export function setShip(id: string, ship: Ship) { shipCache.set(id, { at: Date.now(), ship }); }
@@ -43,8 +49,8 @@ export async function shipInfo(cfg: BotConfig, listings: Listing[]): Promise<Map
   const freeIds = new Set(((cfg.pricing as any).free_ship_ids || []) as string[]);
   for (const l of listings) {
     if (freeIds.has(l.item_id)) { out.set(l.item_id, { kind: "free", buyer: 0 }); continue; }
-    if (l.ship_kind === "calculated") { out.set(l.item_id, { kind: "calculated", buyer: cfg.pricing.calc_ship_estimate ?? 5.51 }); continue; }
-    if (l.ship_kind === "flat" && l.shipping_cost > 0) { out.set(l.item_id, { kind: "flat", buyer: l.shipping_cost }); continue; }
+    const known = SHIP_FILE[l.item_id]; // read from the live item pages (shipping.json)
+    if (known !== undefined) { out.set(l.item_id, known === "free" ? { kind: "free", buyer: 0 } : { kind: "calculated", buyer: Number(known) }); continue; }
     const hit = shipCache.get(l.item_id);
     if (hit && Date.now() - hit.at < SHIP_TTL) out.set(l.item_id, hit.ship);
     else todo.push(l);
