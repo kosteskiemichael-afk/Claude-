@@ -3,6 +3,66 @@
  "checked": "2026-11-10",
  "items": [
   {
+   "group": "Car parts",
+   "title": "Blend Door Repair Pin Bushing 1H0819136 for VW MK4 Jetta Golf GTI Beetle",
+   "their": "https://www.ebay.com/itm/332635120112",
+   "sold": 582,
+   "their_delivered": 19.99,
+   "price": 18.99,
+   "cad": "https://www.printables.com/model/1459301 (CC-BY, credit Rocco: 'MKIV VW Blend Door Repair Plugs'). Proof: 'VW MK4 Blend Door pin bushing PN 1H0819136 ... Improved 3D' 582 sold @ $19.99",
+   "have": "1H0819136|MK4.{0,30}Blend Door"
+  },
+  {
+   "group": "Gaming",
+   "title": "Charging Dock Stand for PlayStation Portal - USB-C Desk Stand",
+   "their": "https://www.ebay.com/itm/296109005629",
+   "sold": 124,
+   "their_delivered": 19.99,
+   "price": 19.99,
+   "cad": "https://www.printables.com/model/662245 (CC-BY, credit DukeFenix; logo-free). Proof: 'Charging Dock for PS PlayStation Portal, Custom 3d print.' 124 sold @ $19.99",
+   "have": "Portal.{0,30}(Dock|Stand)"
+  },
+  {
+   "group": "Car parts",
+   "title": "Fuse Box Cover 61131368802 for BMW E30 E24 E23 - Black Replacement",
+   "their": "https://www.ebay.com/itm/204618989508",
+   "sold": 85,
+   "their_delivered": 23.99,
+   "price": 22.99,
+   "cad": "https://www.printables.com/model/650164 (CC0, use the corrected version). Proof: 'BMW E30 E24 E23 Fuse Box Cover 61131368802 3D Printed ABS' 85 sold @ $23.99",
+   "have": "61131368802|E30.{0,30}Fuse Box"
+  },
+  {
+   "group": "Car parts",
+   "title": "Ash Tray Cup Holder with Storage for Porsche 996 986 Boxster",
+   "their": "https://www.ebay.com/itm/315468028603",
+   "sold": 68,
+   "their_delivered": 19.99,
+   "price": 19.99,
+   "cad": "https://www.printables.com/model/552821 (CC-BY, credit MagnusT: 996 mk1 cup holder): check it is the same ash-tray style before listing. Proof: 'Porsche 996/986 Boxster Ash Tray Cup Holder with Storage' 68 sold @ $19.99",
+   "have": "996.{0,30}Cup Holder"
+  },
+  {
+   "group": "Car parts",
+   "title": "Euro Headlight Adapter Pair for BMW E36 - Plug and Play Bosch AL ZKW Depo",
+   "their": "https://www.ebay.com/itm/234503644972",
+   "sold": 157,
+   "their_delivered": 59.0,
+   "price": 54.99,
+   "cad": "✏️ No correct file to sell: Claude can make this. Print in ASA (heat). Proof: 'BMW E36 PnP Euro Headlight Adapter (Pair) - Bosch, AL, ZKW, Depo - 3D PRINTED' 157 sold @ $59",
+   "have": "E36.{0,30}Headlight Adapter"
+  },
+  {
+   "group": "Gaming",
+   "title": "Ergonomic Comfort Grips for Lenovo Legion Go 2 - Handheld Grip Pair",
+   "their": "https://www.ebay.com/itm/227123259358",
+   "sold": 172,
+   "their_delivered": 24.99,
+   "price": 22.99,
+   "cad": "✏️ No correct file to sell: Claude can make this. (Printables Legion Go grips are non-commercial). Proof: 'Ultra Ergonomic Comfort Grips for Lenovo Legion Go 2' 172 sold @ $24.99",
+   "have": "Legion Go.{0,30}Grip"
+  },
+  {
    "group": "Gaming",
    "title": "Display Stand for Sony PSP 1000 2000 3000 & PS Vita - Desk Stand",
    "their": "https://www.ebay.com/itm/115759325514",
