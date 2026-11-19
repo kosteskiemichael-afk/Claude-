@@ -140,6 +140,14 @@ app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
 
 // What the last bot run did (price changes with profit per sale, alerts, notes).
 const lastRun: { at?: string; r?: any } = {};
+// Health check for the Browse API (finder, shipping reads and competitor checks all depend on it). Read-only.
+app.get(`/debug/browse/${SECRET}`, async (_req, res) => {
+  const { rest } = await import("./ebay.js");
+  try {
+    const j = await rest("GET", "/buy/browse/v1/item_summary/search", { app: true, query: { q: "3d printed replacement", limit: "3" } });
+    res.json({ ok: true, total: j.total ?? null, got: (j.itemSummaries || []).length });
+  } catch (e) { res.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 600) : String(e) }); }
+});
 app.get(`/bots/last/${SECRET}`, (_req, res) => { res.json({ at: lastRun.at, changes: lastRun.r?.changes || [], urgent: lastRun.r?.urgent || [], info: lastRun.r?.info || [] }); });
 
 // Built-in schedule: runs every bot at run_hours_local (7am / 1pm / 7pm Indianapolis) while the server is awake,
