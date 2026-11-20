@@ -398,7 +398,9 @@ async function findCad(h: Hit): Promise<Cad | null> {
   const SYN: Record<string, string> = { lnl: "lock n load", ap: "", sm82: "sizemaster", oem: "", hd: "", pctg: "", petg: "" };
   const t = tokens(h.title).flatMap((w) => (w in SYN ? SYN[w].split(" ").filter(Boolean) : [w]));
   const long = t.filter((w) => w.length > 3 && !/^\d+$/.test(w));
-  const tries = [...new Set([t.slice(0, 4).join(" "), long.slice(0, 3).join(" "), t.slice(0, 3).join(" "), [t[0], ...long.slice(1, 3)].join(" "), long.slice(0, 2).join(" "), t.slice(0, 2).join(" ")])];
+  const STOP = new Set(["printed", "print", "replacement", "upgrade", "black", "white", "pack", "heavy", "duty", "lock", "load", "fits", "compatible"]);
+  const core = long.filter((w) => !STOP.has(w));
+  const tries = [...new Set([[t[0], ...core.slice(1, 4)].join(" "), [t[0], ...core.slice(-2)].join(" "), t.slice(0, 4).join(" "), long.slice(0, 3).join(" "), t.slice(0, 3).join(" "), [t[0], ...long.slice(1, 3)].join(" "), long.slice(0, 2).join(" "), t.slice(0, 2).join(" ")])];
   for (const q of tries) {
     if (!q) continue;
     const pr = await printables(q).catch(() => []);
