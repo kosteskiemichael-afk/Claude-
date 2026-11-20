@@ -323,11 +323,11 @@ async function gatherKeywords(cfg: BotConfig, manual: boolean): Promise<Gathered
 const ORDER: Strategy[] = ["niche", "shooting", "makeit", "cadfirst", "niche", "shooting", "autoboat", "premium", "niche", "shooting", "keywords", "competitors", "niche", "drones", "cadfirst", "shooting", "makeit", "categories"];
 let clickStrategy = -1;
 export function nextStrategy(): Strategy { clickStrategy = (clickStrategy + 1) % ORDER.length; return ORDER[clickStrategy]; }
-const FOCUS: Strategy[] = ["niche", "shooting", "makeit", "niche", "shooting", "autoboat", "niche", "shooting", "premium", "cadfirst"];
+const FOCUS: Strategy[] = ["cadfirst", "niche", "shooting", "cadfirst", "makeit", "niche", "cadfirst", "shooting", "autoboat", "premium"];
 const OTHERS: Strategy[] = ["competitors", "categories", "cadfirst", "keywords"];
 export function morningFocus(day = Math.floor(Date.now() / 86400_000)): Strategy { return FOCUS[day % FOCUS.length]; }
 export function morningExtra(day = Math.floor(Date.now() / 86400_000)): Strategy { return OTHERS[day % OTHERS.length]; }
-export const DEEP_PLAN: Strategy[] = ["niche", "shooting", "niche", "shooting", "makeit", "cadfirst", "niche", "shooting", "autoboat", "premium", "niche", "shooting", "competitors", "niche", "keywords", "shooting", "cadfirst", "drones", "makeit", "niche"];
+export const DEEP_PLAN: Strategy[] = ["cadfirst", "niche", "shooting", "cadfirst", "makeit", "niche", "cadfirst", "shooting", "autoboat", "cadfirst", "premium", "niche", "cadfirst", "shooting", "competitors", "cadfirst", "keywords", "niche", "cadfirst", "drones"];
 
 /** eBay's Browse item details include an estimated sold quantity. */
 async function addSoldCounts(hits: Hit[]) {
