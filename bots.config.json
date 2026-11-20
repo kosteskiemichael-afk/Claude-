@@ -37,6 +37,11 @@
       "step_per_week": 0.5,
       "min_rate": 2,
       "min_max_rate": 4
+    },
+    "temp_boost": {
+      "until": "2026-11-24T06:00:00Z",
+      "rate": 8,
+      "note": "Weekend push Nov 20-23 (Michael asked); taper resumes after"
     }
   },
   "pricing": {

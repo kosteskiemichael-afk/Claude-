@@ -140,6 +140,41 @@ app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
 
 // What the last bot run did (price changes with profit per sale, alerts, notes).
 const lastRun: { at?: string; r?: any } = {};
+// Weekend sale (asked for by Michael): a markdown sale event on listings that still make money at the sale price.
+// Every listing is checked at the sale price with the worst-case label ($9) and an 8% ad fee; protected listings,
+// listings with options and listings already in a sale are left out. dry=1 only reports.
+app.post(`/promo/weekend/${SECRET}`, async (req, res) => {
+  try {
+    const { activeListings, loadConfig, isProtected, saleListingIds } = await import("./bots/shared.js");
+    const { shipInfo, profitAt } = await import("./bots/profit.js");
+    const { rest } = await import("./ebay.js");
+    const cfg = loadConfig();
+    const pct = Math.min(20, Math.max(5, Number(req.query.pct || 10)));
+    const minPrice = Number(req.query.min || 20);
+    const end = String(req.query.end || "");
+    if (!/^\d{4}-\d{2}-\d{2}T/.test(end)) throw new Error("end=ISO date required");
+    const ls = await activeListings();
+    const ships = await shipInfo(cfg, ls);
+    const inSale = await saleListingIds().catch(() => new Set<string>());
+    const worst = { ...cfg, pricing: { ...cfg.pricing, free_ship_label_cost: 9 } } as any;
+    const ok: string[] = []; const skipped: string[] = [];
+    for (const l of ls) {
+      if (l.price < minPrice || l.has_variations || isProtected(l.item_id, l.title) || inSale.has(l.item_id)) continue;
+      const sale = Math.round(l.price * (1 - pct / 100) * 100) / 100;
+      const p = profitAt(worst, l.item_id, sale, ships.get(l.item_id) || { kind: "free", buyer: 0 }, 8);
+      if (p.profit >= 2.5) ok.push(l.item_id); else skipped.push(`${l.title.slice(0, 40)} ($${sale} → $${p.profit.toFixed(2)})`);
+    }
+    if (req.query.dry === "1" || !ok.length) { res.json({ ok: true, dry: true, count: ok.length, ids: ok, skipped }); return; }
+    const body = {
+      name: `Weekend Sale ${pct}% off`, description: `Weekend Sale ${pct}% off`, marketplaceId: "EBAY_US",
+      startDate: new Date(Date.now() + 2 * 60_000).toISOString(), endDate: end, promotionStatus: "SCHEDULED",
+      applyFreeShipping: false, autoSelectFutureInventory: false, blockPriceIncreaseInItemRevision: false,
+      selectedInventoryDiscounts: [{ ruleOrder: 1, discountBenefit: { percentageOffItem: String(pct) }, inventoryCriterion: { inventoryCriterionType: "INVENTORY_BY_VALUE", listingIds: ok.slice(0, 500) } }],
+    };
+    const r = await rest("POST", "/sell/marketing/v1/item_price_markdown", { body });
+    res.json({ ok: true, count: ok.length, skipped, result: r });
+  } catch (e) { res.status(500).json({ ok: false, error: e instanceof Error ? e.message.slice(0, 900) : String(e) }); }
+});
 // Health check for the Browse API (finder, shipping reads and competitor checks all depend on it). Read-only.
 app.get(`/debug/browse/${SECRET}`, async (_req, res) => {
   const { rest } = await import("./ebay.js");

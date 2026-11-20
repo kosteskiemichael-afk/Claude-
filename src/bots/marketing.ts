@@ -10,6 +10,15 @@ import type { Traffic } from "./inventory.js";
 export async function marketingBot(cfg: BotConfig, listings: Listing[], r: Report, traffic?: Map<string, Traffic>) {
   // Ad taper (Michael, Nov 17): every ad setting steps down by step_per_week each week from `start`,
   // never below the floors. Week 1 starts on the start date; the next step lands each 7 days after.
+  // Temporary boost (marketing.temp_boost {until, rate}): while it runs, everything non-protected sits at that rate
+  // (never above max_ad_rate) and the weekly taper waits.
+  const tb = (cfg.marketing as any).temp_boost;
+  const boosting = tb?.until && Date.now() < Date.parse(tb.until);
+  if (boosting) {
+    const rate = Math.min(Number(tb.rate || 8), Number(cfg.marketing.max_ad_rate ?? 8));
+    cfg = { ...cfg, marketing: { ...cfg.marketing, target_ad_rate: rate, boost_sellers_rate: rate, max_ad_rate: Math.max(rate, Number(cfg.marketing.max_ad_rate ?? 8)), ad_taper: undefined } as any };
+    r.info.push(`🚀 Ad boost: ${rate}% until ${tb.until.slice(0, 10)} (taper paused).`);
+  }
   const tp = (cfg.marketing as any).ad_taper;
   if (tp?.start) {
     const days = Math.floor((Date.now() - Date.parse(tp.start + "T00:00:00Z")) / 86400000);
