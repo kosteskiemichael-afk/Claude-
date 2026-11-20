@@ -168,7 +168,7 @@ app.post(`/promo/weekend/${SECRET}`, async (req, res) => {
     const body = {
       name: `Weekend Sale ${pct}% off`, description: `Weekend Sale ${pct}% off`, marketplaceId: "EBAY_US",
       startDate: new Date(Date.now() + 2 * 60_000).toISOString(), endDate: end, promotionStatus: "SCHEDULED",
-      applyFreeShipping: false, autoSelectFutureInventory: false, blockPriceIncreaseInItemRevision: false,
+      promotionImageUrl: String(req.query.image || ""), applyFreeShipping: false, autoSelectFutureInventory: false, blockPriceIncreaseInItemRevision: false,
       selectedInventoryDiscounts: [{ ruleOrder: 1, discountBenefit: { percentageOffItem: String(pct) }, inventoryCriterion: { inventoryCriterionType: "INVENTORY_BY_VALUE", listingIds: ok.slice(0, 500) } }],
     };
     const r = await rest("POST", "/sell/marketing/v1/item_price_markdown", { body });
