@@ -210,6 +210,16 @@
         "min": 149.99,
         "max": 149.99,
         "set": 149.99
+      },
+      "206657726345": {
+        "note": "Rossi Brawler grip: competitor 95 sold @ $30 (Nov 20: $24.99)",
+        "query": "rossi brawler grip",
+        "must_include": [
+          "rossi"
+        ],
+        "set": 24.99,
+        "min": 24.99,
+        "max": 24.99
       }
     },
     "once_per_day": true,
