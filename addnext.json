@@ -3,6 +3,46 @@
  "checked": "2026-11-10",
  "items": [
   {
+   "group": "Audio",
+   "title": "Hinge Swivel Replacement for Sony WH-1000XM4 Headphones - Left or Right",
+   "their": "https://www.ebay.com/itm/325215965919",
+   "sold": 241,
+   "their_delivered": 15.0,
+   "price": 16.99,
+   "cad": "https://www.printables.com/model/1136694 (CC-BY-SA, XM3/XM4 hinge swivel). Proof: 'Sony WH-1000XM4 XM4 Headphones Plastic' hinge 241 sold @ $15-$31.99",
+   "have": "XM4.{0,30}Hinge"
+  },
+  {
+   "group": "Audio",
+   "title": "Hinge Swivel Bracket for Sony WH-1000XM5 Headphones - Broken Hinge Fix",
+   "their": "https://www.ebay.com/itm/335999157703",
+   "sold": 91,
+   "their_delivered": 32.71,
+   "price": 24.99,
+   "cad": "https://www.printables.com/model/1271062 (GPL 3.0: commercial OK, credit and link the file). Proof: 'Sony WH-1000XM5 Hinge Swivel Bracket' 91 sold @ $32.71",
+   "have": "XM5.{0,30}Hinge"
+  },
+  {
+   "group": "Home",
+   "title": "Replacement Wheels Pair for Hart 20V Cordless Stick Vacuum",
+   "their": "https://www.ebay.com/itm/126294054983",
+   "sold": 301,
+   "their_delivered": 12.99,
+   "price": 12.99,
+   "cad": "https://www.printables.com/model/593195 (CC-BY: 'Walmart Hart 20V Stick Vacuum Replacement Wheel'). Small part. Proof: 151 sold @ $12.99 + 150 sold @ $11.49 (336334468623)",
+   "have": "Hart.{0,30}(Vacuum|Wheel)"
+  },
+  {
+   "group": "Coffee",
+   "title": "Water Tank Lid Cover for Jura C D E Series Espresso Machine Replacement",
+   "their": "https://www.ebay.com/itm/284579710634",
+   "sold": 46,
+   "their_delivered": 58.52,
+   "price": 49.99,
+   "cad": "✏️ No correct file to sell: Claude can make this. (Printables 62260 GPL is only the lid clip for the E55). Coffee niche, high price. Proof: 'Water Tank Lid/Cover for Jura - C/D/E' 46 sold @ $58.52",
+   "have": "Jura.{0,30}(Lid|Cover)"
+  },
+  {
    "group": "Cycling (UK-proven)",
    "title": "Quad Lock to Garmin Quarter Turn Mount Adapter for Edge Bike Computer",
    "their": "https://www.ebay.com/itm/294670478668",
