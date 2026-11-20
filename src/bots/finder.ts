@@ -395,14 +395,16 @@ async function thingiverse(query: string): Promise<{ id: string; name: string; l
 
 export async function findCadForTitle(title: string) { return findCad({ title } as any); }
 async function findCad(h: Hit): Promise<Cad | null> {
-  const t = tokens(h.title);
-  const tries = [t.slice(0, 4).join(" "), t.slice(0, 3).join(" "), t.slice(0, 2).join(" ")];
+  const SYN: Record<string, string> = { lnl: "lock n load", ap: "", sm82: "sizemaster", oem: "", hd: "", pctg: "", petg: "" };
+  const t = tokens(h.title).flatMap((w) => (w in SYN ? SYN[w].split(" ").filter(Boolean) : [w]));
+  const long = t.filter((w) => w.length > 3 && !/^\d+$/.test(w));
+  const tries = [...new Set([t.slice(0, 4).join(" "), long.slice(0, 3).join(" "), t.slice(0, 3).join(" "), [t[0], ...long.slice(1, 3)].join(" "), long.slice(0, 2).join(" "), t.slice(0, 2).join(" ")])];
   for (const q of tries) {
     if (!q) continue;
     const pr = await printables(q).catch(() => []);
     const tv = await thingiverse(q).catch(() => []);
     const res = [...pr, ...tv].filter((x) => okLicense(x.license));
-    const best = res.find((x) => overlap(t.slice(0, 8), tokens(x.name)) >= Math.min(3, t.length));
+    const best = res.find((x) => overlap(t.slice(0, 10), tokens(x.name)) >= Math.min(3, t.length));
     if (best) {
       const url = best.id.startsWith("tv:") ? `https://www.thingiverse.com/thing:${best.id.slice(3)}` : `https://www.printables.com/model/${best.id}`;
       return { url, name: best.name, license: best.license };
