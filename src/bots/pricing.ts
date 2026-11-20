@@ -197,7 +197,10 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     r.changes.push(`🛡 Price ${money(l.price)} → ${money(to)} (free shipping was losing money; ${profitNote(l, to)}): ${short(l.title)}`);
   }
 
+  // "Raises only" run (asked for by hand): apply just the approved raise_to list, nothing else.
+  const raiseOnly = !!(cfg.pricing as any).raise_only_run;
   // 1) Items with hand-written rules.
+  if (!raiseOnly) {
   for (const [itemId, rule] of Object.entries(cfg.pricing.rules)) {
     const l = byId.get(itemId);
     if (sale.has(itemId)) continue;
@@ -215,7 +218,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     catch (e) { r.info.push(`Pricing check failed for ${short(l.title)}: ${(e as Error).message.slice(0, 120)}`); }
   }
 
+  }
   // 2) Every other listing: the brain finds and verifies true competitors.
+  if (!raiseOnly) {
   if (brainOn()) {
     try {
       const rest = listings.filter((l) => !l.protected && !l.has_variations && !cfg.pricing.rules[l.item_id]);
@@ -312,6 +317,7 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
   }
   if (thin) r.info.push(`${thin} listings are under ${Math.round(guard * 100)}% margin but above the dollar minimum.`);
 
+  } // end of the normal (not raises-only) pricing passes
   if (changes.length) {
     const warn = await setPriceQty(cfg, changes);
     warn.forEach((w) => r.info.push(`eBay note: ${w}`));

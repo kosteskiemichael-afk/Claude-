@@ -173,7 +173,7 @@ app.post(`/bots/run/${SECRET}`, async (req, res) => {
   try {
     const only = String(req.query.only || "").split(",").map((x) => x.trim()).filter(Boolean);
     const strategy = String(req.query.strategy || "") as any;
-    const r = lastRun.r = await runBots({ only, force: req.query.force === "1", ...(strategy && STRATEGY_NAMES[strategy as keyof typeof STRATEGY_NAMES] ? { strategy } : {}) });
+    const r = lastRun.r = await runBots({ only, force: req.query.force === "1", raiseOnly: req.query.raise_only === "1", ...(strategy && STRATEGY_NAMES[strategy as keyof typeof STRATEGY_NAMES] ? { strategy } : {}) });
     lastRun.at = new Date().toISOString();
     res.json({ ok: true, seconds: Math.round((Date.now() - started) / 1000), changes: r.changes.length, urgent: r.urgent.length, finder: (r as any).finder || null });
   } catch (e) {
