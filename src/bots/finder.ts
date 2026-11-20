@@ -55,6 +55,8 @@ export const finds: FoundIdea[] = [];
 
 const BROWSE = "/buy/browse/v1/item_summary/search";
 // Not what Nexa sells: toys/collectibles, decor/crafts, firearm parts (eBay restricted), printer accessories.
+const NOT_PRINTABLE = /\b(remote( control)?|remote controller|pcb|circuit board|control board|main board|motherboard|lcd|oled|led strip|display screen|touch ?screen|charger|power supply|power adapter|ac adapter|battery pack|lithium|sensor|module|motor|solenoid|thermostat|relay|switch assembly|transformer|bulb|cable|wire harness|hdmi|usb|bluetooth|wifi|camera module|speaker driver|headphones?\b(?! (hinge|slider|bracket|stand|hook|holder))|earbuds?)\b/i;
+const PRINTABLE_PART = /\b(3d ?print|printed|cover|door|lid|case|shell|housing|mount|bracket|holder|stand|knob|cap|clip|latch|hinge|slider|gear|spacer|insert|guard|plate|hook|button cap)\b/i;
 export const JUNK = /\b(toys?|hasbro|kenner|mattel|lego|star wars|gi ?joe|action figures?|figurines?|funko|barbie|hot wheels|nerf|dolls?|playsets?|cosplay|props?|miniatures?|warhammer|dnd|keychains?|ornaments?|decor|vases?|planters?|fidget|statue|figures?|novelty|imaginext|power rangers|megazord|sanrio|hello kitty|godzilla|kaiju|marvel|disney|galaxy lamp|moon lamp|night light|lithophane|wall art|bobblehead|halloween|christmas|pokemon|transformers?|he-?man|vintage kenner|guns?|pistols?|rifles?|shotguns?|revolvers?|glock|walther|kel-?tec|sig sauer|ruger|smith ?& ?wesson|taurus|rossi|brawler|mossberg|remington|winchester|beretta|henry|savage arms|marlin|springfield|colt|ar-?15|ar15|ak-?47|ak47|holsters?|mag well|suppressor|forearm|handguard|stock adapter|picatinny|airsoft|paintball|ender ?3|bambu|prusa|creality|flashforge|anycubic|elegoo|3d printers?|3d printer parts?|printer enclosure|3d scanner|filament|sd card|1\/\d{2,3}|diorama|scale model|model kit|slot car)\b/i;
 export const JUNK_CATEGORY = /\b(toys|collectibles|dolls|action figures|crafts|art|home d[eé]cor|holiday|guns|firearms?|hunting|airsoft|video games|3d printers?|3d printing)\b/i;
 const BASE_FILTER = "buyingOptions:{FIXED_PRICE},itemLocationCountry:US,conditions:{NEW}";
@@ -78,6 +80,9 @@ async function collect(cfg: BotConfig, searches: { q: string; filter?: string; c
         const junkTitle = sch.allowGunNames ? title.replace(GUN_NAMES, " ") : title;
         const cats = String(it.categories?.map((c: any) => c.categoryName).join(" ") || "");
         if (JUNK.test(junkTitle) || (!sch.allowGunNames && JUNK_CATEGORY.test(cats))) continue;
+        // Electronics can't be printed (a remote, a charger or a sensor is a circuit board, not a plastic part).
+        // Their covers, cases, mounts and knobs still count.
+        if (NOT_PRINTABLE.test(title) && !PRINTABLE_PART.test(title)) continue;
         if (Number(it.price?.value || 0) < (cfg.finder.min_price ?? 0)) continue;
         if ((cfg.finder as any).skip_gears && /\b(gears?|lathe|change gear|\d{2,3} ?(t|tooth|teeth))\b/i.test(title)) continue; // gears paused: they stopped selling
         if (sch.must && !sch.must(title)) continue;
