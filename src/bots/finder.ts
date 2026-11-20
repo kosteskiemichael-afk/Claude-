@@ -351,7 +351,7 @@ async function addSoldCounts(hits: Hit[]) {
   for (let i = 0; i < hits.length; i += 6) await Promise.all(hits.slice(i, i + 6).map(one));
 }
 
-async function printables(query: string, limit = 10): Promise<{ id: string; name: string; license: string }[]> {
+export async function printables(query: string, limit = 10): Promise<{ id: string; name: string; license: string }[]> {
   const r = await fetch("https://api.printables.com/graphql/", {
     method: "POST",
     signal: AbortSignal.timeout(15000),
@@ -393,6 +393,7 @@ async function thingiverse(query: string): Promise<{ id: string; name: string; l
   return out;
 }
 
+export async function findCadForTitle(title: string) { return findCad({ title } as any); }
 async function findCad(h: Hit): Promise<Cad | null> {
   const t = tokens(h.title);
   const tries = [t.slice(0, 4).join(" "), t.slice(0, 3).join(" "), t.slice(0, 2).join(" ")];

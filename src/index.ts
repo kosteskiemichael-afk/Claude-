@@ -175,6 +175,16 @@ app.post(`/promo/weekend/${SECRET}`, async (req, res) => {
     res.json({ ok: true, count: ok.length, skipped, result: r });
   } catch (e) { res.status(500).json({ ok: false, error: e instanceof Error ? e.message.slice(0, 900) : String(e) }); }
 });
+// Read-only: is the server able to search Printables, and what CAD would the finder match for a title?
+app.get(`/debug/cad/${SECRET}`, async (req, res) => {
+  try {
+    const f = await import("./bots/finder.js");
+    const q = String(req.query.q || "ryobi battery holder");
+    const raw = await (f as any).printables(q, 5).catch((e: Error) => ({ error: e.message }));
+    const match = req.query.title ? await (f as any).findCadForTitle(String(req.query.title)) : null;
+    res.json({ ok: true, raw, match });
+  } catch (e) { res.json({ ok: false, error: e instanceof Error ? e.message : String(e) }); }
+});
 // Health check for the Browse API (finder, shipping reads and competitor checks all depend on it). Read-only.
 app.get(`/debug/browse/${SECRET}`, async (_req, res) => {
   const { rest } = await import("./ebay.js");
