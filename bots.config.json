@@ -52,7 +52,7 @@
     "min_profit": 2.5,
     "small_cut_max": 2.0,
     "cooldown_days": 1,
-    "max_step_pct": 0.1,
+    "max_step_pct": 0.2,
     "rules": {
       "206527145323": {
         "note": "Cuisinart SM-50 gear: competitors at $20",
@@ -321,7 +321,8 @@
       "206595114694": 15.49,
       "206612334348": 21.99,
       "206612358806": 21.99
-    }
+    },
+    "max_step_note": "Nov 21: owner says many prices are a few dollars above competitors; allow up to 20% per move (still never below the 20% margin / $2.50 floor)."
   },
   "pending_splits": [
     {
