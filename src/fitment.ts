@@ -22,8 +22,11 @@ export async function applyFitment(map: Record<string, Fit[]>, dry: boolean) {
     const row: any = { id, added: 0, notes: [] as string[] };
     try {
       const g: any = await trading("GetItem", { ItemID: id });
-      const cat = String(g?.Item?.PrimaryCategory?.CategoryID ?? "");
-      row.title = String(g?.Item?.Title ?? "").slice(0, 60); row.category = cat;
+      const one = (x: any) => (Array.isArray(x) ? x[0] : x);
+      const txt = (x: any) => { x = one(x); return x && typeof x === "object" ? String(x["#text"] ?? "") : String(x ?? ""); };
+      const item = one(g?.Item) || {};
+      const cat = txt(one(item.PrimaryCategory)?.CategoryID);
+      row.title = txt(item.Title).slice(0, 60); row.category = cat; row.catName = txt(one(item.PrimaryCategory)?.CategoryName).slice(-50);
       const props = await rest("GET", `/commerce/taxonomy/v1/category_tree/${TREE}/get_compatibility_properties`, { app: true, query: { category_id: cat } }).catch(() => null);
       if (!props || !(props.compatibilityProperties || []).length) { row.notes.push("category does not take vehicle fitment (needs an eBay Motors parts category)"); out.push(row); continue; }
       const list: any[] = [];
