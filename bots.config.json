@@ -45,8 +45,8 @@
     }
   },
   "pricing": {
-    "min_margin": 0.3,
-    "guard_margin": 0.3,
+    "min_margin": 0.2,
+    "guard_margin": 0.2,
     "small_item_price": 10,
     "small_item_margin": 0.5,
     "min_profit": 2.5,
@@ -310,7 +310,8 @@
       "206563951407": 15.99,
       "206624533992": 16.99
     },
-    "raise_to_note": "Nov 19: free-shipping listings that lost money with a $6-9 label. Raised once on the next price day (only if still below), then normal pricing."
+    "raise_to_note": "Nov 19: free-shipping listings that lost money with a $6-9 label. Raised once on the next price day (only if still below), then normal pricing.",
+    "min_margin_note": "Nov 21: owner OK with 20% margin to match cheaper competitors. $2.50 minimum profit and label cost still apply."
   },
   "pending_splits": [
     {
