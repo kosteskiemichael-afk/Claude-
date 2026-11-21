@@ -311,7 +311,10 @@
       "206624533992": 16.99
     },
     "raise_to_note": "Nov 19: free-shipping listings that lost money with a $6-9 label. Raised once on the next price day (only if still below), then normal pricing.",
-    "min_margin_note": "Nov 21: owner OK with 20% margin to match cheaper competitors. $2.50 minimum profit and label cost still apply."
+    "min_margin_note": "Nov 21: owner wants sales by volume. 20% margin floor to match cheaper competitors ($2.50 min profit and label cost still apply). Gear sets and listings $40+ keep 30% (premium_margin).",
+    "premium_margin": 0.3,
+    "premium_title_regex": "\\bgears?\\b|change gear|gear set|\\d+T\\b",
+    "premium_min_price": 40
   },
   "pending_splits": [
     {

@@ -226,12 +226,14 @@ let listingsInflight: Promise<Listing[]> | null = null;
 export async function activeListings(maxAgeMs = 5 * 60_000): Promise<Listing[]> {
   if (listingsMemo && Date.now() - listingsMemo.at < maxAgeMs) return listingsMemo.ls;
   if (listingsInflight) return listingsInflight;
-  listingsInflight = fetchListings().then((ls) => { listingsMemo = { at: Date.now(), ls }; return ls; })
+  listingsInflight = fetchListings().then((ls) => { listingsMemo = { at: Date.now(), ls }; ls.forEach((l) => LISTING_INFO.set(l.item_id, { title: l.title, price: l.price })); return ls; })
     .catch((e) => { if (listingsMemo) return listingsMemo.ls; throw e; })
     .finally(() => { listingsInflight = null; });
   return listingsInflight;
 }
 export const listingsFetchedAt = () => listingsMemo?.at ?? 0;
+/** Title + price of every active listing, so profit math can tell "premium" items (gears, big-ticket) apart. */
+export const LISTING_INFO = new Map<string, { title: string; price: number }>();
 
 async function fetchListings(): Promise<Listing[]> {
   const out: Listing[] = [];

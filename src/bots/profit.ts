@@ -5,7 +5,7 @@
 // Shipping setup is read from each listing (GetItem) and cached for 6 hours.
 import { readFileSync } from "node:fs";
 import { rest, trading } from "../ebay.js";
-import { BotConfig, Listing, val } from "./shared.js";
+import { BotConfig, Listing, val, LISTING_INFO } from "./shared.js";
 
 export type Ship = { kind: "free" | "calculated" | "flat"; buyer: number };
 export type Profit = { total: number; fees: number; profit: number; margin: number; floor: number };
@@ -90,12 +90,22 @@ export function profitAt(cfg: BotConfig, id: string, price: number, ship: Ship, 
  *  - min_margin profit (30%), but
  *  - small items (that floor under small_item_price, $10) need small_item_margin (50%), and
  *  - every sale must clear min_profit dollars ($2.50) after fees, label and material. */
+/** Volume pricing: most listings use min_margin (20%); gear sets and big-ticket items keep premium_margin (30%). */
+export function marginFor(cfg: BotConfig, id: string): number {
+  const pc = cfg.pricing as any, info = LISTING_INFO.get(id);
+  if (info && pc.premium_margin !== undefined) {
+    const re = pc.premium_title_regex ? new RegExp(pc.premium_title_regex, "i") : null;
+    if ((re && re.test(info.title)) || info.price >= (pc.premium_min_price ?? Infinity)) return Math.max(pc.premium_margin, cfg.pricing.min_margin);
+  }
+  return cfg.pricing.min_margin;
+}
+
 export function floorPrice(cfg: BotConfig, id: string, ship: Ship, adPct?: number | null, margin?: number): number {
   const rate = fvf(cfg) + adFrac(cfg, adPct);
   const fixed = cfg.pricing.per_order_fee + label(cfg, id, ship) + material(cfg, id) + ship.buyer * rate;
   const at = (m: number) => fixed / (1 - rate - m);
   if (margin !== undefined) return Math.ceil(at(margin) * 100) / 100;
-  let p = at(cfg.pricing.min_margin);
+  let p = at(marginFor(cfg, id));
   if (p < (cfg.pricing.small_item_price ?? 10)) p = Math.max(p, at(cfg.pricing.small_item_margin ?? 0.5));
   p = Math.max(p, ((cfg.pricing.min_profit ?? 2.5) + fixed) / (1 - rate));
   return Math.ceil(p * 100) / 100;
