@@ -325,7 +325,9 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     const pr = profitAt(cfg, l.item_id, l.price, sh, ad);
     const fl = floorPrice(cfg, l.item_id, sh, ad); // 30% / 50% small items / $2.50 minimum
     if (l.price >= fl - 0.01) { if (pr.margin < guard) thin++; continue; }
-    const target = Math.round(Math.min(fl, l.price * 1.15) * 100) / 100;
+    // Round up to the next x.49 / x.99 so prices never look odd (like $18.21).
+    const raw = Math.min(fl, l.price * 1.15);
+    const target = Math.round((Math.ceil((raw + 0.01) / 0.5) * 0.5 - 0.01) * 100) / 100;
     if (target - l.price < cfg.pricing.min_change) continue;
     changes.push({ item_id: l.item_id, title: l.title, price: target });
     r.changes.push(`🛡 Profit floor ${money(l.price)} → ${money(target)} (was ${money(pr.profit)}/sale, ${Math.round(pr.margin * 100)}%; now ${profitNote(l, target)}${target < fl ? "; more next run" : ""}): ${short(l.title)}`);
