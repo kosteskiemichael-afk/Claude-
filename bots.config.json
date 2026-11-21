@@ -428,5 +428,17 @@
     "206612334348",
     "206612358806"
   ],
-  "unprotected_note": "Nov 21: owner said \"you can touch the burr rings, I just want sales\". Bots may price these like any other listing (20% floor)."
+  "unprotected_note": "Nov 21: owner said \"you can touch the burr rings, I just want sales\". Bots may price these like any other listing (20% floor).",
+  "scheduled_sales": [
+    {
+      "name": "Black Friday Sale 15% off",
+      "pct": 15,
+      "min": 12,
+      "minMargin": 0.2,
+      "create_after": "2026-11-23T06:05:00Z",
+      "start": "2026-11-23T06:10:00Z",
+      "end": "2026-12-01T05:59:00Z",
+      "note": "Nov 21: owner OK'd a Black Friday sale for next week (Mon Nov 23 - Cyber Monday Nov 30, Central). Only listings that keep $2.50+ profit and 20%+ margin at the sale price (worst-case $9 label, 8% ad)."
+    }
+  ]
 }

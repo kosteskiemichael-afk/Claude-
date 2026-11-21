@@ -140,41 +140,70 @@ app.post(`/bots/deep/${SECRET}`, async (_req, res) => {
 
 // What the last bot run did (price changes with profit per sale, alerts, notes).
 const lastRun: { at?: string; r?: any } = {};
-// Weekend sale (asked for by Michael): a markdown sale event on listings that still make money at the sale price.
-// Every listing is checked at the sale price with the worst-case label ($9) and an 8% ad fee; protected listings,
-// listings with options and listings already in a sale are left out. dry=1 only reports.
+// Sales (asked for by Michael): a markdown sale event on listings that still make money at the sale price.
+// Every listing is checked at the sale price with the worst-case label ($9) and an 8% ad fee, and must keep
+// at least $2.50 profit and min_margin (20%). Protected listings, listings with options and listings already
+// in a running sale are left out. dry=1 only reports.
+async function createSale(o: { name: string; pct: number; min: number; start?: string; end: string; image?: string; dry?: boolean; minMargin?: number }) {
+  const { activeListings, loadConfig, isProtected, saleListingIds } = await import("./bots/shared.js");
+  const { shipInfo, profitAt } = await import("./bots/profit.js");
+  const { rest } = await import("./ebay.js");
+  const cfg = loadConfig();
+  const pct = Math.min(25, Math.max(5, o.pct));
+  if (!/^\d{4}-\d{2}-\d{2}T/.test(o.end)) throw new Error("end=ISO date required");
+  const ls = await activeListings(0);
+  const ships = await shipInfo(cfg, ls);
+  const inSale = await saleListingIds().catch(() => new Set<string>());
+  const worst = { ...cfg, pricing: { ...cfg.pricing, free_ship_label_cost: 9 } } as any;
+  const minMargin = o.minMargin ?? cfg.pricing.min_margin ?? 0.2;
+  const ok: string[] = []; const skipped: string[] = [];
+  for (const l of ls) {
+    if (l.price < o.min || l.has_variations || isProtected(l.item_id, l.title) || inSale.has(l.item_id)) continue;
+    const sale = Math.round(l.price * (1 - pct / 100) * 100) / 100;
+    const p = profitAt(worst, l.item_id, sale, ships.get(l.item_id) || { kind: "free", buyer: 0 }, 8);
+    if (p.profit >= 2.5 && p.margin >= minMargin) ok.push(l.item_id); else skipped.push(`${l.title.slice(0, 40)} ($${sale} → $${p.profit.toFixed(2)})`);
+  }
+  if (o.dry || !ok.length) return { ok: true, dry: true, count: ok.length, ids: ok, skipped };
+  let image = o.image || "";
+  if (!image) {
+    const { trading } = await import("./ebay.js");
+    const g: any = await trading("GetItem", { ItemID: ok[0], DetailLevel: "ReturnAll" }).catch(() => null);
+    const pic = g?.Item?.PictureDetails?.PictureURL; image = String(Array.isArray(pic) ? pic[0] : pic || "");
+  }
+  const startDate = o.start && new Date(o.start).getTime() > Date.now() + 60_000 ? new Date(o.start).toISOString() : new Date(Date.now() + 2 * 60_000).toISOString();
+  const body = {
+    name: o.name, description: o.name, marketplaceId: "EBAY_US",
+    startDate, endDate: o.end, promotionStatus: "SCHEDULED",
+    promotionImageUrl: image, applyFreeShipping: false, autoSelectFutureInventory: false, blockPriceIncreaseInItemRevision: false,
+    selectedInventoryDiscounts: [{ ruleOrder: 1, discountBenefit: { percentageOffItem: String(pct) }, inventoryCriterion: { inventoryCriterionType: "INVENTORY_BY_VALUE", listingIds: ok.slice(0, 500) } }],
+  };
+  const r = await rest("POST", "/sell/marketing/v1/item_price_markdown", { body });
+  return { ok: true, count: ok.length, skipped, result: r };
+}
 app.post(`/promo/weekend/${SECRET}`, async (req, res) => {
   try {
-    const { activeListings, loadConfig, isProtected, saleListingIds } = await import("./bots/shared.js");
-    const { shipInfo, profitAt } = await import("./bots/profit.js");
-    const { rest } = await import("./ebay.js");
-    const cfg = loadConfig();
-    const pct = Math.min(20, Math.max(5, Number(req.query.pct || 10)));
-    const minPrice = Number(req.query.min || 20);
-    const end = String(req.query.end || "");
-    if (!/^\d{4}-\d{2}-\d{2}T/.test(end)) throw new Error("end=ISO date required");
-    const ls = await activeListings();
-    const ships = await shipInfo(cfg, ls);
-    const inSale = await saleListingIds().catch(() => new Set<string>());
-    const worst = { ...cfg, pricing: { ...cfg.pricing, free_ship_label_cost: 9 } } as any;
-    const ok: string[] = []; const skipped: string[] = [];
-    for (const l of ls) {
-      if (l.price < minPrice || l.has_variations || isProtected(l.item_id, l.title) || inSale.has(l.item_id)) continue;
-      const sale = Math.round(l.price * (1 - pct / 100) * 100) / 100;
-      const p = profitAt(worst, l.item_id, sale, ships.get(l.item_id) || { kind: "free", buyer: 0 }, 8);
-      if (p.profit >= 2.5) ok.push(l.item_id); else skipped.push(`${l.title.slice(0, 40)} ($${sale} → $${p.profit.toFixed(2)})`);
-    }
-    if (req.query.dry === "1" || !ok.length) { res.json({ ok: true, dry: true, count: ok.length, ids: ok, skipped }); return; }
-    const body = {
-      name: `Weekend Sale ${pct}% off`, description: `Weekend Sale ${pct}% off`, marketplaceId: "EBAY_US",
-      startDate: new Date(Date.now() + 2 * 60_000).toISOString(), endDate: end, promotionStatus: "SCHEDULED",
-      promotionImageUrl: String(req.query.image || ""), applyFreeShipping: false, autoSelectFutureInventory: false, blockPriceIncreaseInItemRevision: false,
-      selectedInventoryDiscounts: [{ ruleOrder: 1, discountBenefit: { percentageOffItem: String(pct) }, inventoryCriterion: { inventoryCriterionType: "INVENTORY_BY_VALUE", listingIds: ok.slice(0, 500) } }],
-    };
-    const r = await rest("POST", "/sell/marketing/v1/item_price_markdown", { body });
-    res.json({ ok: true, count: ok.length, skipped, result: r });
+    const pct = Number(req.query.pct || 10);
+    res.json(await createSale({ name: String(req.query.name || `Weekend Sale ${pct}% off`), pct, min: Number(req.query.min || 20),
+      start: req.query.start ? String(req.query.start) : undefined, end: String(req.query.end || ""), image: String(req.query.image || ""), dry: req.query.dry === "1" }));
   } catch (e) { res.status(500).json({ ok: false, error: e instanceof Error ? e.message.slice(0, 900) : String(e) }); }
 });
+// Scheduled sales from bots.config.json ("scheduled_sales"): each is created once, after create_after,
+// if no promotion with that name exists yet. Checked every 5 minutes with the bot schedule.
+const saleTried = new Map<string, number>();
+async function runScheduledSales() {
+  const { loadConfig } = await import("./bots/shared.js");
+  const { rest } = await import("./ebay.js");
+  const list: any[] = ((loadConfig() as any).scheduled_sales || []);
+  for (const s of list) {
+    if (!s.name || Date.now() < new Date(s.create_after).getTime() || Date.now() > new Date(s.end).getTime()) continue;
+    if (Date.now() - (saleTried.get(s.name) || 0) < 60 * 60_000) continue; // at most one try an hour
+    saleTried.set(s.name, Date.now());
+    const have = await rest("GET", "/sell/marketing/v1/promotion", { query: { marketplace_id: "EBAY_US", limit: "100" } }).catch(() => null);
+    if (!have || (have.promotions || []).some((p: any) => p.name === s.name)) continue;
+    try { const r = await createSale(s); console.log(`Scheduled sale "${s.name}": ${r.count} listings`); }
+    catch (e) { console.error(`Scheduled sale "${s.name}" failed`, e); }
+  }
+}
 // Read-only: is the server able to search Printables, and what CAD would the finder match for a title?
 app.get(`/debug/cad/${SECRET}`, async (req, res) => {
   try {
@@ -204,6 +233,7 @@ setInterval(async () => {
     const h = localHour(cfg.timezone);
     const day = new Date().toLocaleDateString("en-US", { timeZone: cfg.timezone });
     const slot = `${day} ${h}`;
+    runScheduledSales().catch((e) => console.error("Scheduled sales check failed", e));
     if (!cfg.run_hours_local.includes(h) || slot === lastSlot || botsRunning || deep.running) return;
     lastSlot = slot; botsRunning = true;
     try { lastRun.r = await runBots(); lastRun.at = new Date().toISOString(); }
