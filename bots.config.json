@@ -311,18 +311,13 @@
       "206624533992": 16.99
     },
     "raise_to_note": "Nov 19: free-shipping listings that lost money with a $6-9 label. Raised once on the next price day (only if still below), then normal pricing.",
-    "min_margin_note": "Nov 21: owner wants sales by volume. 20% margin floor to match cheaper competitors ($2.50 min profit and label cost still apply). Gear sets and listings $40+ keep 30% (premium_margin).",
+    "min_margin_note": "Nov 21: owner wants sales by volume. 20% margin floor to match cheaper competitors ($2.50 min profit and label cost still apply). Lathe change gear sets and listings $40+ keep 30% (premium_margin).",
     "premium_margin": 0.3,
-    "premium_title_regex": "\\bgears?\\b|change gear|gear set|\\d+T\\b",
+    "premium_title_regex": "change gears?|gear set|set of \\d+ .*gears|\\d+T\\b.*\\d+T\\b|\\blathe\\b.*\\bgears\\b",
     "premium_min_price": 40,
-    "set_now": {
-      "206531844850": 10.99,
-      "206453290362": 10.99,
-      "206595114694": 15.49,
-      "206612334348": 21.99,
-      "206612358806": 21.99
-    },
-    "max_step_note": "Nov 21: owner says many prices are a few dollars above competitors; allow up to 20% per move (still never below the 20% margin / $2.50 floor)."
+    "set_now": {},
+    "max_step_note": "Nov 21: owner says many prices are a few dollars above competitors; allow up to 20% per move (still never below the 20% margin / $2.50 floor).",
+    "set_now_until": "2026-11-21"
   },
   "pending_splits": [
     {

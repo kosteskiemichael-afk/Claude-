@@ -188,7 +188,11 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
 
   // 0a) Prices you approved to set right now (pricing.set_now: id -> price), up or down, any time of day.
   //     Applies once: skipped when the listing is already at that price.
-  for (const [itemId, to] of Object.entries(((cfg.pricing as any).set_now || {}) as Record<string, number>)) {
+  // set_now_until (YYYY-MM-DD, local): after that day the list is ignored, so the bots take over again.
+  const setUntil = String((cfg.pricing as any).set_now_until || "");
+  const localDay = new Date().toLocaleDateString("en-CA", { timeZone: cfg.timezone });
+  const setNow = !setUntil || localDay <= setUntil ? ((cfg.pricing as any).set_now || {}) : {};
+  for (const [itemId, to] of Object.entries(setNow as Record<string, number>)) {
     const l = byId.get(itemId);
     if (!l || l.protected || l.has_variations || sale.has(itemId) || Math.abs(l.price - to) < 0.01) continue;
     if (movedOn.get(itemId) === today) continue;
