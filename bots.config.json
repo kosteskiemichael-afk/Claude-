@@ -314,7 +314,14 @@
     "min_margin_note": "Nov 21: owner wants sales by volume. 20% margin floor to match cheaper competitors ($2.50 min profit and label cost still apply). Gear sets and listings $40+ keep 30% (premium_margin).",
     "premium_margin": 0.3,
     "premium_title_regex": "\\bgears?\\b|change gear|gear set|\\d+T\\b",
-    "premium_min_price": 40
+    "premium_min_price": 40,
+    "set_now": {
+      "206531844850": 10.99,
+      "206453290362": 10.99,
+      "206595114694": 15.49,
+      "206612334348": 21.99,
+      "206612358806": 21.99
+    }
   },
   "pending_splits": [
     {
@@ -413,5 +420,13 @@
   "finder": {
     "min_price": 15,
     "skip_gears": true
-  }
+  },
+  "unprotected_ids": [
+    "206531844850",
+    "206453290362",
+    "206595114694",
+    "206612334348",
+    "206612358806"
+  ],
+  "unprotected_note": "Nov 21: owner said \"you can touch the burr rings, I just want sales\". Bots may price these like any other listing (20% floor)."
 }

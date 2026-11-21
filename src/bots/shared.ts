@@ -162,7 +162,13 @@ const PROTECTED_IDS = new Set(
 const PROTECTED_WORDS = (process.env.PROTECTED_TITLE_KEYWORDS || "")
   .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 
+// Owner can lift protection per listing in bots.config.json ("unprotected_ids").
+const UNPROTECTED = new Set<string>((() => {
+  try { return (JSON.parse(readFileSync(process.env.BOT_CONFIG_FILE || "bots.config.json", "utf8")).unprotected_ids || []).map(String); }
+  catch { return []; }
+})());
 export function isProtected(itemId: string, title?: string): boolean {
+  if (UNPROTECTED.has(String(itemId))) return false;
   if (PROTECTED_IDS.has(String(itemId))) return true;
   const t = (title || "").toLowerCase();
   return PROTECTED_WORDS.some((w) => t.includes(w));

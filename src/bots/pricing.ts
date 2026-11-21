@@ -186,6 +186,17 @@ export async function pricingBot(cfg: BotConfig, listings: Listing[], r: Report,
     r.changes.push(`${tag}Price ${money(l.price)} → ${money(target)} (${reason}; ${profitNote(l, target)}): ${short(l.title)}`);
   };
 
+  // 0a) Prices you approved to set right now (pricing.set_now: id -> price), up or down, any time of day.
+  //     Applies once: skipped when the listing is already at that price.
+  for (const [itemId, to] of Object.entries(((cfg.pricing as any).set_now || {}) as Record<string, number>)) {
+    const l = byId.get(itemId);
+    if (!l || l.protected || l.has_variations || sale.has(itemId) || Math.abs(l.price - to) < 0.01) continue;
+    if (movedOn.get(itemId) === today) continue;
+    movedOn.set(itemId, today);
+    changes.push({ item_id: l.item_id, title: l.title, price: to });
+    r.changes.push(`📌 Price ${money(l.price)} → ${money(to)} (your price; ${profitNote(l, to)}): ${short(l.title)}`);
+  }
+
   // 0) One-time raises you approved (pricing.raise_to): applied on the price day only while the listing is still
   //    below that price, so it never pulls a price back down and never fires twice.
   for (const [itemId, to] of Object.entries(((cfg.pricing as any).raise_to || {}) as Record<string, number>)) {
