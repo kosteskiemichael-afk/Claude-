@@ -204,6 +204,16 @@ async function runScheduledSales() {
     catch (e) { console.error(`Scheduled sale "${s.name}" failed`, e); }
   }
 }
+// Vehicle fitment for car parts (bots.config.json "fitment"). dry=1 only reports.
+app.post(`/fitment/${SECRET}`, async (req, res) => {
+  try {
+    const { loadConfig } = await import("./bots/shared.js");
+    const { applyFitment } = await import("./fitment.js");
+    const map = ((loadConfig() as any).fitment || {}) as Record<string, any>;
+    const only = req.query.id ? { [String(req.query.id)]: map[String(req.query.id)] } : map;
+    res.json({ ok: true, results: await applyFitment(only, req.query.dry === "1") });
+  } catch (e) { res.status(500).json({ ok: false, error: e instanceof Error ? e.message.slice(0, 900) : String(e) }); }
+});
 // Read-only: is the server able to search Printables, and what CAD would the finder match for a title?
 app.get(`/debug/cad/${SECRET}`, async (req, res) => {
   try {
