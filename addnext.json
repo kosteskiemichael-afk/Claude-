@@ -4,6 +4,56 @@
   "items": [
     {
       "group": "Audio",
+      "title": "Craftsman 2VPR Miter Saw Handle Support 137.212371 137.212372",
+      "their": "https://www.ebay.com/itm/374013146732",
+      "sold": 607,
+      "their_delivered": null,
+      "price": 24.99,
+      "cad": "ON HOLD: Claude can make this once a real 2VPR part is measured (no published dimensions; only file is NC and a different part).",
+      "have": null
+    },
+    {
+      "group": "Audio",
+      "title": "Blade Guide for Ryobi BS901 BS902 BS904 9\" Bandsaw",
+      "their": "https://www.ebay.com/itm/395842754563",
+      "sold": 124,
+      "their_delivered": null,
+      "price": 14.99,
+      "cad": "ON HOLD: Claude can make this once a real part is measured. Only free file found is NC (can't sell).",
+      "have": null
+    },
+    {
+      "group": "Audio",
+      "title": "Jet JWP15H-304 / Powermatic 6292762 Planer Arbor Gear 15\" 16\" 20\"",
+      "their": "https://www.ebay.com/itm/172287802831",
+      "sold": 132,
+      "their_delivered": null,
+      "price": 24.99,
+      "cad": "ON HOLD: Claude can make this once a real gear is measured (no tooth specs published).",
+      "have": null
+    },
+    {
+      "group": "Audio",
+      "title": "Power Feed Gear for Bridgeport Servo 100 140 150 200 - M4735",
+      "their": "https://www.ebay.com/itm/161272622020",
+      "sold": 852,
+      "their_delivered": null,
+      "price": 29.99,
+      "cad": "ON HOLD: Claude can make this once we have tooth count/bore (buy one worn M4735) - only OD 3.562\" is published. OEM is Zytel nylon; PETG may wear.",
+      "have": null
+    },
+    {
+      "group": "Audio",
+      "title": "Atlas Craftsman 10\" 12\" Lathe 32 Tooth Rear Headstock Spindle Gear 9-100-32",
+      "their": "https://www.ebay.com/itm/360163655818",
+      "sold": 274,
+      "their_delivered": null,
+      "price": 14.99,
+      "cad": "Our own design, file ready: Atlas_Craftsman_9-100-32_32T_16DP_Headstock_Gear.stl (32T 16DP 14.5PA, OD 2.125\", bore 1.25\" + 3/16\" key, 7/8\" face; specs from competitor listing). Competitor sells nylon.",
+      "have": null
+    },
+    {
+      "group": "Audio",
       "title": "6 Pack Battery Holders for DeWalt 20V MAX - Wall Mount - PETG",
       "their": "https://www.ebay.com/itm/224730408021",
       "sold": 2030,
