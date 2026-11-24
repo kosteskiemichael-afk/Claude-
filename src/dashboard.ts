@@ -127,6 +127,16 @@ async function buildData() {
   const addNext = anItems.filter((x) => {
     const d = decided.get(x.key) || (linkUses.get(x.their) === 1 ? decided.get(x.their) || "" : "");
     if (HIDDEN(d)) { addNextSkipped.push({ title: x.title, why: d }); return false; }
+    // Automatic duplicate check: hide ideas whose key words are already in one of the store's titles.
+    if (!x.have) {
+      const STOP = /^(for|and|the|with|fits|fit|replacement|pack|set|new|of|to|in|3d|printed|petg|pctg|hd|usa|made|part|parts|wall|mount)$/;
+      const words = (t: string) => new Set(String(t).toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length >= 3 && !STOP.test(w)));
+      const want = words(x.title);
+      if (want.size >= 3) for (const l of listings) {
+        const got = words(l.title); let hit = 0; for (const w of want) if (got.has(w)) hit++;
+        if (hit >= 4 && hit / want.size >= 0.7) { addNextSkipped.push({ title: x.title, why: `already listed: ${l.title}` }); return false; }
+      }
+    }
     if (x.have) { try { const re = new RegExp(x.have, "i"); const hit = listings.find((l) => re.test(l.title)); if (hit) { addNextSkipped.push({ title: x.title, why: `already listed: ${hit.title}` }); return false; } } catch { /* bad pattern: keep the row */ } }
     return true;
   });
