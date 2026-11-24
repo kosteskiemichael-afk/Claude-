@@ -1,1048 +1,1048 @@
 {
- "_note": "Gears to list next, shown in Nexa Command under 'Add these next'. 'their' is the competitor listing that proves demand; 'have' is a pattern that hides the row once a live listing matches.",
- "checked": "2026-11-10",
- "items": [
-  {
-   "group": "Audio",
-   "title": "Hinge Swivel Replacement for Sony WH-1000XM4 Headphones - Left or Right",
-   "their": "https://www.ebay.com/itm/325215965919",
-   "sold": 241,
-   "their_delivered": 15.0,
-   "price": 16.99,
-   "cad": "https://www.printables.com/model/1136694 (CC-BY-SA, XM3/XM4 hinge swivel). Proof: 'Sony WH-1000XM4 XM4 Headphones Plastic' hinge 241 sold @ $15-$31.99",
-   "have": "XM4.{0,30}Hinge"
-  },
-  {
-   "group": "Audio",
-   "title": "Hinge Swivel Bracket for Sony WH-1000XM5 Headphones - Broken Hinge Fix",
-   "their": "https://www.ebay.com/itm/335999157703",
-   "sold": 91,
-   "their_delivered": 32.71,
-   "price": 24.99,
-   "cad": "https://www.printables.com/model/1271062 (GPL 3.0: commercial OK, credit and link the file). Proof: 'Sony WH-1000XM5 Hinge Swivel Bracket' 91 sold @ $32.71",
-   "have": "XM5.{0,30}Hinge"
-  },
-  {
-   "group": "Home",
-   "title": "Replacement Wheels Pair for Hart 20V Cordless Stick Vacuum",
-   "their": "https://www.ebay.com/itm/126294054983",
-   "sold": 301,
-   "their_delivered": 12.99,
-   "price": 12.99,
-   "cad": "https://www.printables.com/model/593195 (CC-BY: 'Walmart Hart 20V Stick Vacuum Replacement Wheel'). Small part. Proof: 151 sold @ $12.99 + 150 sold @ $11.49 (336334468623)",
-   "have": "Hart.{0,30}(Vacuum|Wheel)"
-  },
-  {
-   "group": "Coffee",
-   "title": "Water Tank Lid Cover for Jura C D E Series Espresso Machine Replacement",
-   "their": "https://www.ebay.com/itm/284579710634",
-   "sold": 46,
-   "their_delivered": 58.52,
-   "price": 49.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables 62260 GPL is only the lid clip for the E55). Coffee niche, high price. Proof: 'Water Tank Lid/Cover for Jura - C/D/E' 46 sold @ $58.52",
-   "have": "Jura.{0,30}(Lid|Cover)"
-  },
-  {
-   "group": "Cycling (UK-proven)",
-   "title": "Quad Lock to Garmin Quarter Turn Mount Adapter for Edge Bike Computer",
-   "their": "https://www.ebay.com/itm/294670478668",
-   "sold": 518,
-   "their_delivered": 19.0,
-   "price": 16.99,
-   "cad": "https://www.printables.com/model/814675 (CC-BY-SA): check adapter direction matches the proof. Proof (UK, MagCAD): 'Garmin to For Quad Lock Adapter - Cycling 3D Printed' 518 sold @ £15. Ships from the UK, so US buyers wait.",
-   "have": "Quad Lock.{0,30}Garmin|Garmin.{0,30}Quad Lock"
-  },
-  {
-   "group": "Cycling (UK-proven)",
-   "title": "Wahoo Elemnt to Garmin Quarter Turn Adapter - Bolt Roam Mount Converter",
-   "their": "https://www.ebay.com/itm/292586282737",
-   "sold": 831,
-   "their_delivered": 20.0,
-   "price": 14.99,
-   "cad": "https://www.printables.com/model/257653 (CC-BY, Garmin/Wahoo quarter-turn). Proof (UK, MagCAD): 'Wahoo Elemnt Bolt to Garmin Adapter' 480 sold @ £16 + 'Wahoo Elemnt to Garmin Adapter' 351 @ £13 (292657370798)",
-   "have": "Wahoo.{0,30}Garmin.{0,20}Adapter"
-  },
-  {
-   "group": "Cycling (UK-proven)",
-   "title": "GoPro Style Mount for Garmin Varia Radar Tail Light RTL515 RVR315",
-   "their": "https://www.ebay.com/itm/292733550094",
-   "sold": 422,
-   "their_delivered": 15.0,
-   "price": 13.99,
-   "cad": "https://www.printables.com/model/1072457 (CC-BY, Varia & Wahoo) or 227590 (GPL 2.0). Proof (UK, MagCAD): 'Garmin Varia GoPro Mount - Cycling 3D Printed Saddle' 422 sold @ £12",
-   "have": "Varia.{0,30}(GoPro|Mount)"
-  },
-  {
-   "group": "Cycling (UK-proven)",
-   "title": "Out Front Mount for Wahoo Elemnt Bolt - Trek Bontrager Blendr Stem",
-   "their": "https://www.ebay.com/itm/292721753920",
-   "sold": 1103,
-   "their_delivered": 25.0,
-   "price": 24.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables Bolt mounts are non-commercial). Proof (UK, MagCAD): 571 sold @ £20 + Bolt low 313 @ £21 (292586264549) + Bolt V2 219 @ £21 (294229790074)",
-   "have": "Elemnt Bolt.{0,30}(Blendr|Mount)"
-  },
-  {
-   "group": "Cycling (UK-proven)",
-   "title": "Lezyne GPS to Garmin Quarter Turn Mount Adapter - Bike Computer",
-   "their": "https://www.ebay.com/itm/292873071470",
-   "sold": 354,
-   "their_delivered": 22.0,
-   "price": 16.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables 456924 CC0 is a Garmin-to-Lezyne-lamp adapter, not this). Proof (UK, MagCAD): 'Lezyne GPS to Garmin Adaptor' 354 sold @ £17",
-   "have": "Lezyne.{0,30}Garmin"
-  },
-  {
-   "group": "E-bike (UK-proven)",
-   "title": "Mount for Bosch Kiox 300 Display - E-Stem Bracket Replacement",
-   "their": "https://www.ebay.com/itm/295218603852",
-   "sold": 322,
-   "their_delivered": 32.0,
-   "price": 27.99,
-   "cad": "Check https://www.printables.com/model/252790 (CC0 Kiox display frame bracket) fits the Kiox 300; otherwise ✏️ Claude can make this. Proof (UK, MagCAD): 'Bosch Kiox E-Stem 300 Mount' 322 sold @ £25",
-   "have": "Kiox"
-  },
-  {
-   "group": "Tools (UK-proven)",
-   "title": "Dust Scoop for Festool Kapex KS60 KSC60 Miter Saw - Dust Collection Upgrade",
-   "their": "https://www.ebay.com/itm/365673231121",
-   "sold": 402,
-   "their_delivered": 27.0,
-   "price": 27.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof (UK): 'Fits FESTOOL KAPEX KS60/KSC60 dust scoop, 3D printed' 402 sold @ £21",
-   "have": "Kapex"
-  },
-  {
-   "group": "Airgun (UK-proven)",
-   "title": "Clip On Plenum Cover 23mm for FX Impact M2 M3 M4 Air Rifle",
-   "their": "https://www.ebay.com/itm/353926615854",
-   "sold": 321,
-   "their_delivered": 30.0,
-   "price": 29.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Cosmetic airgun accessory. Proof (UK): 'FX Impact M2 M3 M4 Clip-on Plenum Cover 23mm' 321 sold @ £24",
-   "have": "FX Impact.{0,30}Plenum"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Laser Device Covers for Zenitco Perst - Protective Caps Set",
-   "their": "https://www.ebay.com/itm/124944053643",
-   "sold": 698,
-   "their_delivered": 12.0,
-   "price": 12.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Small part. Proof: 'Zenitco perst laser covers - custom 3D printed' 698 sold @ $12",
-   "have": "Perst"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Front Sight Replacement for Daisy Model 1894 Spittin Image BB Gun",
-   "their": "https://www.ebay.com/itm/191940114558",
-   "sold": 263,
-   "their_delivered": 17.0,
-   "price": 15.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables Daisy sights are non-commercial). Small part. Proof: 'Daisy Model 1894 Spittin Image 3D Printed Front Sight' 263 sold @ $17",
-   "have": "Daisy.{0,30}Sight"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Primer Catcher for Lee Load-All II Shotshell Reloader",
-   "their": "https://www.ebay.com/itm/204216593586",
-   "sold": 256,
-   "their_delivered": 13.0,
-   "price": 12.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Small part. Proof: 'LEE Load All 2 Primer Catcher Load All II 3D Printed' 256 sold @ $13",
-   "have": "Load.?All"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Primer Catcher for Lee Breech Lock Single Stage Reloading Press",
-   "their": "https://www.ebay.com/itm/252908837868",
-   "sold": 112,
-   "their_delivered": 15.0,
-   "price": 14.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Small part. Proof: 'Lee breach lock reloader primer catcher 3d printed' 112 sold @ $15",
-   "have": "Breech ?Lock.{0,30}Primer"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Optic Mounting Plate for Kel-Tec P17 - RMSc Footprint Red Dot Adapter",
-   "their": "https://www.ebay.com/itm/397085824789",
-   "sold": 187,
-   "their_delivered": 13.0,
-   "price": 12.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Small part. Proof: '3DEXL Optic Plate Sight Mount RMSc for Kel-Tec P17' 187 sold @ $13",
-   "have": "P17.{0,30}(Optic|Plate)"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "1911 Compact Officer Grip Panels - Textured Replacement Grips Pair",
-   "their": "https://www.ebay.com/itm/112631236539",
-   "sold": 166,
-   "their_delivered": 13.0,
-   "price": 14.99,
-   "cad": "https://www.printables.com/model/723957 (CC-BY, MA 1911 grips) or 1894657 compact flat panel (CC-BY-SA). Leave off any logos. Proof: '1911 Grips ... compact officer model, 3D printed' 166 sold @ $13",
-   "have": "1911.{0,30}Grip"
-  },
-  {
-   "group": "Tools",
-   "title": "4 Pack Battery Holder for DeWalt 20V Max - Wall Mount Battery Storage",
-   "their": "https://www.ebay.com/itm/174095613433",
-   "sold": 108,
-   "their_delivered": 23.0,
-   "price": 21.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables DeWalt holders are mostly non-commercial; 504139 is a SKADIS-only CC-BY-SA version). Proof: '4-pack Dewalt Tool Lithium-Ion Holder Clip Mount 20V 3D' 108 sold @ $23",
-   "have": "DeWalt.{0,30}Battery Holder"
-  },
-  {
-   "group": "Fishing",
-   "title": "Remote Case for MotorGuide Xi3 Xi5 Trolling Motor - Lanyard Holder",
-   "their": "https://www.ebay.com/itm/204919077747",
-   "sold": 91,
-   "their_delivered": 25.0,
-   "price": 23.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables file is non-commercial). Proof: 'Motorguide Xi3 Xi5 Remote Case for Lanyard 3D Printed' 91 sold @ $25",
-   "have": "MotorGuide.{0,30}Remote"
-  },
-  {
-   "group": "Car parts",
-   "title": "Blend Door Repair Pin Bushing 1H0819136 for VW MK4 Jetta Golf GTI Beetle",
-   "their": "https://www.ebay.com/itm/332635120112",
-   "sold": 582,
-   "their_delivered": 19.99,
-   "price": 18.99,
-   "cad": "https://www.printables.com/model/1459301 (CC-BY, credit Rocco: 'MKIV VW Blend Door Repair Plugs'). Proof: 'VW MK4 Blend Door pin bushing PN 1H0819136 ... Improved 3D' 582 sold @ $19.99",
-   "have": "1H0819136|MK4.{0,30}Blend Door"
-  },
-  {
-   "group": "Gaming",
-   "title": "Charging Dock Stand for PlayStation Portal - USB-C Desk Stand",
-   "their": "https://www.ebay.com/itm/296109005629",
-   "sold": 124,
-   "their_delivered": 19.99,
-   "price": 19.99,
-   "cad": "https://www.printables.com/model/662245 (CC-BY, credit DukeFenix; logo-free). Proof: 'Charging Dock for PS PlayStation Portal, Custom 3d print.' 124 sold @ $19.99",
-   "have": "Portal.{0,30}(Dock|Stand)"
-  },
-  {
-   "group": "Car parts",
-   "title": "Fuse Box Cover 61131368802 for BMW E30 E24 E23 - Black Replacement",
-   "their": "https://www.ebay.com/itm/204618989508",
-   "sold": 85,
-   "their_delivered": 23.99,
-   "price": 22.99,
-   "cad": "https://www.printables.com/model/650164 (CC0, use the corrected version). Proof: 'BMW E30 E24 E23 Fuse Box Cover 61131368802 3D Printed ABS' 85 sold @ $23.99",
-   "have": "61131368802|E30.{0,30}Fuse Box"
-  },
-  {
-   "group": "Car parts",
-   "title": "Ash Tray Cup Holder with Storage for Porsche 996 986 Boxster",
-   "their": "https://www.ebay.com/itm/315468028603",
-   "sold": 68,
-   "their_delivered": 19.99,
-   "price": 19.99,
-   "cad": "https://www.printables.com/model/552821 (CC-BY, credit MagnusT: 996 mk1 cup holder): check it is the same ash-tray style before listing. Proof: 'Porsche 996/986 Boxster Ash Tray Cup Holder with Storage' 68 sold @ $19.99",
-   "have": "996.{0,30}Cup Holder"
-  },
-  {
-   "group": "Car parts",
-   "title": "Euro Headlight Adapter Pair for BMW E36 - Plug and Play Bosch AL ZKW Depo",
-   "their": "https://www.ebay.com/itm/234503644972",
-   "sold": 157,
-   "their_delivered": 59.0,
-   "price": 54.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Print in ASA (heat). Proof: 'BMW E36 PnP Euro Headlight Adapter (Pair) - Bosch, AL, ZKW, Depo - 3D PRINTED' 157 sold @ $59",
-   "have": "E36.{0,30}Headlight Adapter"
-  },
-  {
-   "group": "Gaming",
-   "title": "Ergonomic Comfort Grips for Lenovo Legion Go 2 - Handheld Grip Pair",
-   "their": "https://www.ebay.com/itm/227123259358",
-   "sold": 172,
-   "their_delivered": 24.99,
-   "price": 22.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables Legion Go grips are non-commercial). Proof: 'Ultra Ergonomic Comfort Grips for Lenovo Legion Go 2' 172 sold @ $24.99",
-   "have": "Legion Go.{0,30}Grip"
-  },
-  {
-   "group": "Gaming",
-   "title": "Display Stand for Sony PSP 1000 2000 3000 & PS Vita - Desk Stand",
-   "their": "https://www.ebay.com/itm/115759325514",
-   "sold": 365,
-   "their_delivered": 15.85,
-   "price": 15.99,
-   "cad": "https://www.printables.com/model/234263 (CC0) or 62819 (CC-BY). Proof: 'PSP Display Stand Custom 3D Printed PlayStation Portable 1000 - 3000 PS Vita' 365 sold @ $15.85",
-   "have": "PSP.{0,30}Stand"
-  },
-  {
-   "group": "Gaming",
-   "title": "Display Stand for Nintendo 3DS 3DS XL DS DSi - Angled Desk Stand",
-   "their": "https://www.ebay.com/itm/403924960892",
-   "sold": 186,
-   "their_delivered": 18.0,
-   "price": 15.99,
-   "cad": "https://www.printables.com/model/1858887 (CC0) or 473148 (CC0). Proof: 'Custom 3DS Display Stand, 3d Printed' 186 sold @ $18",
-   "have": "3DS.{0,30}Stand"
-  },
-  {
-   "group": "Car parts",
-   "title": "Door Protector Molding Clips 75328-SH2-003 Set of 10 for 90-91 Honda CRX",
-   "their": "https://www.ebay.com/itm/313744977378",
-   "sold": 272,
-   "their_delivered": 22.5,
-   "price": 21.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables 1170230 CC0 is the garnish clip, not this one). Proof: '90-91 CRX Door Protector/Molding Clips 75328-SH2-003 (3d Printed, Set of 10)' 272 sold @ $22.50",
-   "have": "75328"
-  },
-  {
-   "group": "Car parts",
-   "title": "Door Protector Clip Assembly for 88-91 Honda CRX & Civic Hatchback",
-   "their": "https://www.ebay.com/itm/314723194373",
-   "sold": 212,
-   "their_delivered": 30.0,
-   "price": 27.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: '90-91 Civic Hatchback Door Protector Clip Assembly' 118 sold @ $30 + '88-89 Honda CRX Door Protector Clip Assembly' 94 sold @ $30 (314723193921)",
-   "have": "Door Protector Clip Assembly"
-  },
-  {
-   "group": "Tools",
-   "title": "AC Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20 - Power Brick Mount",
-   "their": "https://www.ebay.com/itm/124856740844",
-   "sold": 172,
-   "their_delivered": 20.0,
-   "price": 18.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: '3D PRINTED AC Power Wall Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20' 172 sold @ $20",
-   "have": "0886-20"
-  },
-  {
-   "group": "Powersports",
-   "title": "Cup Holder Adapter & Phone Holder for Kawasaki Teryx 4 Teryx 2",
-   "their": "https://www.ebay.com/itm/318288646535",
-   "sold": 46,
-   "their_delivered": 60.0,
-   "price": 49.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Print in ASA. Proof: 'Teryx 4 / Teryx 2 CupHolder Adapter, Phone Holder' 46 sold @ $60",
-   "have": "Teryx"
-  },
-  {
-   "group": "Camera",
-   "title": "Chain Link Fence Mount for GoPro Hero & Action Cameras - Backstop Recording Clip",
-   "their": "https://www.ebay.com/itm/184359998227",
-   "sold": 223,
-   "their_delivered": 25.0,
-   "price": 22.99,
-   "cad": "https://www.printables.com/model/1009719 (CC0) or 866966 (CC-BY). Proof: 'Universal GoPro Hero Chain Link Fence Mount 3D Print' 223 sold @ $25",
-   "have": "Fence Mount"
-  },
-  {
-   "group": "Gaming",
-   "title": "Vertical Stand for PlayStation 2 Slim PS2 Console - Upright Display Stand",
-   "their": "https://www.ebay.com/itm/305459141924",
-   "sold": 310,
-   "their_delivered": 20.0,
-   "price": 19.99,
-   "cad": "https://www.printables.com/model/152524 (slim 1) / 152497 (slim 2) (CC-BY, credit designer). Proof: 'PlayStation 2 Slim vertical stand 3D Printed' 310 sold @ $20; fat PS2 stand 255 @ $20 (305318390284)",
-   "have": "PS2.{0,30}Stand|PlayStation 2.{0,30}Stand"
-  },
-  {
-   "group": "Camera",
-   "title": "Tripod & GoPro Mount Adapter for DJI Osmo Pocket 1 2 3 - 1/4-20 Clip Mount",
-   "their": "https://www.ebay.com/itm/323601646650",
-   "sold": 145,
-   "their_delivered": 20.0,
-   "price": 17.99,
-   "cad": "https://www.printables.com/model/94474 (CC-BY) / 672757 Pocket 3 (CC-BY-SA) / 19394 tripod (CC-BY). Proof: 'DJI OSMO Pocket Adapter Mount for Tripod or GoPro' 145 sold @ $20",
-   "have": "Osmo Pocket.{0,40}(Mount|Adapter)"
-  },
-  {
-   "group": "Gaming",
-   "title": "Super Nintendo SNES Game Cartridge Drawer - Holds 18 Games Storage",
-   "their": "https://www.ebay.com/itm/406462532707",
-   "sold": 111,
-   "their_delivered": 50.0,
-   "price": 44.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Box with dividers sized to an SNES cart (about 120 x 89 x 20 mm, to confirm). Proof: 111 sold @ $50; NES 18-slot drawer 92 sold @ $40 (405978022276)",
-   "have": "SNES.{0,30}Drawer"
-  },
-  {
-   "group": "Gaming",
-   "title": "Nintendo NES Game Cartridge Drawer - Holds 18 Games Storage Organizer",
-   "their": "https://www.ebay.com/itm/405978022276",
-   "sold": 92,
-   "their_delivered": 40.0,
-   "price": 37.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Box sized to an NES cart (about 133 x 120 x 17 mm, to confirm). Proof: 'Nintendo NES 18 Slot Game Drawer. 3D Printed' 92 sold @ $40",
-   "have": "NES.{0,30}Drawer"
-  },
-  {
-   "group": "RV",
-   "title": "Door Bin for Dometic RV Refrigerator NDR1292 Replacement 2932583038",
-   "their": "https://www.ebay.com/itm/375803040173",
-   "sold": 81,
-   "their_delivered": 40.0,
-   "price": 36.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Need the bin size (from the proof listing / Dometic parts diagram). Proof: 'Dometic Refrigerator NDR 1292 Door Bin 2932583038' 81 sold @ $40",
-   "have": "2932583038|NDR ?1292"
-  },
-  {
-   "group": "Aquarium",
-   "title": "Bristle Worm Trap for Reef Aquarium - Fireworm Bait Trap Box",
-   "their": "https://www.ebay.com/itm/284108784080",
-   "sold": 191,
-   "their_delivered": 15.0,
-   "price": 14.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Simple bait box with one-way entry holes. Proof: 'Bristle Worm Trap Box pest Fireworm' 191 sold @ $15",
-   "have": "Bristle ?Worm"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Brass Catcher for Ruger 10/22 - Holds 100 .22LR Shells - Clip On Shell Catcher",
-   "their": "https://www.ebay.com/itm/256519387183",
-   "sold": 453,
-   "their_delivered": 18.0,
-   "price": 17.99,
-   "cad": "https://www.printables.com/model/1533644 (CC-BY, credit KSM Design). Proof: '3D Printed Ruger 10/22 Brass Catcher .22LR' 453 sold @ $18",
-   "have": "10/22.{0,30}Brass"
-  },
-  {
-   "group": "Tools",
-   "title": "8 Pack Battery Holder for Milwaukee M18 - Wall Mount Battery Storage Rack",
-   "their": "https://www.ebay.com/itm/156917406955",
-   "sold": 144,
-   "their_delivered": 35.0,
-   "price": 24.99,
-   "cad": "https://www.printables.com/model/1035768 (CC0) or 53684 with lock (CC-BY, credit vikgr). Proof: 8-bay M18 holder 144 sold @ $35; printed 10-pack 1,646 sold @ $18 (274885526758)",
-   "have": "M18.{0,30}(Battery Holder|Battery Mount)"
-  },
-  {
-   "group": "Golf",
-   "title": "Battery Door for Bushnell Medalist Pinseeker 20-1354 Golf Rangefinder",
-   "their": "https://www.ebay.com/itm/164532842210",
-   "sold": 266,
-   "their_delivered": 16.0,
-   "price": 15.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (need the door size from the rangefinder). Proof: '3D Printed Battery Door for Bushnell Golf Rangefinder Medalist Pinseeker 20-1354' 266 sold @ $16",
-   "have": "Pinseeker|20-1354"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Case Feeder for Hornady Lock-N-Load AP Reloading Press - Complete Kit",
-   "their": "https://www.ebay.com/itm/256440307212",
-   "sold": 298,
-   "their_delivered": 100.0,
-   "price": 89.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. big job to model and test. Proof: 180 sold @ $100 + 118 sold @ $100 (235818482162)",
-   "have": "Case Feeder"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Compact Hard Case for Garmin Xero C1 Pro Chronograph - Protective Carry Case",
-   "their": "https://www.ebay.com/itm/186323819914",
-   "sold": 99,
-   "their_delivered": 24.95,
-   "price": 24.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: 'Compact Hard Case 3D Printed for the Garmin Xero C1 Pro' 99 sold @ $24.95",
-   "have": "Xero.{0,40}Case"
-  },
-  {
-   "group": "Shooting accessories",
-   "title": "Flip Up Scope Caps for Burris Oracle X Crossbow Scope - Front and Rear Set",
-   "their": "https://www.ebay.com/itm/167457426689",
-   "sold": 75,
-   "their_delivered": 30.0,
-   "price": 27.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: 'Burris Oracle X Scope Caps 3D Printed' 75 sold @ $30",
-   "have": "Oracle X.{0,30}Cap"
-  },
-  {
-   "group": "Audio",
-   "title": "Stand for TC Helicon GoXLR Mixer - Angled Desk Stand 3D Printed PETG",
-   "their": "https://www.ebay.com/itm/264925263736",
-   "sold": 63,
-   "their_delivered": 110.99,
-   "price": 79.99,
-   "cad": "https://www.printables.com/model/125571 (CC-BY, credit alpine; normal + mini sizes). Proof: 'Black 3D Printed Stand. For Helicon GOXLR Mixer' 63 sold @ $110.99",
-   "have": "GoXLR"
-  },
-  {
-   "group": "Home",
-   "title": "Dishwasher Holder for 20 Glass Communion Cups 1.5\" - Church Cup Washing Rack",
-   "their": "https://www.ebay.com/itm/255601524672",
-   "sold": 175,
-   "their_delivered": 59.95,
-   "price": 49.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Simple tray. Proof: blue 133 sold @ $59.95 + red 42 sold @ $59.95 (195944100822)",
-   "have": "Communion"
-  },
-  {
-   "group": "Car parts",
-   "title": "Velocity Stacks Ram Pipes Set of 4 for Weber 40 DCOE Dellorto DHLA ASA",
-   "their": "https://www.ebay.com/itm/186831948916",
-   "sold": 84,
-   "their_delivered": 42.08,
-   "price": 39.99,
-   "cad": "Our own design, files ready: Weber_40_DCOE_DHLA_velocity_stack_55mm_set.zip (55 mm long, 43.4 mm bore, 82 mm flange, M6 slots at 65-67 mm centres, flat-base + spigot versions). Print 4 in ASA. Test-fit one before the first sale. Proof: 84 sold @ $42.08",
-   "have": "DCOE.{0,40}(Stack|Ram|Trumpet)"
-  },
-  {
-   "group": "Fitness",
-   "title": "Rocker Plate Feet x4 for Wahoo Kickr Core V5 V6 - Tennis Ball Movement Kit",
-   "their": "https://www.ebay.com/itm/387422040036",
-   "sold": 267,
-   "their_delivered": 46.01,
-   "price": 44.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: 'WAHOO KICKR CORE Movement Tennis Ball Rocker Plate Feet x 4' 267 sold @ $46.01; also 78 @ $72 (387444883381), 66 @ $79 Kickr Core 2/Zwift Ride (406695724055), 126 @ $75 Zwift Ride (387846743492)",
-   "have": "Kickr.{0,40}(Rocker|Feet)"
-  },
-  {
-   "group": "Car parts",
-   "title": "Fender Molding Clip 75305-SR3-003 Set of 2 for Honda Civic EG EK",
-   "their": "https://www.ebay.com/itm/314205126350",
-   "sold": 155,
-   "their_delivered": 17.5,
-   "price": 15.99,
-   "cad": "https://www.printables.com/model/867562 (CC0, 6th-gen Civic EK fender clips): check it matches 75305-SR3-003 before listing. Proof: 155 sold @ $17.50 (set of 2)",
-   "have": "75305"
-  },
-  {
-   "group": "Tools",
-   "title": "Primer Catcher Upgrade for RCBS Partner JR2 JR3 Reloading Press",
-   "their": "https://www.ebay.com/itm/254960522566",
-   "sold": 302,
-   "their_delivered": 18.0,
-   "price": 16.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (Printables only has a Rockchucker version, 76877 CC-BY). Proof: 302 sold @ $18",
-   "have": "Primer Catcher"
-  },
-  {
-   "group": "Motorcycle",
-   "title": "Ignition Switch Plate 71422-03 for Harley Davidson Replacement",
-   "their": "https://www.ebay.com/itm/146097123690",
-   "sold": 111,
-   "their_delivered": 30.0,
-   "price": 27.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: '3D Printed Harley Davidson Ignition Switch Plate - Part # 71422-03' 111 sold @ $30",
-   "have": "71422"
-  },
-  {
-   "group": "Powersports",
-   "title": "Glovebox Extension for Ski-Doo XS XM REV Storage Upgrade ASA",
-   "their": "https://www.ebay.com/itm/167495503792",
-   "sold": 84,
-   "their_delivered": 120.0,
-   "price": 99.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Big part, print in ASA (cold/UV). Proof: 'Ski-Doo XS XM Glovebox Extension 3d printed' 84 sold @ $120",
-   "have": "Ski-?Doo.{0,40}Glove"
-  },
-  {
-   "group": "Audio",
-   "title": "Technics SL-1200 SL-1210 Tonearm Rest with Working Lock Replacement MK2 MK3 MK5",
-   "their": "https://www.ebay.com/itm/115842979787",
-   "sold": 261,
-   "their_delivered": 14.25,
-   "price": 14.99,
-   "cad": "https://www.printables.com/model/1180310 (CC-BY-SA, credit Gurgel). Proof: 261 sold @ $14.25; 213 @ $14.95 (115456114076); 170 @ $14.95 (354150300491)",
-   "have": "Tonearm Rest"
-  },
-  {
-   "group": "Audio",
-   "title": "Technics SL-1200 SL-1210 Power On/Off Knob Cap Replacement MK2 MK3 MK5",
-   "their": "https://www.ebay.com/itm/221602694803",
-   "sold": 430,
-   "their_delivered": 34.99,
-   "price": 24.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. (need the knob's exact size from the SL-1200 service manual / a real knob). Proof: 430 sold @ $34.99; 179 @ $46.99 (221184612161)",
-   "have": "Technics.{0,40}(Power|On/Off).{0,20}(Knob|Cap)"
-  },
-  {
-   "group": "Camera",
-   "title": "Mamiya Universal Press / Polaroid 600SE to 4x5 Graflok Back Adapter",
-   "their": "https://www.ebay.com/itm/133268377976",
-   "sold": 131,
-   "their_delivered": 98.0,
-   "price": 89.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Proof: same seller, Mamiya Universal 68 sold @ $98 + Polaroid 600SE 63 sold @ $98 (133268375605). Fits your Polaroid 600SE buyers",
-   "have": "Graflo(c)?k"
-  },
-  {
-   "group": "Audio",
-   "title": "Audio-Technica ATH-M50x M50 Hinge Repair Kit Pair - Broken Earcup Fix No Solder",
-   "their": "https://www.ebay.com/itm/283974047847",
-   "sold": 2360,
-   "their_delivered": 13.97,
-   "price": 14.99,
-   "cad": "https://www.printables.com/model/1706238 (CC0, reinforced clip-on) or https://www.printables.com/model/824299 (CC-BY, credit NotARealDragon). Proof: mikeilliam 'Audio-Technica ATH-M50/M50x Hinge Repair Kit (Version 2)' 2,360 sold @ $13.97",
-   "have": "M50.{0,40}Hinge|Hinge.{0,40}M50"
-  },
-  {
-   "group": "Audio",
-   "title": "Dust Cover Hinge Pair for Audio-Technica AT-LP120 LP120X LP60X LP3 LP5 Turntable",
-   "their": "https://www.ebay.com/itm/115750412759",
-   "sold": 204,
-   "their_delivered": 33.99,
-   "price": 24.99,
-   "cad": "https://www.printables.com/model/1536406 (CC0) or https://www.printables.com/model/374412 (CC-BY-SA). Proof: dicoay printed pair 67 sold @ $26.99; Hi-Fi Heaven OEM pair 204 sold @ $33.99 (115750412759), single 212 @ $16.99",
-   "have": "LP120.{0,40}Hinge|Hinge.{0,40}LP120"
-  },
-  {
-   "group": "Audio",
-   "title": "Turntable Headshell Spacer Shim Set 14pc 0.5-4.5mm 1/2\" Cartridge VTA Align",
-   "their": "https://www.ebay.com/itm/255381617341",
-   "sold": 300,
-   "their_delivered": 26.99,
-   "price": 24.99,
-   "cad": "Our own design, files ready: Headshell_Spacer_Set_14pc_0.5-4.5mm_half-inch_mount.zip (0.5 x2, 0.6-0.9, 1.0-4.5 by 0.5). Also proven: 177822883363 pf_audiosolutions 14pc 33 sold @ $25 + $6 ship; 55 sold @ $20 (10pc)",
-   "have": "Headshell.{0,40}(Spacer|Shim)"
-  },
-  {
-   "group": "Car parts",
-   "title": "Fisker Ocean Door Handle Light Cover Set of 4 UV Safe ASA 2023 2024 Replacement",
-   "their": "https://www.ebay.com/itm/387231600158",
-   "sold": 193,
-   "their_delivered": 29.99,
-   "price": 27.99,
-   "cad": "https://www.printables.com/model/945466 (CC0 public domain, commercial OK). Print in ASA. Also sold: 128 @ $26.99 (226314797128), 131 @ $12.95 (167811428034)",
-   "have": "Fisker.{0,40}(Handle|Light Cover)"
-  },
-  {
-   "group": "Car parts",
-   "title": "Fisker Ocean Inner Door Handle Insert Replacement 2023 2024 - 3D Printed",
-   "their": "https://www.printables.com/model/961122",
-   "sold": 0,
-   "their_delivered": 0,
-   "price": 19.99,
-   "cad": "https://www.printables.com/model/961122 (CC0, commercial OK). Demand not proven on eBay yet: add-on for Fisker buyers",
-   "have": "Fisker.{0,40}Inner"
-  },
-  {
-   "group": "Car parts",
-   "title": "2012-2018 Ford Focus Sync 3 Radio Swap Mounting Bracket Kit - 3D Printed",
-   "their": "https://www.ebay.com/itm/202725919988",
-   "sold": 121,
-   "their_delivered": 35.0,
-   "price": 34.99,
-   "cad": "https://www.printables.com/model/96447 (GPL 3.0: commercial OK, credit the designer and link the file in the listing)",
-   "have": "Focus.{0,40}Sync ?3"
-  },
-  {
-   "group": "Tools",
-   "title": "Husky Tool Box Latch Replacement Large - Heavy Duty 3D Printed PETG",
-   "their": "https://www.ebay.com/itm/316108595549",
-   "sold": 235,
-   "their_delivered": 14.0,
-   "price": 14.99,
-   "cad": "https://www.printables.com/model/444047 (CC-BY: commercial OK with credit). Check it matches the large latch before listing",
-   "have": "Husky.{0,40}Latch"
-  },
-  {
-   "group": "Car parts ($20-$55)",
-   "title": "06-13 Lexus IS250 IS350 ISF Center Console Cup Holder Divider Replacement Black",
-   "their": "https://www.ebay.com/itm/133586123861",
-   "sold": 270,
-   "their_delivered": 19.99,
-   "price": 20.49,
-   "cad": "Paid file: CGTrader \"LEXUS 2IS CUP HOLDER 2006-2013\", $9.99, Commercial Royalty Free license: https://www.cgtrader.com/3d-print-models/hobby-diy/automotive/lexus-2is-cup-holder-2006-2013. Check it is the divider before buying. Print ASA.",
-   "have": "Lexus.{0,40}(Cup Holder|Divider)"
-  },
-  {
-   "group": "Appliance parts ($20+)",
-   "title": "Samsung Microwave Door Handle Replacement ME16A4021AS DE94-04313F Heavy Duty",
-   "their": "https://www.ebay.com/itm/256652816651",
-   "sold": 153,
-   "their_delivered": 23.0,
-   "price": 22.49,
-   "cad": "✏️ No correct file to sell: Claude can make this. OEM handle DE94-04313E/F. No sellable file found: model our own from the OEM part / customer measurements.",
-   "have": "Samsung.{0,40}Microwave.{0,40}Handle|ME16A4021"
-  },
-  {
-   "group": "Car parts ($20-$55)",
-   "title": "97-02 Camaro Firebird Center Console Gauge Pod 52mm Replacement Black ASA",
-   "their": "https://www.ebay.com/itm/196998834475",
-   "sold": 70,
-   "their_delivered": 33.0,
-   "price": 31.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found: model our own from the OEM part / customer measurements. Print ASA.",
-   "have": "(Camaro|Firebird).{0,40}(Gauge|Pod)"
-  },
-  {
-   "group": "Outdoor equipment",
-   "title": "Fits Cub Cadet MA-10322629001 Hook Set of 4 Heavy Duty Replacement PETG",
-   "their": "https://www.ebay.com/itm/374013146889",
-   "sold": 114,
-   "their_delivered": 19.56,
-   "price": 20.49,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found: model our own from the OEM part / customer measurements.",
-   "have": "Cub Cadet.{0,40}Hook|MA-10322629001"
-  },
-  {
-   "group": "Craftsman miter saw parts ($20+)",
-   "title": "Fits Craftsman 2VPR Miter Saw Handle Support 137212371 137212372 Heavy Duty PETG",
-   "their": "https://www.ebay.com/itm/374013146732",
-   "sold": 607,
-   "their_delivered": 26.7,
-   "price": 25.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Fits saw models 137212371 / 137212372; base about 6\" x 2\" (competitor listing). No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
-   "have": "2VPR"
-  },
-  {
-   "group": "Craftsman miter saw parts ($20+)",
-   "title": "Fits Craftsman 2PYR Miter Saw Handle Support Heavy Duty HD PETG Replacement",
-   "their": "https://www.ebay.com/itm/374018270676",
-   "sold": 197,
-   "their_delivered": 28.36,
-   "price": 26.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Smaller sister of 2VPR, base about 4-3/4\" x 1-7/8\". No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
-   "have": "2PYR"
-  },
-  {
-   "group": "Craftsman miter saw parts ($20+)",
-   "title": "Fits Craftsman 2DQC 2DQD Miter Saw Handle Heavy Duty HD PETG Replacement Part",
-   "their": "https://www.ebay.com/itm/376474771123",
-   "sold": 65,
-   "their_delivered": 39.12,
-   "price": 37.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Two-piece handle set. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
-   "have": "2DQC|2DQD"
-  },
-  {
-   "group": "Craftsman miter saw parts ($20+)",
-   "title": "Fits Craftsman Miter Saw Insert 3HPV 3HPW Heavy Duty HD PETG Replacement",
-   "their": "https://www.ebay.com/itm/376491436804",
-   "sold": 30,
-   "their_delivered": 24.45,
-   "price": 23.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
-   "have": "3HPV|3HPW"
-  },
-  {
-   "group": "Craftsman miter saw parts ($20+)",
-   "title": "Fits Craftsman 2DWL Miter Saw Pivot Clamp Heavy Duty HD PETG Replacement",
-   "their": "https://www.ebay.com/itm/375386147226",
-   "sold": 56,
-   "their_delivered": 19.56,
-   "price": 20.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
-   "have": "2DWL"
-  },
-  {
-   "group": "Car parts ($20-$55)",
-   "title": "Dual 52mm Gauge Pod Mount MINI Cooper R56 R55 R57 2007-2013 Tach Mount ASA",
-   "their": "https://www.ebay.com/itm/202667010871",
-   "sold": 284,
-   "their_delivered": 55.0,
-   "price": 52.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
-   "have": "MINI.{0,40}(R56|R55|R57).{0,40}Gauge Pod|Gauge Pod.{0,40}R56"
-  },
-  {
-   "group": "Car parts ($20-$55)",
-   "title": "Dual 52mm Gauge Pod Mount Cup MINI Cooper R53 R50 R52 2002-2006 Tach Mount ASA",
-   "their": "https://www.ebay.com/itm/113729150571",
-   "sold": 156,
-   "their_delivered": 55.0,
-   "price": 52.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
-   "have": "MINI.{0,40}(R53|R50|R52).{0,40}Gauge Pod|Gauge Pod.{0,40}R53"
-  },
-  {
-   "group": "Car parts ($20-$55)",
-   "title": "88-91 Honda CRX Door Garnish Clips 91510-SH2-000 Set Heavy Duty ASA",
-   "their": "https://www.ebay.com/itm/313773502956",
-   "sold": 293,
-   "their_delivered": 22.5,
-   "price": 22.49,
-   "cad": "✏️ No correct file to sell: Claude can make this. Match OEM Honda 91510-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
-   "have": "91510-SH2"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
-   "their": "https://www.ebay.com/itm/166737869849",
-   "sold": 234,
-   "their_delivered": 14.77,
-   "price": 12.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Festool.{0,40}(Latch|Catch)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
-   "their": "https://www.ebay.com/itm/264237953059",
-   "sold": 94,
-   "their_delivered": 21.08,
-   "price": 15.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "WM-D6.{0,40}Battery"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
-   "their": "https://www.ebay.com/itm/386314787292",
-   "sold": 91,
-   "their_delivered": 29.56,
-   "price": 24.99,
-   "cad": "✏️ No correct file to sell: Claude can make this. Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
-  },
-  {
-   "group": "ON HOLD",
-   "title": "Shot Bushing Set of 13 for Ponsness Warren Hornady RCBS Shotshell Reloader",
-   "their": "https://www.ebay.com/itm/286193155632",
-   "sold": 67,
-   "their_delivered": 32.99,
-   "price": 29.99,
-   "cad": "✏️ ON HOLD: Claude can make this once one real PW shot bushing's outside diameter + height are measured. Hole sizes found (shotgunworld user chart, inches): 1/2oz .428, 5/8 .479, 11/16 .502, 3/4 .534, 7/8 .560-.564, 1oz .600-.605, 1-1/16 .614-.619, 1-1/8 .636-.646, 1-1/4 .676-.680, 1-3/8 .710-.713, 1-1/2 .749. Weigh 10 drops per size before selling.",
-   "have": "Shot Bushing"
-  }
- ],
- "paused": [
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "Mini Lathe Change Gear Set of 7 40 45 50 55 57 60 80T 7x10 7x12 Harbor Freight",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 36.99,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "Set of 7|7 ?(pc|piece|gear).{0,30}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "40T (40 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 8.99,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b40T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "45T (45 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.47,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b45T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "50T (50 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.47,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b50T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "55T (55 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.97,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b55T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12 (files ready)",
-   "title": "60T (60 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
-   "their": "https://www.ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 40.97,
-   "price": 9.97,
-   "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20°, 12 mm bore, 3 mm key, 8 mm face, engraved).",
-   "have": "\\b60T\\b.{0,40}(Mini Lathe|7x10|7x12)"
-  },
-  {
-   "group": "Music gear",
-   "title": "Rock Band Drum Cymbal Bracket 90 Degree Replacement Heavy Duty HD PETG",
-   "their": "https://www.ebay.com/itm/134643265103",
-   "sold": 87,
-   "their_delivered": 27.99,
-   "price": 26.99,
-   "cad": "No sellable file found: model our own from the OEM part / customer measurements. Pairs with your Pearl cymbal bushing buyers.",
-   "have": "Rock Band.{0,40}Cymbal"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Atlas 618 Craftsman 101 6\" Lathe Complete Change Gear Set 14 Gears 24DP HD PETG",
-   "their": "https://www.ebay.com/itm/187023095610",
-   "sold": 78,
-   "their_delivered": 44.75,
-   "price": 49.99,
-   "cad": "Own design: Nexa gear generator (24DP, 14.5°, 3/8\" face, 1/2\" bore) Gears: 20, 24, 2x32, 36, 40, 44, 46, 48, 52, 54, 56, 2x64T.",
-   "have": "(618|Craftsman 101).*(Complete|Full|14).*(Set|Gears)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Mini Lathe 7x10 7x12 Complete Change Gear Set 12 Gears Module 1 Harbor Freight",
-   "their": "https://ebay.com/itm/116298829828",
-   "sold": 47,
-   "their_delivered": 41.59,
-   "price": 44.99,
-   "cad": "Own design: Nexa gear generator (Module 1, 20°, 12 mm bore, 3 mm key) Gears: 20, 30, 35, 2x40, 45, 50, 55, 57, 60, 65, 80T.",
-   "have": "(7x10|7x12|Mini Lathe).*(Complete|Full|12).*(Set|Gears)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "Atlas Craftsman 10\" 12\" Metal Lathe Complete Change Gear Set 16DP 3/4\" Bore PETG",
-   "their": "https://www.ebay.com/itm/227217131470",
-   "sold": 6,
-   "their_delivered": 125.0,
-   "price": 79.99,
-   "cad": "Own design: Nexa gear generator (16DP, 14.5°, 1/2\" face, 3/4\" bore, two 3/16\" keys) Gear list: confirm from Atlas 10/12 threading chart before printing.",
-   "have": "Atlas.*(10|12).*(Complete|Full).*(Set)"
-  },
-  {
-   "group": "Gear sets ($20+)",
-   "title": "South Bend 9C Model C Lathe Complete Change Gear Set 18DP 9/16\" Bore HD PETG",
-   "their": "https://www.ebay.com/itm/168181655048",
-   "sold": 3,
-   "their_delivered": 87.35,
-   "price": 74.99,
-   "cad": "Own design: Nexa gear generator (18DP, 14.5°, 3/8\" face, 9/16\" bore, 1/8\" key) Gear list: confirm from South Bend 9C threading chart before printing.",
-   "have": "South Bend.*9C.*(Complete|Full)?.*Set"
-  },
-  {
-   "group": "Higher-end ($25+)",
-   "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
-   "their": "https://www.ebay.com/itm/263674841715",
-   "sold": 7,
-   "their_delivered": 74.7,
-   "price": 64.99,
-   "cad": "Gear set with 5/8\" face width; confirm the tooth counts from the Logan 2500 metric chart. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-   "have": "Logan.{0,20}(12|14).{0,40}Transpos"
-  },
-  {
-   "group": "Higher-end ($25+)",
-   "title": "Atlas Craftsman Commercial 12\" Lathe Reverse Tumbler Gear Set Dual 36 Tooth PETG",
-   "their": "https://www.ebay.com/itm/276480445412",
-   "sold": 12,
-   "their_delivered": 39.0,
-   "price": 36.99,
-   "cad": "Two 36T tumbler gears, 16DP; confirm bore/hub from the Atlas Commercial 12 parts list. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
-   "have": "Commercial.{0,30}Tumbler|Tumbler.{0,40}36 ?T"
-  },
-  {
-   "group": "Seneca Falls / Star lathe (we have the files)",
-   "title": "Seneca Falls Star Lathe Change Gear Set 7pc 24 30 38 42 46 48 72T 16DP 5/8 Bore",
-   "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
-   "sold": 1,
-   "their_delivered": 127.44,
-   "price": 127.44,
-   "cad": "Our own set sold Nov 14 at $127.44; relist with quantity. Own design, already made: Nexa gear generator, 16DP 14.5°, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
-   "have": "Seneca Falls.{0,40}Set"
-  },
-  {
-   "group": "Seneca Falls / Star lathe (we have the files)",
-   "title": "Seneca Falls Star Lathe Change Gear 16DP 5/8\" Bore 9/16\" Face - Choose Teeth",
-   "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
-   "sold": 5,
-   "their_delivered": 40.0,
-   "price": 29.99,
-   "cad": "One listing with a tooth-count dropdown: 24T $24.99, 30-48T $29.99, 72T $39.99. Used originals sell at $30-$40 for single gears, and $75 for a tumbler gear. Own design, already made: Nexa gear generator, 16DP 14.5°, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
-   "have": "Seneca Falls(?!.*\\bSet\\b).{0,60}(Choose|Tooth|\\d+T)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
-   "their": "https://www.ebay.com/itm/294135354033",
-   "sold": 616,
-   "their_delivered": 13.43,
-   "price": 11.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Wahoo Elemnt.{0,40}Mount"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "KitchenAid Stand Mixer Speed Control Lever Knob Replacement HD PETG",
-   "their": "https://www.ebay.com/itm/295986962381",
-   "sold": 164,
-   "their_delivered": 6.71,
-   "price": 8.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "KitchenAid.{0,40}(Lever|Knob)"
-  },
-  {
-   "group": "Next burr ring (UK sellers, US demand)",
-   "title": "Beyerdynamic DT 770 880 990 Headband Slider Replacement Part Pair HD PETG",
-   "their": "https://www.ebay.com/itm/166394889862",
-   "sold": 136,
-   "their_delivered": 6.71,
-   "price": 9.99,
-   "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
-   "have": "Beyerdynamic.{0,40}Slider"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 48 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/202442601280",
-   "sold": 12,
-   "their_delivered": 25.93,
-   "price": 22.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b48 (tooth|T)\\b"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 64 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/203485908993",
-   "sold": 11,
-   "their_delivered": 31.76,
-   "price": 28.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b64 Tooth"
-  },
-  {
-   "group": "South Bend 9/10K",
-   "title": "South Bend 9A 10K Lathe 24 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
-   "their": "https://www.ebay.com/itm/360810352202",
-   "sold": 10,
-   "their_delivered": 16.47,
-   "price": 14.99,
-   "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
-   "have": "South Bend 9.{0,30}\\b24 (tooth|T)\\b"
-  },
-  {
-   "group": "Logan 9/10/11",
-   "title": "Logan 9\" 10\" 11\" Lathe 42 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
-   "their": "https://www.ebay.com/itm/363627438092",
-   "sold": 9,
-   "their_delivered": 22.87,
-   "price": 20.99,
-   "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
-   "have": "Logan.{0,40}\\b42 Tooth"
-  },
-  {
-   "group": "Mini lathe 7x10 / 7x12",
-   "title": "55T (55 Tooth) Change Gear 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
-   "their": "https://www.ebay.com/itm/161228264524",
-   "sold": 26,
-   "their_delivered": 23.79,
-   "price": 16.99,
-   "cad": "Same gear family as your 57T/65T/80T mini lathe listings: change the tooth count in your file, or ask Claude to model it.",
-   "have": "\\b55T\\b"
-  },
-  {
-   "group": "Other gears",
-   "title": "Thompson Sears Traveling Tractor Lawn Sprinkler Gear Set & Top Bushing HD PETG",
-   "their": "https://www.ebay.com/itm/285288930781",
-   "sold": 512,
-   "their_delivered": 28.24,
-   "price": 24.99,
-   "cad": "No full file exists. Worm gear only: https://www.printables.com/model/356222 (CC BY, credit the designer). Claude can model the full set once you have an old gear set to measure.",
-   "have": "Thompson"
-  },
-  {
-   "group": "Other gears",
-   "title": "Atlas 618 Craftsman 101 109 Lathe Change Gear Set HD PETG (full set)",
-   "their": "https://www.ebay.com/itm/187023095610",
-   "sold": 76,
-   "their_delivered": 44.0,
-   "price": 41.99,
-   "cad": "Built from the same Atlas 618 gear family as the singles above. Check the seller's listing for the tooth counts. Claude can model any you don't have.",
-   "have": "618.{0,60}(Change Gear Set|17 Gears)"
-  }
- ]
+  "_note": "Gears to list next, shown in Nexa Command under 'Add these next'. 'their' is the competitor listing that proves demand; 'have' is a pattern that hides the row once a live listing matches.",
+  "checked": "2026-11-10",
+  "items": [
+    {
+      "group": "Audio",
+      "title": "Hinge Swivel Replacement for Sony WH-1000XM4 Headphones - Left or Right",
+      "their": "https://www.ebay.com/itm/325215965919",
+      "sold": 241,
+      "their_delivered": 15.0,
+      "price": 16.99,
+      "cad": "https://www.printables.com/model/1136694 (CC-BY-SA, XM3/XM4 hinge swivel). Proof: 'Sony WH-1000XM4 XM4 Headphones Plastic' hinge 241 sold @ $15-$31.99",
+      "have": "XM4.{0,30}Hinge"
+    },
+    {
+      "group": "Audio",
+      "title": "Hinge Swivel Bracket for Sony WH-1000XM5 Headphones - Broken Hinge Fix",
+      "their": "https://www.ebay.com/itm/335999157703",
+      "sold": 91,
+      "their_delivered": 32.71,
+      "price": 24.99,
+      "cad": "https://www.printables.com/model/1271062 (GPL 3.0: commercial OK, credit and link the file). Proof: 'Sony WH-1000XM5 Hinge Swivel Bracket' 91 sold @ $32.71",
+      "have": "XM5.{0,30}Hinge"
+    },
+    {
+      "group": "Home",
+      "title": "Replacement Wheels Pair for Hart 20V Cordless Stick Vacuum",
+      "their": "https://www.ebay.com/itm/126294054983",
+      "sold": 301,
+      "their_delivered": 12.99,
+      "price": 12.99,
+      "cad": "https://www.printables.com/model/593195 (CC-BY: 'Walmart Hart 20V Stick Vacuum Replacement Wheel'). Small part. Proof: 151 sold @ $12.99 + 150 sold @ $11.49 (336334468623)",
+      "have": "Hart.{0,30}(Vacuum|Wheel)"
+    },
+    {
+      "group": "Coffee",
+      "title": "Water Tank Lid Cover for Jura C D E Series Espresso Machine Replacement",
+      "their": "https://www.ebay.com/itm/284579710634",
+      "sold": 46,
+      "their_delivered": 58.52,
+      "price": 49.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables 62260 GPL is only the lid clip for the E55). Coffee niche, high price. Proof: 'Water Tank Lid/Cover for Jura - C/D/E' 46 sold @ $58.52",
+      "have": "Jura.{0,30}(Lid|Cover)"
+    },
+    {
+      "group": "Cycling (UK-proven)",
+      "title": "Quad Lock to Garmin Quarter Turn Mount Adapter for Edge Bike Computer",
+      "their": "https://www.ebay.com/itm/294670478668",
+      "sold": 518,
+      "their_delivered": 19.0,
+      "price": 16.99,
+      "cad": "https://www.printables.com/model/814675 (CC-BY-SA): check adapter direction matches the proof. Proof (UK, MagCAD): 'Garmin to For Quad Lock Adapter - Cycling 3D Printed' 518 sold @ \u00a315. Ships from the UK, so US buyers wait.",
+      "have": "Quad Lock.{0,30}Garmin|Garmin.{0,30}Quad Lock"
+    },
+    {
+      "group": "Cycling (UK-proven)",
+      "title": "Wahoo Elemnt to Garmin Quarter Turn Adapter - Bolt Roam Mount Converter",
+      "their": "https://www.ebay.com/itm/292586282737",
+      "sold": 831,
+      "their_delivered": 20.0,
+      "price": 14.99,
+      "cad": "https://www.printables.com/model/257653 (CC-BY, Garmin/Wahoo quarter-turn). Proof (UK, MagCAD): 'Wahoo Elemnt Bolt to Garmin Adapter' 480 sold @ \u00a316 + 'Wahoo Elemnt to Garmin Adapter' 351 @ \u00a313 (292657370798)",
+      "have": "Wahoo.{0,30}Garmin.{0,20}Adapter"
+    },
+    {
+      "group": "Cycling (UK-proven)",
+      "title": "GoPro Style Mount for Garmin Varia Radar Tail Light RTL515 RVR315",
+      "their": "https://www.ebay.com/itm/292733550094",
+      "sold": 422,
+      "their_delivered": 15.0,
+      "price": 13.99,
+      "cad": "https://www.printables.com/model/1072457 (CC-BY, Varia & Wahoo) or 227590 (GPL 2.0). Proof (UK, MagCAD): 'Garmin Varia GoPro Mount - Cycling 3D Printed Saddle' 422 sold @ \u00a312",
+      "have": "Varia.{0,30}(GoPro|Mount)"
+    },
+    {
+      "group": "Cycling (UK-proven)",
+      "title": "Out Front Mount for Wahoo Elemnt Bolt - Trek Bontrager Blendr Stem",
+      "their": "https://www.ebay.com/itm/292721753920",
+      "sold": 1103,
+      "their_delivered": 25.0,
+      "price": 24.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables Bolt mounts are non-commercial). Proof (UK, MagCAD): 571 sold @ \u00a320 + Bolt low 313 @ \u00a321 (292586264549) + Bolt V2 219 @ \u00a321 (294229790074)",
+      "have": "Elemnt Bolt.{0,30}(Blendr|Mount)"
+    },
+    {
+      "group": "Cycling (UK-proven)",
+      "title": "Lezyne GPS to Garmin Quarter Turn Mount Adapter - Bike Computer",
+      "their": "https://www.ebay.com/itm/292873071470",
+      "sold": 354,
+      "their_delivered": 22.0,
+      "price": 16.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables 456924 CC0 is a Garmin-to-Lezyne-lamp adapter, not this). Proof (UK, MagCAD): 'Lezyne GPS to Garmin Adaptor' 354 sold @ \u00a317",
+      "have": "Lezyne.{0,30}Garmin"
+    },
+    {
+      "group": "E-bike (UK-proven)",
+      "title": "Mount for Bosch Kiox 300 Display - E-Stem Bracket Replacement",
+      "their": "https://www.ebay.com/itm/295218603852",
+      "sold": 322,
+      "their_delivered": 32.0,
+      "price": 27.99,
+      "cad": "Check https://www.printables.com/model/252790 (CC0 Kiox display frame bracket) fits the Kiox 300; otherwise \u270f\ufe0f Claude can make this. Proof (UK, MagCAD): 'Bosch Kiox E-Stem 300 Mount' 322 sold @ \u00a325",
+      "have": "Kiox"
+    },
+    {
+      "group": "Tools (UK-proven)",
+      "title": "Dust Scoop for Festool Kapex KS60 KSC60 Miter Saw - Dust Collection Upgrade",
+      "their": "https://www.ebay.com/itm/365673231121",
+      "sold": 402,
+      "their_delivered": 27.0,
+      "price": 27.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof (UK): 'Fits FESTOOL KAPEX KS60/KSC60 dust scoop, 3D printed' 402 sold @ \u00a321",
+      "have": "Kapex"
+    },
+    {
+      "group": "Airgun (UK-proven)",
+      "title": "Clip On Plenum Cover 23mm for FX Impact M2 M3 M4 Air Rifle",
+      "their": "https://www.ebay.com/itm/353926615854",
+      "sold": 321,
+      "their_delivered": 30.0,
+      "price": 29.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Cosmetic airgun accessory. Proof (UK): 'FX Impact M2 M3 M4 Clip-on Plenum Cover 23mm' 321 sold @ \u00a324",
+      "have": "FX Impact.{0,30}Plenum"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Laser Device Covers for Zenitco Perst - Protective Caps Set",
+      "their": "https://www.ebay.com/itm/124944053643",
+      "sold": 698,
+      "their_delivered": 12.0,
+      "price": 12.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Small part. Proof: 'Zenitco perst laser covers - custom 3D printed' 698 sold @ $12",
+      "have": "Perst"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Front Sight Replacement for Daisy Model 1894 Spittin Image BB Gun",
+      "their": "https://www.ebay.com/itm/191940114558",
+      "sold": 263,
+      "their_delivered": 17.0,
+      "price": 15.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables Daisy sights are non-commercial). Small part. Proof: 'Daisy Model 1894 Spittin Image 3D Printed Front Sight' 263 sold @ $17",
+      "have": "Daisy.{0,30}Sight"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Primer Catcher for Lee Load-All II Shotshell Reloader",
+      "their": "https://www.ebay.com/itm/204216593586",
+      "sold": 256,
+      "their_delivered": 13.0,
+      "price": 12.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Small part. Proof: 'LEE Load All 2 Primer Catcher Load All II 3D Printed' 256 sold @ $13",
+      "have": "Load.?All"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Primer Catcher for Lee Breech Lock Single Stage Reloading Press",
+      "their": "https://www.ebay.com/itm/252908837868",
+      "sold": 112,
+      "their_delivered": 15.0,
+      "price": 14.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Small part. Proof: 'Lee breach lock reloader primer catcher 3d printed' 112 sold @ $15",
+      "have": "Breech ?Lock.{0,30}Primer"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Optic Mounting Plate for Kel-Tec P17 - RMSc Footprint Red Dot Adapter",
+      "their": "https://www.ebay.com/itm/397085824789",
+      "sold": 187,
+      "their_delivered": 13.0,
+      "price": 12.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Small part. Proof: '3DEXL Optic Plate Sight Mount RMSc for Kel-Tec P17' 187 sold @ $13",
+      "have": "P17.{0,30}(Optic|Plate)"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "1911 Compact Officer Grip Panels - Textured Replacement Grips Pair",
+      "their": "https://www.ebay.com/itm/112631236539",
+      "sold": 166,
+      "their_delivered": 13.0,
+      "price": 14.99,
+      "cad": "https://www.printables.com/model/723957 (CC-BY, MA 1911 grips) or 1894657 compact flat panel (CC-BY-SA). Leave off any logos. Proof: '1911 Grips ... compact officer model, 3D printed' 166 sold @ $13",
+      "have": "1911.{0,30}Grip"
+    },
+    {
+      "group": "Tools",
+      "title": "4 Pack Battery Holder for DeWalt 20V Max - Wall Mount Battery Storage",
+      "their": "https://www.ebay.com/itm/174095613433",
+      "sold": 108,
+      "their_delivered": 23.0,
+      "price": 21.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables DeWalt holders are mostly non-commercial; 504139 is a SKADIS-only CC-BY-SA version). Proof: '4-pack Dewalt Tool Lithium-Ion Holder Clip Mount 20V 3D' 108 sold @ $23",
+      "have": "DeWalt.{0,30}Battery Holder"
+    },
+    {
+      "group": "Fishing",
+      "title": "Remote Case for MotorGuide Xi3 Xi5 Trolling Motor - Lanyard Holder",
+      "their": "https://www.ebay.com/itm/204919077747",
+      "sold": 91,
+      "their_delivered": 25.0,
+      "price": 23.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables file is non-commercial). Proof: 'Motorguide Xi3 Xi5 Remote Case for Lanyard 3D Printed' 91 sold @ $25",
+      "have": "MotorGuide.{0,30}Remote"
+    },
+    {
+      "group": "Car parts",
+      "title": "Blend Door Repair Pin Bushing 1H0819136 for VW MK4 Jetta Golf GTI Beetle",
+      "their": "https://www.ebay.com/itm/332635120112",
+      "sold": 582,
+      "their_delivered": 19.99,
+      "price": 18.99,
+      "cad": "https://www.printables.com/model/1459301 (CC-BY, credit Rocco: 'MKIV VW Blend Door Repair Plugs'). Proof: 'VW MK4 Blend Door pin bushing PN 1H0819136 ... Improved 3D' 582 sold @ $19.99",
+      "have": "1H0819136|MK4.{0,30}Blend Door"
+    },
+    {
+      "group": "Gaming",
+      "title": "Charging Dock Stand for PlayStation Portal - USB-C Desk Stand",
+      "their": "https://www.ebay.com/itm/296109005629",
+      "sold": 124,
+      "their_delivered": 19.99,
+      "price": 19.99,
+      "cad": "https://www.printables.com/model/662245 (CC-BY, credit DukeFenix; logo-free). Proof: 'Charging Dock for PS PlayStation Portal, Custom 3d print.' 124 sold @ $19.99",
+      "have": "Portal.{0,30}(Dock|Stand)"
+    },
+    {
+      "group": "Car parts",
+      "title": "Fuse Box Cover 61131368802 for BMW E30 E24 E23 - Black Replacement",
+      "their": "https://www.ebay.com/itm/204618989508",
+      "sold": 85,
+      "their_delivered": 23.99,
+      "price": 22.99,
+      "cad": "https://www.printables.com/model/650164 (CC0, use the corrected version). Proof: 'BMW E30 E24 E23 Fuse Box Cover 61131368802 3D Printed ABS' 85 sold @ $23.99",
+      "have": "61131368802|E30.{0,30}Fuse Box"
+    },
+    {
+      "group": "Car parts",
+      "title": "Ash Tray Cup Holder with Storage for Porsche 996 986 Boxster",
+      "their": "https://www.ebay.com/itm/315468028603",
+      "sold": 68,
+      "their_delivered": 19.99,
+      "price": 19.99,
+      "cad": "https://www.printables.com/model/552821 (CC-BY, credit MagnusT: 996 mk1 cup holder): check it is the same ash-tray style before listing. Proof: 'Porsche 996/986 Boxster Ash Tray Cup Holder with Storage' 68 sold @ $19.99",
+      "have": "996.{0,30}Cup Holder"
+    },
+    {
+      "group": "Car parts",
+      "title": "Euro Headlight Adapter Pair for BMW E36 - Plug and Play Bosch AL ZKW Depo",
+      "their": "https://www.ebay.com/itm/234503644972",
+      "sold": 157,
+      "their_delivered": 59.0,
+      "price": 54.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Print in ASA (heat). Proof: 'BMW E36 PnP Euro Headlight Adapter (Pair) - Bosch, AL, ZKW, Depo - 3D PRINTED' 157 sold @ $59",
+      "have": "E36.{0,30}Headlight Adapter"
+    },
+    {
+      "group": "Gaming",
+      "title": "Ergonomic Comfort Grips for Lenovo Legion Go 2 - Handheld Grip Pair",
+      "their": "https://www.ebay.com/itm/227123259358",
+      "sold": 172,
+      "their_delivered": 24.99,
+      "price": 22.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables Legion Go grips are non-commercial). Proof: 'Ultra Ergonomic Comfort Grips for Lenovo Legion Go 2' 172 sold @ $24.99",
+      "have": "Legion Go.{0,30}Grip"
+    },
+    {
+      "group": "Gaming",
+      "title": "Display Stand for Sony PSP 1000 2000 3000 & PS Vita - Desk Stand",
+      "their": "https://www.ebay.com/itm/115759325514",
+      "sold": 365,
+      "their_delivered": 15.85,
+      "price": 15.99,
+      "cad": "https://www.printables.com/model/234263 (CC0) or 62819 (CC-BY). Proof: 'PSP Display Stand Custom 3D Printed PlayStation Portable 1000 - 3000 PS Vita' 365 sold @ $15.85",
+      "have": "PSP.{0,30}Stand"
+    },
+    {
+      "group": "Gaming",
+      "title": "Display Stand for Nintendo 3DS 3DS XL DS DSi - Angled Desk Stand",
+      "their": "https://www.ebay.com/itm/403924960892",
+      "sold": 186,
+      "their_delivered": 18.0,
+      "price": 15.99,
+      "cad": "https://www.printables.com/model/1858887 (CC0) or 473148 (CC0). Proof: 'Custom 3DS Display Stand, 3d Printed' 186 sold @ $18",
+      "have": "3DS.{0,30}Stand"
+    },
+    {
+      "group": "Car parts",
+      "title": "Door Protector Molding Clips 75328-SH2-003 Set of 10 for 90-91 Honda CRX",
+      "their": "https://www.ebay.com/itm/313744977378",
+      "sold": 272,
+      "their_delivered": 22.5,
+      "price": 21.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables 1170230 CC0 is the garnish clip, not this one). Proof: '90-91 CRX Door Protector/Molding Clips 75328-SH2-003 (3d Printed, Set of 10)' 272 sold @ $22.50",
+      "have": "75328"
+    },
+    {
+      "group": "Car parts",
+      "title": "Door Protector Clip Assembly for 88-91 Honda CRX & Civic Hatchback",
+      "their": "https://www.ebay.com/itm/314723194373",
+      "sold": 212,
+      "their_delivered": 30.0,
+      "price": 27.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: '90-91 Civic Hatchback Door Protector Clip Assembly' 118 sold @ $30 + '88-89 Honda CRX Door Protector Clip Assembly' 94 sold @ $30 (314723193921)",
+      "have": "Door Protector Clip Assembly"
+    },
+    {
+      "group": "Tools",
+      "title": "AC Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20 - Power Brick Mount",
+      "their": "https://www.ebay.com/itm/124856740844",
+      "sold": 172,
+      "their_delivered": 20.0,
+      "price": 18.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: '3D PRINTED AC Power Wall Adapter Holder for Milwaukee M18 Jobsite Fan 0886-20' 172 sold @ $20",
+      "have": "0886-20"
+    },
+    {
+      "group": "Powersports",
+      "title": "Cup Holder Adapter & Phone Holder for Kawasaki Teryx 4 Teryx 2",
+      "their": "https://www.ebay.com/itm/318288646535",
+      "sold": 46,
+      "their_delivered": 60.0,
+      "price": 49.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Print in ASA. Proof: 'Teryx 4 / Teryx 2 CupHolder Adapter, Phone Holder' 46 sold @ $60",
+      "have": "Teryx"
+    },
+    {
+      "group": "Camera",
+      "title": "Chain Link Fence Mount for GoPro Hero & Action Cameras - Backstop Recording Clip",
+      "their": "https://www.ebay.com/itm/184359998227",
+      "sold": 223,
+      "their_delivered": 25.0,
+      "price": 22.99,
+      "cad": "https://www.printables.com/model/1009719 (CC0) or 866966 (CC-BY). Proof: 'Universal GoPro Hero Chain Link Fence Mount 3D Print' 223 sold @ $25",
+      "have": "Fence Mount"
+    },
+    {
+      "group": "Gaming",
+      "title": "Vertical Stand for PlayStation 2 Slim PS2 Console - Upright Display Stand",
+      "their": "https://www.ebay.com/itm/305459141924",
+      "sold": 310,
+      "their_delivered": 20.0,
+      "price": 19.99,
+      "cad": "https://www.printables.com/model/152524 (slim 1) / 152497 (slim 2) (CC-BY, credit designer). Proof: 'PlayStation 2 Slim vertical stand 3D Printed' 310 sold @ $20; fat PS2 stand 255 @ $20 (305318390284)",
+      "have": "PS2.{0,30}Stand|PlayStation 2.{0,30}Stand"
+    },
+    {
+      "group": "Camera",
+      "title": "Tripod & GoPro Mount Adapter for DJI Osmo Pocket 1 2 3 - 1/4-20 Clip Mount",
+      "their": "https://www.ebay.com/itm/323601646650",
+      "sold": 145,
+      "their_delivered": 20.0,
+      "price": 17.99,
+      "cad": "https://www.printables.com/model/94474 (CC-BY) / 672757 Pocket 3 (CC-BY-SA) / 19394 tripod (CC-BY). Proof: 'DJI OSMO Pocket Adapter Mount for Tripod or GoPro' 145 sold @ $20",
+      "have": "Osmo Pocket.{0,40}(Mount|Adapter)"
+    },
+    {
+      "group": "Gaming",
+      "title": "Super Nintendo SNES Game Cartridge Drawer - Holds 18 Games Storage",
+      "their": "https://www.ebay.com/itm/406462532707",
+      "sold": 111,
+      "their_delivered": 50.0,
+      "price": 44.99,
+      "cad": "Our own design, files ready: SNES_18_Game_Drawer.zip (drawer + cabinet, ~580 g PETG). Proof: 'Super Nintendo SNES Drawer. Holds 18 Games. 3D Printed' 113 sold @ $40 + $6.55 ship (406462532707)",
+      "have": "SNES.{0,30}Drawer"
+    },
+    {
+      "group": "Gaming",
+      "title": "Nintendo NES Game Cartridge Drawer - Holds 18 Games Storage Organizer",
+      "their": "https://www.ebay.com/itm/405978022276",
+      "sold": 92,
+      "their_delivered": 40.0,
+      "price": 37.99,
+      "cad": "Our own design, files ready: NES_18_Game_Drawer.zip (drawer + cabinet, ~580 g PETG). Proof: Command row demand (92 sold @ $37.99)",
+      "have": "NES.{0,30}Drawer"
+    },
+    {
+      "group": "RV",
+      "title": "Door Bin for Dometic RV Refrigerator NDR1292 Replacement 2932583038",
+      "their": "https://www.ebay.com/itm/375803040173",
+      "sold": 81,
+      "their_delivered": 40.0,
+      "price": 36.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Need the bin size (from the proof listing / Dometic parts diagram). Proof: 'Dometic Refrigerator NDR 1292 Door Bin 2932583038' 81 sold @ $40",
+      "have": "2932583038|NDR ?1292"
+    },
+    {
+      "group": "Aquarium",
+      "title": "Bristle Worm Trap for Reef Aquarium - Fireworm Bait Trap Box",
+      "their": "https://www.ebay.com/itm/284108784080",
+      "sold": 191,
+      "their_delivered": 15.0,
+      "price": 14.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Simple bait box with one-way entry holes. Proof: 'Bristle Worm Trap Box pest Fireworm' 191 sold @ $15",
+      "have": "Bristle ?Worm"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Brass Catcher for Ruger 10/22 - Holds 100 .22LR Shells - Clip On Shell Catcher",
+      "their": "https://www.ebay.com/itm/256519387183",
+      "sold": 453,
+      "their_delivered": 18.0,
+      "price": 17.99,
+      "cad": "https://www.printables.com/model/1533644 (CC-BY, credit KSM Design). Proof: '3D Printed Ruger 10/22 Brass Catcher .22LR' 453 sold @ $18",
+      "have": "10/22.{0,30}Brass"
+    },
+    {
+      "group": "Tools",
+      "title": "8 Pack Battery Holder for Milwaukee M18 - Wall Mount Battery Storage Rack",
+      "their": "https://www.ebay.com/itm/156917406955",
+      "sold": 144,
+      "their_delivered": 35.0,
+      "price": 24.99,
+      "cad": "https://www.printables.com/model/1035768 (CC0) or 53684 with lock (CC-BY, credit vikgr). Proof: 8-bay M18 holder 144 sold @ $35; printed 10-pack 1,646 sold @ $18 (274885526758)",
+      "have": "M18.{0,30}(Battery Holder|Battery Mount)"
+    },
+    {
+      "group": "Golf",
+      "title": "Battery Door for Bushnell Medalist Pinseeker 20-1354 Golf Rangefinder",
+      "their": "https://www.ebay.com/itm/164532842210",
+      "sold": 266,
+      "their_delivered": 16.0,
+      "price": 15.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (need the door size from the rangefinder). Proof: '3D Printed Battery Door for Bushnell Golf Rangefinder Medalist Pinseeker 20-1354' 266 sold @ $16",
+      "have": "Pinseeker|20-1354"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Case Feeder for Hornady Lock-N-Load AP Reloading Press - Complete Kit",
+      "their": "https://www.ebay.com/itm/256440307212",
+      "sold": 298,
+      "their_delivered": 100.0,
+      "price": 89.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. big job to model and test. Proof: 180 sold @ $100 + 118 sold @ $100 (235818482162)",
+      "have": "Case Feeder"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Compact Hard Case for Garmin Xero C1 Pro Chronograph - Protective Carry Case",
+      "their": "https://www.ebay.com/itm/186323819914",
+      "sold": 99,
+      "their_delivered": 24.95,
+      "price": 24.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: 'Compact Hard Case 3D Printed for the Garmin Xero C1 Pro' 99 sold @ $24.95",
+      "have": "Xero.{0,40}Case"
+    },
+    {
+      "group": "Shooting accessories",
+      "title": "Flip Up Scope Caps for Burris Oracle X Crossbow Scope - Front and Rear Set",
+      "their": "https://www.ebay.com/itm/167457426689",
+      "sold": 75,
+      "their_delivered": 30.0,
+      "price": 27.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: 'Burris Oracle X Scope Caps 3D Printed' 75 sold @ $30",
+      "have": "Oracle X.{0,30}Cap"
+    },
+    {
+      "group": "Audio",
+      "title": "Stand for TC Helicon GoXLR Mixer - Angled Desk Stand 3D Printed PETG",
+      "their": "https://www.ebay.com/itm/264925263736",
+      "sold": 63,
+      "their_delivered": 110.99,
+      "price": 79.99,
+      "cad": "https://www.printables.com/model/125571 (CC-BY, credit alpine; normal + mini sizes). Proof: 'Black 3D Printed Stand. For Helicon GOXLR Mixer' 63 sold @ $110.99",
+      "have": "GoXLR"
+    },
+    {
+      "group": "Home",
+      "title": "Dishwasher Holder for 20 Glass Communion Cups 1.5\" - Church Cup Washing Rack",
+      "their": "https://www.ebay.com/itm/255601524672",
+      "sold": 175,
+      "their_delivered": 59.95,
+      "price": 49.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Simple tray. Proof: blue 133 sold @ $59.95 + red 42 sold @ $59.95 (195944100822)",
+      "have": "Communion"
+    },
+    {
+      "group": "Car parts",
+      "title": "Velocity Stacks Ram Pipes Set of 4 for Weber 40 DCOE Dellorto DHLA ASA",
+      "their": "https://www.ebay.com/itm/186831948916",
+      "sold": 84,
+      "their_delivered": 42.08,
+      "price": 39.99,
+      "cad": "Our own design, files ready: Weber_40_DCOE_DHLA_velocity_stack_55mm_set.zip (55 mm long, 43.4 mm bore, 82 mm flange, M6 slots at 65-67 mm centres, flat-base + spigot versions). Print 4 in ASA. Test-fit one before the first sale. Proof: 84 sold @ $42.08",
+      "have": "DCOE.{0,40}(Stack|Ram|Trumpet)"
+    },
+    {
+      "group": "Fitness",
+      "title": "Rocker Plate Feet x4 for Wahoo Kickr Core V5 V6 - Tennis Ball Movement Kit",
+      "their": "https://www.ebay.com/itm/387422040036",
+      "sold": 267,
+      "their_delivered": 46.01,
+      "price": 44.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: 'WAHOO KICKR CORE Movement Tennis Ball Rocker Plate Feet x 4' 267 sold @ $46.01; also 78 @ $72 (387444883381), 66 @ $79 Kickr Core 2/Zwift Ride (406695724055), 126 @ $75 Zwift Ride (387846743492)",
+      "have": "Kickr.{0,40}(Rocker|Feet)"
+    },
+    {
+      "group": "Car parts",
+      "title": "Fender Molding Clip 75305-SR3-003 Set of 2 for Honda Civic EG EK",
+      "their": "https://www.ebay.com/itm/314205126350",
+      "sold": 155,
+      "their_delivered": 17.5,
+      "price": 15.99,
+      "cad": "https://www.printables.com/model/867562 (CC0, 6th-gen Civic EK fender clips): check it matches 75305-SR3-003 before listing. Proof: 155 sold @ $17.50 (set of 2)",
+      "have": "75305"
+    },
+    {
+      "group": "Tools",
+      "title": "Primer Catcher Upgrade for RCBS Partner JR2 JR3 Reloading Press",
+      "their": "https://www.ebay.com/itm/254960522566",
+      "sold": 302,
+      "their_delivered": 18.0,
+      "price": 16.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (Printables only has a Rockchucker version, 76877 CC-BY). Proof: 302 sold @ $18",
+      "have": "Primer Catcher"
+    },
+    {
+      "group": "Motorcycle",
+      "title": "Ignition Switch Plate 71422-03 for Harley Davidson Replacement",
+      "their": "https://www.ebay.com/itm/146097123690",
+      "sold": 111,
+      "their_delivered": 30.0,
+      "price": 27.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: '3D Printed Harley Davidson Ignition Switch Plate - Part # 71422-03' 111 sold @ $30",
+      "have": "71422"
+    },
+    {
+      "group": "Powersports",
+      "title": "Glovebox Extension for Ski-Doo XS XM REV Storage Upgrade ASA",
+      "their": "https://www.ebay.com/itm/167495503792",
+      "sold": 84,
+      "their_delivered": 120.0,
+      "price": 99.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Big part, print in ASA (cold/UV). Proof: 'Ski-Doo XS XM Glovebox Extension 3d printed' 84 sold @ $120",
+      "have": "Ski-?Doo.{0,40}Glove"
+    },
+    {
+      "group": "Audio",
+      "title": "Technics SL-1200 SL-1210 Tonearm Rest with Working Lock Replacement MK2 MK3 MK5",
+      "their": "https://www.ebay.com/itm/115842979787",
+      "sold": 261,
+      "their_delivered": 14.25,
+      "price": 14.99,
+      "cad": "https://www.printables.com/model/1180310 (CC-BY-SA, credit Gurgel). Proof: 261 sold @ $14.25; 213 @ $14.95 (115456114076); 170 @ $14.95 (354150300491)",
+      "have": "Tonearm Rest"
+    },
+    {
+      "group": "Audio",
+      "title": "Technics SL-1200 SL-1210 Power On/Off Knob Cap Replacement MK2 MK3 MK5",
+      "their": "https://www.ebay.com/itm/221602694803",
+      "sold": 430,
+      "their_delivered": 34.99,
+      "price": 24.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. (need the knob's exact size from the SL-1200 service manual / a real knob). Proof: 430 sold @ $34.99; 179 @ $46.99 (221184612161)",
+      "have": "Technics.{0,40}(Power|On/Off).{0,20}(Knob|Cap)"
+    },
+    {
+      "group": "Camera",
+      "title": "Mamiya Universal Press / Polaroid 600SE to 4x5 Graflok Back Adapter",
+      "their": "https://www.ebay.com/itm/133268377976",
+      "sold": 131,
+      "their_delivered": 98.0,
+      "price": 89.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Proof: same seller, Mamiya Universal 68 sold @ $98 + Polaroid 600SE 63 sold @ $98 (133268375605). Fits your Polaroid 600SE buyers",
+      "have": "Graflo(c)?k"
+    },
+    {
+      "group": "Audio",
+      "title": "Audio-Technica ATH-M50x M50 Hinge Repair Kit Pair - Broken Earcup Fix No Solder",
+      "their": "https://www.ebay.com/itm/283974047847",
+      "sold": 2360,
+      "their_delivered": 13.97,
+      "price": 14.99,
+      "cad": "https://www.printables.com/model/1706238 (CC0, reinforced clip-on) or https://www.printables.com/model/824299 (CC-BY, credit NotARealDragon). Proof: mikeilliam 'Audio-Technica ATH-M50/M50x Hinge Repair Kit (Version 2)' 2,360 sold @ $13.97",
+      "have": "M50.{0,40}Hinge|Hinge.{0,40}M50"
+    },
+    {
+      "group": "Audio",
+      "title": "Dust Cover Hinge Pair for Audio-Technica AT-LP120 LP120X LP60X LP3 LP5 Turntable",
+      "their": "https://www.ebay.com/itm/115750412759",
+      "sold": 204,
+      "their_delivered": 33.99,
+      "price": 24.99,
+      "cad": "https://www.printables.com/model/1536406 (CC0) or https://www.printables.com/model/374412 (CC-BY-SA). Proof: dicoay printed pair 67 sold @ $26.99; Hi-Fi Heaven OEM pair 204 sold @ $33.99 (115750412759), single 212 @ $16.99",
+      "have": "LP120.{0,40}Hinge|Hinge.{0,40}LP120"
+    },
+    {
+      "group": "Audio",
+      "title": "Turntable Headshell Spacer Shim Set 14pc 0.5-4.5mm 1/2\" Cartridge VTA Align",
+      "their": "https://www.ebay.com/itm/255381617341",
+      "sold": 300,
+      "their_delivered": 26.99,
+      "price": 24.99,
+      "cad": "Our own design, files ready: Headshell_Spacer_Set_14pc_0.5-4.5mm_half-inch_mount.zip (0.5 x2, 0.6-0.9, 1.0-4.5 by 0.5). Also proven: 177822883363 pf_audiosolutions 14pc 33 sold @ $25 + $6 ship; 55 sold @ $20 (10pc)",
+      "have": "Headshell.{0,40}(Spacer|Shim)"
+    },
+    {
+      "group": "Car parts",
+      "title": "Fisker Ocean Door Handle Light Cover Set of 4 UV Safe ASA 2023 2024 Replacement",
+      "their": "https://www.ebay.com/itm/387231600158",
+      "sold": 193,
+      "their_delivered": 29.99,
+      "price": 27.99,
+      "cad": "https://www.printables.com/model/945466 (CC0 public domain, commercial OK). Print in ASA. Also sold: 128 @ $26.99 (226314797128), 131 @ $12.95 (167811428034)",
+      "have": "Fisker.{0,40}(Handle|Light Cover)"
+    },
+    {
+      "group": "Car parts",
+      "title": "Fisker Ocean Inner Door Handle Insert Replacement 2023 2024 - 3D Printed",
+      "their": "https://www.printables.com/model/961122",
+      "sold": 0,
+      "their_delivered": 0,
+      "price": 19.99,
+      "cad": "https://www.printables.com/model/961122 (CC0, commercial OK). Demand not proven on eBay yet: add-on for Fisker buyers",
+      "have": "Fisker.{0,40}Inner"
+    },
+    {
+      "group": "Car parts",
+      "title": "2012-2018 Ford Focus Sync 3 Radio Swap Mounting Bracket Kit - 3D Printed",
+      "their": "https://www.ebay.com/itm/202725919988",
+      "sold": 121,
+      "their_delivered": 35.0,
+      "price": 34.99,
+      "cad": "https://www.printables.com/model/96447 (GPL 3.0: commercial OK, credit the designer and link the file in the listing)",
+      "have": "Focus.{0,40}Sync ?3"
+    },
+    {
+      "group": "Tools",
+      "title": "Husky Tool Box Latch Replacement Large - Heavy Duty 3D Printed PETG",
+      "their": "https://www.ebay.com/itm/316108595549",
+      "sold": 235,
+      "their_delivered": 14.0,
+      "price": 14.99,
+      "cad": "https://www.printables.com/model/444047 (CC-BY: commercial OK with credit). Check it matches the large latch before listing",
+      "have": "Husky.{0,40}Latch"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "06-13 Lexus IS250 IS350 ISF Center Console Cup Holder Divider Replacement Black",
+      "their": "https://www.ebay.com/itm/133586123861",
+      "sold": 270,
+      "their_delivered": 19.99,
+      "price": 20.49,
+      "cad": "Paid file: CGTrader \"LEXUS 2IS CUP HOLDER 2006-2013\", $9.99, Commercial Royalty Free license: https://www.cgtrader.com/3d-print-models/hobby-diy/automotive/lexus-2is-cup-holder-2006-2013. Check it is the divider before buying. Print ASA.",
+      "have": "Lexus.{0,40}(Cup Holder|Divider)"
+    },
+    {
+      "group": "Appliance parts ($20+)",
+      "title": "Samsung Microwave Door Handle Replacement ME16A4021AS DE94-04313F Heavy Duty",
+      "their": "https://www.ebay.com/itm/256652816651",
+      "sold": 153,
+      "their_delivered": 23.0,
+      "price": 22.49,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. OEM handle DE94-04313E/F. No sellable file found: model our own from the OEM part / customer measurements.",
+      "have": "Samsung.{0,40}Microwave.{0,40}Handle|ME16A4021"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "97-02 Camaro Firebird Center Console Gauge Pod 52mm Replacement Black ASA",
+      "their": "https://www.ebay.com/itm/196998834475",
+      "sold": 70,
+      "their_delivered": 33.0,
+      "price": 31.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found: model our own from the OEM part / customer measurements. Print ASA.",
+      "have": "(Camaro|Firebird).{0,40}(Gauge|Pod)"
+    },
+    {
+      "group": "Outdoor equipment",
+      "title": "Fits Cub Cadet MA-10322629001 Hook Set of 4 Heavy Duty Replacement PETG",
+      "their": "https://www.ebay.com/itm/374013146889",
+      "sold": 114,
+      "their_delivered": 19.56,
+      "price": 20.49,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found: model our own from the OEM part / customer measurements.",
+      "have": "Cub Cadet.{0,40}Hook|MA-10322629001"
+    },
+    {
+      "group": "Craftsman miter saw parts ($20+)",
+      "title": "Fits Craftsman 2VPR Miter Saw Handle Support 137212371 137212372 Heavy Duty PETG",
+      "their": "https://www.ebay.com/itm/374013146732",
+      "sold": 607,
+      "their_delivered": 26.7,
+      "price": 25.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Fits saw models 137212371 / 137212372; base about 6\" x 2\" (competitor listing). No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
+      "have": "2VPR"
+    },
+    {
+      "group": "Craftsman miter saw parts ($20+)",
+      "title": "Fits Craftsman 2PYR Miter Saw Handle Support Heavy Duty HD PETG Replacement",
+      "their": "https://www.ebay.com/itm/374018270676",
+      "sold": 197,
+      "their_delivered": 28.36,
+      "price": 26.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Smaller sister of 2VPR, base about 4-3/4\" x 1-7/8\". No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
+      "have": "2PYR"
+    },
+    {
+      "group": "Craftsman miter saw parts ($20+)",
+      "title": "Fits Craftsman 2DQC 2DQD Miter Saw Handle Heavy Duty HD PETG Replacement Part",
+      "their": "https://www.ebay.com/itm/376474771123",
+      "sold": 65,
+      "their_delivered": 39.12,
+      "price": 37.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Two-piece handle set. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
+      "have": "2DQC|2DQD"
+    },
+    {
+      "group": "Craftsman miter saw parts ($20+)",
+      "title": "Fits Craftsman Miter Saw Insert 3HPV 3HPW Heavy Duty HD PETG Replacement",
+      "their": "https://www.ebay.com/itm/376491436804",
+      "sold": 30,
+      "their_delivered": 24.45,
+      "price": 23.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
+      "have": "3HPV|3HPW"
+    },
+    {
+      "group": "Craftsman miter saw parts ($20+)",
+      "title": "Fits Craftsman 2DWL Miter Saw Pivot Clamp Heavy Duty HD PETG Replacement",
+      "their": "https://www.ebay.com/itm/375386147226",
+      "sold": 56,
+      "their_delivered": 19.56,
+      "price": 20.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found. Model our own from an OEM part's measurements (Sears PartsDirect diagram for the saw model + a used OEM part). Don't copy the competitor's redesign.",
+      "have": "2DWL"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "Dual 52mm Gauge Pod Mount MINI Cooper R56 R55 R57 2007-2013 Tach Mount ASA",
+      "their": "https://www.ebay.com/itm/202667010871",
+      "sold": 284,
+      "their_delivered": 55.0,
+      "price": 52.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "MINI.{0,40}(R56|R55|R57).{0,40}Gauge Pod|Gauge Pod.{0,40}R56"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "Dual 52mm Gauge Pod Mount Cup MINI Cooper R53 R50 R52 2002-2006 Tach Mount ASA",
+      "their": "https://www.ebay.com/itm/113729150571",
+      "sold": 156,
+      "their_delivered": 55.0,
+      "price": 52.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "MINI.{0,40}(R53|R50|R52).{0,40}Gauge Pod|Gauge Pod.{0,40}R53"
+    },
+    {
+      "group": "Car parts ($20-$55)",
+      "title": "88-91 Honda CRX Door Garnish Clips 91510-SH2-000 Set Heavy Duty ASA",
+      "their": "https://www.ebay.com/itm/313773502956",
+      "sold": 293,
+      "their_delivered": 22.5,
+      "price": 22.49,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Match OEM Honda 91510-SH2-000. No sellable file found; model our own from the car's measurements (borrow/buy the OEM part or measure a customer's car). Print in ASA (car interior heat/UV).",
+      "have": "91510-SH2"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Festool Systainer T-LOC Replacement Catch Latch Clip HD PETG",
+      "their": "https://www.ebay.com/itm/166737869849",
+      "sold": 234,
+      "their_delivered": 14.77,
+      "price": 12.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Festool.{0,40}(Latch|Catch)"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Sony Walkman Pro WM-D6 WM-D6C Battery Cover Door Replacement HD PETG",
+      "their": "https://www.ebay.com/itm/264237953059",
+      "sold": 94,
+      "their_delivered": 21.08,
+      "price": 15.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "WM-D6.{0,40}Battery"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "DeWalt Cordless Dust Extractor Replacement Clips Kit HD PETG",
+      "their": "https://www.ebay.com/itm/386314787292",
+      "sold": 91,
+      "their_delivered": 29.56,
+      "price": 24.99,
+      "cad": "\u270f\ufe0f No correct file to sell: Claude can make this. Same tool buyers who shop your lathe gears. Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "DeWalt.{0,40}Dust Extractor.{0,20}Clip"
+    },
+    {
+      "group": "ON HOLD",
+      "title": "Shot Bushing Set of 13 for Ponsness Warren Hornady RCBS Shotshell Reloader",
+      "their": "https://www.ebay.com/itm/286193155632",
+      "sold": 67,
+      "their_delivered": 32.99,
+      "price": 29.99,
+      "cad": "\u270f\ufe0f ON HOLD: Claude can make this once one real PW shot bushing's outside diameter + height are measured. Hole sizes found (shotgunworld user chart, inches): 1/2oz .428, 5/8 .479, 11/16 .502, 3/4 .534, 7/8 .560-.564, 1oz .600-.605, 1-1/16 .614-.619, 1-1/8 .636-.646, 1-1/4 .676-.680, 1-3/8 .710-.713, 1-1/2 .749. Weigh 10 drops per size before selling.",
+      "have": "Shot Bushing"
+    }
+  ],
+  "paused": [
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "Mini Lathe Change Gear Set of 7 40 45 50 55 57 60 80T 7x10 7x12 Harbor Freight",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 36.99,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "Set of 7|7 ?(pc|piece|gear).{0,30}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "40T (40 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 8.99,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b40T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "45T (45 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.47,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b45T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "50T (50 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.47,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b50T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "55T (55 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.97,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b55T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12 (files ready)",
+      "title": "60T (60 Tooth) Change Gear 7x10, 7x12 Mini Lathe - Harbor Freight, Grizzly",
+      "their": "https://www.ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 40.97,
+      "price": 9.97,
+      "cad": "Own design, files made Nov 17: MiniLathe_Set_of_7_40-45-50-55-57-60-80T.zip (Module 1, 20\u00b0, 12 mm bore, 3 mm key, 8 mm face, engraved).",
+      "have": "\\b60T\\b.{0,40}(Mini Lathe|7x10|7x12)"
+    },
+    {
+      "group": "Music gear",
+      "title": "Rock Band Drum Cymbal Bracket 90 Degree Replacement Heavy Duty HD PETG",
+      "their": "https://www.ebay.com/itm/134643265103",
+      "sold": 87,
+      "their_delivered": 27.99,
+      "price": 26.99,
+      "cad": "No sellable file found: model our own from the OEM part / customer measurements. Pairs with your Pearl cymbal bushing buyers.",
+      "have": "Rock Band.{0,40}Cymbal"
+    },
+    {
+      "group": "Gear sets ($20+)",
+      "title": "Atlas 618 Craftsman 101 6\" Lathe Complete Change Gear Set 14 Gears 24DP HD PETG",
+      "their": "https://www.ebay.com/itm/187023095610",
+      "sold": 78,
+      "their_delivered": 44.75,
+      "price": 49.99,
+      "cad": "Own design: Nexa gear generator (24DP, 14.5\u00b0, 3/8\" face, 1/2\" bore) Gears: 20, 24, 2x32, 36, 40, 44, 46, 48, 52, 54, 56, 2x64T.",
+      "have": "(618|Craftsman 101).*(Complete|Full|14).*(Set|Gears)"
+    },
+    {
+      "group": "Gear sets ($20+)",
+      "title": "Mini Lathe 7x10 7x12 Complete Change Gear Set 12 Gears Module 1 Harbor Freight",
+      "their": "https://ebay.com/itm/116298829828",
+      "sold": 47,
+      "their_delivered": 41.59,
+      "price": 44.99,
+      "cad": "Own design: Nexa gear generator (Module 1, 20\u00b0, 12 mm bore, 3 mm key) Gears: 20, 30, 35, 2x40, 45, 50, 55, 57, 60, 65, 80T.",
+      "have": "(7x10|7x12|Mini Lathe).*(Complete|Full|12).*(Set|Gears)"
+    },
+    {
+      "group": "Gear sets ($20+)",
+      "title": "Atlas Craftsman 10\" 12\" Metal Lathe Complete Change Gear Set 16DP 3/4\" Bore PETG",
+      "their": "https://www.ebay.com/itm/227217131470",
+      "sold": 6,
+      "their_delivered": 125.0,
+      "price": 79.99,
+      "cad": "Own design: Nexa gear generator (16DP, 14.5\u00b0, 1/2\" face, 3/4\" bore, two 3/16\" keys) Gear list: confirm from Atlas 10/12 threading chart before printing.",
+      "have": "Atlas.*(10|12).*(Complete|Full).*(Set)"
+    },
+    {
+      "group": "Gear sets ($20+)",
+      "title": "South Bend 9C Model C Lathe Complete Change Gear Set 18DP 9/16\" Bore HD PETG",
+      "their": "https://www.ebay.com/itm/168181655048",
+      "sold": 3,
+      "their_delivered": 87.35,
+      "price": 74.99,
+      "cad": "Own design: Nexa gear generator (18DP, 14.5\u00b0, 3/8\" face, 9/16\" bore, 1/8\" key) Gear list: confirm from South Bend 9C threading chart before printing.",
+      "have": "South Bend.*9C.*(Complete|Full)?.*Set"
+    },
+    {
+      "group": "Higher-end ($25+)",
+      "title": "Logan 12\" 14\" 2500 Series Lathe Metric Transposing Gear Set 5/8\" Face HD PETG",
+      "their": "https://www.ebay.com/itm/263674841715",
+      "sold": 7,
+      "their_delivered": 74.7,
+      "price": 64.99,
+      "cad": "Gear set with 5/8\" face width; confirm the tooth counts from the Logan 2500 metric chart. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "Logan.{0,20}(12|14).{0,40}Transpos"
+    },
+    {
+      "group": "Higher-end ($25+)",
+      "title": "Atlas Craftsman Commercial 12\" Lathe Reverse Tumbler Gear Set Dual 36 Tooth PETG",
+      "their": "https://www.ebay.com/itm/276480445412",
+      "sold": 12,
+      "their_delivered": 39.0,
+      "price": 36.99,
+      "cad": "Two 36T tumbler gears, 16DP; confirm bore/hub from the Atlas Commercial 12 parts list. Own design: Nexa gear generator. Research exact dims (DP, bore, keyway, face, hub/spacing of the compound) before modeling.",
+      "have": "Commercial.{0,30}Tumbler|Tumbler.{0,40}36 ?T"
+    },
+    {
+      "group": "Seneca Falls / Star lathe (we have the files)",
+      "title": "Seneca Falls Star Lathe Change Gear Set 7pc 24 30 38 42 46 48 72T 16DP 5/8 Bore",
+      "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
+      "sold": 1,
+      "their_delivered": 127.44,
+      "price": 127.44,
+      "cad": "Our own set sold Nov 14 at $127.44; relist with quantity. Own design, already made: Nexa gear generator, 16DP 14.5\u00b0, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
+      "have": "Seneca Falls.{0,40}Set"
+    },
+    {
+      "group": "Seneca Falls / Star lathe (we have the files)",
+      "title": "Seneca Falls Star Lathe Change Gear 16DP 5/8\" Bore 9/16\" Face - Choose Teeth",
+      "their": "https://www.ebay.com/sch/i.html?_nkw=seneca+falls+lathe+gear&LH_Sold=1",
+      "sold": 5,
+      "their_delivered": 40.0,
+      "price": 29.99,
+      "cad": "One listing with a tooth-count dropdown: 24T $24.99, 30-48T $29.99, 72T $39.99. Used originals sell at $30-$40 for single gears, and $75 for a tumbler gear. Own design, already made: Nexa gear generator, 16DP 14.5\u00b0, 9/16\" face, 5/8\" bore, 1/8\" key (files: SenecaFalls_7_gear_set_16DP.zip). Specs from a customer's Star lathe, so other Star models may differ: ask buyers to confirm OD, bore and thickness.",
+      "have": "Seneca Falls(?!.*\\bSet\\b).{0,60}(Choose|Tooth|\\d+T)"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Wahoo Elemnt Replacement Mount Broken Tab Repair Bike Computer Mount HD PETG",
+      "their": "https://www.ebay.com/itm/294135354033",
+      "sold": 616,
+      "their_delivered": 13.43,
+      "price": 11.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Wahoo Elemnt.{0,40}Mount"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "KitchenAid Stand Mixer Speed Control Lever Knob Replacement HD PETG",
+      "their": "https://www.ebay.com/itm/295986962381",
+      "sold": 164,
+      "their_delivered": 6.71,
+      "price": 8.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "KitchenAid.{0,40}(Lever|Knob)"
+    },
+    {
+      "group": "Next burr ring (UK sellers, US demand)",
+      "title": "Beyerdynamic DT 770 880 990 Headband Slider Replacement Part Pair HD PETG",
+      "their": "https://www.ebay.com/itm/166394889862",
+      "sold": 136,
+      "their_delivered": 6.71,
+      "price": 9.99,
+      "cad": "Ships from the UK, so US buyers pay more and wait longer. No file yet: Claude checks for a sellable CAD file (CC0 / CC BY) or models it from the original part's measurements.",
+      "have": "Beyerdynamic.{0,40}Slider"
+    },
+    {
+      "group": "South Bend 9/10K",
+      "title": "South Bend 9A 10K Lathe 48 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
+      "their": "https://www.ebay.com/itm/202442601280",
+      "sold": 12,
+      "their_delivered": 25.93,
+      "price": 22.99,
+      "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
+      "have": "South Bend 9.{0,30}\\b48 (tooth|T)\\b"
+    },
+    {
+      "group": "Logan 9/10/11",
+      "title": "Logan 9\" 10\" 11\" Lathe 64 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
+      "their": "https://www.ebay.com/itm/203485908993",
+      "sold": 11,
+      "their_delivered": 31.76,
+      "price": 28.99,
+      "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
+      "have": "Logan.{0,40}\\b64 Tooth"
+    },
+    {
+      "group": "South Bend 9/10K",
+      "title": "South Bend 9A 10K Lathe 24 Tooth Change Gear 9/16\" Keyed Bore HD PETG",
+      "their": "https://www.ebay.com/itm/360810352202",
+      "sold": 10,
+      "their_delivered": 16.47,
+      "price": 14.99,
+      "cad": "Same gear family as your South Bend 9/10K 32T listing (9/16\" keyed bore, 3/8\" face): change the tooth count in your file, or ask Claude to model it.",
+      "have": "South Bend 9.{0,30}\\b24 (tooth|T)\\b"
+    },
+    {
+      "group": "Logan 9/10/11",
+      "title": "Logan 9\" 10\" 11\" Lathe 42 Tooth Change Gear 5/8\" Bore Keyed HD PETG",
+      "their": "https://www.ebay.com/itm/363627438092",
+      "sold": 9,
+      "their_delivered": 22.87,
+      "price": 20.99,
+      "cad": "Same gear family as your Logan 32T/36T/48T listings (5/8\" bore): change the tooth count in your file, or ask Claude to model it.",
+      "have": "Logan.{0,40}\\b42 Tooth"
+    },
+    {
+      "group": "Mini lathe 7x10 / 7x12",
+      "title": "55T (55 Tooth) Change Gear 7x10 7x12 Mini Lathe Harbor Freight Grizzly HD PETG",
+      "their": "https://www.ebay.com/itm/161228264524",
+      "sold": 26,
+      "their_delivered": 23.79,
+      "price": 16.99,
+      "cad": "Same gear family as your 57T/65T/80T mini lathe listings: change the tooth count in your file, or ask Claude to model it.",
+      "have": "\\b55T\\b"
+    },
+    {
+      "group": "Other gears",
+      "title": "Thompson Sears Traveling Tractor Lawn Sprinkler Gear Set & Top Bushing HD PETG",
+      "their": "https://www.ebay.com/itm/285288930781",
+      "sold": 512,
+      "their_delivered": 28.24,
+      "price": 24.99,
+      "cad": "No full file exists. Worm gear only: https://www.printables.com/model/356222 (CC BY, credit the designer). Claude can model the full set once you have an old gear set to measure.",
+      "have": "Thompson"
+    },
+    {
+      "group": "Other gears",
+      "title": "Atlas 618 Craftsman 101 109 Lathe Change Gear Set HD PETG (full set)",
+      "their": "https://www.ebay.com/itm/187023095610",
+      "sold": 76,
+      "their_delivered": 44.0,
+      "price": 41.99,
+      "cad": "Built from the same Atlas 618 gear family as the singles above. Check the seller's listing for the tooth counts. Claude can model any you don't have.",
+      "have": "618.{0,60}(Change Gear Set|17 Gears)"
+    }
+  ]
 }
