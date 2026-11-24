@@ -168,7 +168,9 @@ async function createSale(o: { name: string; pct: number; min: number; start?: s
   if (!image) {
     const { trading } = await import("./ebay.js");
     const g: any = await trading("GetItem", { ItemID: ok[0], DetailLevel: "ReturnAll" }).catch(() => null);
-    const pic = g?.Item?.PictureDetails?.PictureURL; image = String(Array.isArray(pic) ? pic[0] : pic || "");
+    const one = (x: any) => (Array.isArray(x) ? x[0] : x);
+    const pic = one(one(one(g?.Item)?.PictureDetails)?.PictureURL);
+    image = String(pic && typeof pic === "object" ? pic["#text"] ?? "" : pic ?? "").replace(/s-l\d+\./, "s-l1600.");
   }
   const startDate = o.start && new Date(o.start).getTime() > Date.now() + 60_000 ? new Date(o.start).toISOString() : new Date(Date.now() + 2 * 60_000).toISOString();
   const body = {
