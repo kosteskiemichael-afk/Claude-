@@ -939,7 +939,7 @@
       "sold": 147,
       "their_delivered": 25.95,
       "price": 22.99,
-      "cad": "✅ Claude made it v2 (Nov 24), C-bracket like the proven design: cross slide retracts through the gap, registration lip along bottom edge, 8 mm height slot for 1/4-20..3/8-16, 3/8\" stem bore, M4 thumb screw from arm end + nut slot. Stop block: 2x 10x5x3 magnets in base + 25x5x2 magnet/steel strip on contact face. Needs flat-back indicator.",
+      "cad": "✅ Claude made it v3 (Nov 24): proportions scaled from competitor's part installed on a 10K (2-1/4\" indicator as scale). 81x82 mm C-bracket, 38 mm footprint at saddle, stem 46 mm left / 52 mm above bolt, 30 mm cross-slide gap, lip under saddle, 8 mm bolt slot (1/4-20..3/8-16), M4 thumb screw + nut slot. Block: 2x 10x5x3 + 1x 25x5x2 magnets. Estimated ±3 mm — slot covers it.",
       "have": ""
     }
   ],
