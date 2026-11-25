@@ -941,6 +941,46 @@
       "price": 22.99,
       "cad": "✅ Claude made it v3.1 (Nov 24): sized from competitor's part installed on a 10K, two scale references (2-1/4\" indicator + bolt head). 86x87.5 mm C-bracket, 41 mm footprint, stem 49 mm left/56.5 mm above bolt, 34 mm cross-slide gap, lip under saddle, 8 mm bolt slot (1/4-20..3/8-16), M4 thumb screw. All proportions within 4% of photo. Fit-test on a real 10K before big batch.",
       "have": ""
+    },
+    {
+      "group": "NEW - NEED SIZES",
+      "title": "Harley Davidson Ignition Switch Plate 71422-03 Touring Electra Street Glide 2003-2013",
+      "their": "https://www.ebay.com/itm/146097123690",
+      "sold": 100,
+      "their_delivered": 30.0,
+      "price": 27.99,
+      "cad": "✏️ Claude can make this. No file found. Fits most 2003-2013 FLHT/FLHX touring. Needs plate outline + switch hole size.",
+      "have": ""
+    },
+    {
+      "group": "NEW - NEED SIZES",
+      "title": "C3 Corvette Cup Holder Center Console Mount 1968-1982 Stingray",
+      "their": "https://www.ebay.com/itm/326510974987",
+      "sold": 216,
+      "their_delivered": 17.0,
+      "price": 16.99,
+      "cad": "✏️ Claude can make this. Printables 523529 is NonCommercial (can't sell). Mounts with 2 existing console screws; needs screw spacing + console width.",
+      "have": ""
+    },
+    {
+      "group": "NEW - NEED SIZES",
+      "title": "95-00 Toyota Tacoma Magnetic Gas Door Retrofit Kit Locking to Magnetic Fuel Door",
+      "their": "https://www.ebay.com/itm/125725920490",
+      "sold": 208,
+      "their_delivered": 35.0,
+      "price": 29.99,
+      "cad": "✏️ Claude can make this. Printables versions are Gen 3 + NonCommercial. Uses factory hardware/hole + neodymium magnet; needs lock-hole size and bracket spacing.",
+      "have": ""
+    },
+    {
+      "group": "NEW - NEED SIZES",
+      "title": "Festool Kapex KS 120 Bevel Stabilizer Support HD PETG",
+      "their": "https://www.ebay.com/itm/365251130848",
+      "sold": 94,
+      "their_delivered": 17.0,
+      "price": 16.99,
+      "cad": "✏️ Claude can make this. No file found; needs Kapex dimensions.",
+      "have": ""
     }
   ],
   "paused": [
