@@ -923,23 +923,23 @@
       "have": ""
     },
     {
-      "group": "LATHE ACCESSORIES - NEED SIZES",
+      "group": "READY TO LIST",
       "title": "Atlas 618 Craftsman 101 6\" Lathe Spindle Lock Wedge Stop Chuck Removal HD PETG",
       "their": "https://www.ebay.com/itm/125238508023",
       "sold": 567,
       "their_delivered": 12.99,
       "price": 12.99,
-      "cad": "✏️ Claude can make this. No sellable file. Needs 618 bull gear tooth size + headstock gap (hobby-machinist thread 'craftsman 101 07403 bull gear specs').",
+      "cad": "✅ Claude made it (Nov 24): Atlas_618_Craftsman_101_Spindle_Lock_Wedge_60T_20DP.stl. Fits bull gear M6-241 (60T, 20DP, 14.5°), grips 18 teeth, 0.3 mm clearance, 12 mm thick plate. Print flat, 6 walls, 40%+ infill.",
       "have": ""
     },
     {
-      "group": "LATHE ACCESSORIES - NEED SIZES",
+      "group": "READY TO LIST",
       "title": "South Bend 9\" 10K Lathe Cross Slide Dial Indicator Holder HD PETG",
       "their": "https://www.ebay.com/itm/124319940278",
       "sold": 147,
       "their_delivered": 25.95,
       "price": 22.99,
-      "cad": "✏️ Claude can make this. No sellable file. Needs South Bend 9/10K bed and cross-slide dimensions.",
+      "cad": "✅ Claude made it (Nov 24): bracket + magnetic stop block. Bolts to saddle rear (10K taper-attachment hole; 9\" drill/tap), 25 mm height slot fits 1/4-20 to 3/8-16, 3/8\" stem clamp with M4 screw+nut, block takes 2x 12x3 mm magnets. Needs flat-back indicator.",
       "have": ""
     }
   ],
