@@ -939,7 +939,7 @@
       "sold": 147,
       "their_delivered": 25.95,
       "price": 22.99,
-      "cad": "✅ Claude made it v3 (Nov 24): proportions scaled from competitor's part installed on a 10K (2-1/4\" indicator as scale). 81x82 mm C-bracket, 38 mm footprint at saddle, stem 46 mm left / 52 mm above bolt, 30 mm cross-slide gap, lip under saddle, 8 mm bolt slot (1/4-20..3/8-16), M4 thumb screw + nut slot. Block: 2x 10x5x3 + 1x 25x5x2 magnets. Estimated ±3 mm — slot covers it.",
+      "cad": "✅ Claude made it v3.1 (Nov 24): sized from competitor's part installed on a 10K, two scale references (2-1/4\" indicator + bolt head). 86x87.5 mm C-bracket, 41 mm footprint, stem 49 mm left/56.5 mm above bolt, 34 mm cross-slide gap, lip under saddle, 8 mm bolt slot (1/4-20..3/8-16), M4 thumb screw. All proportions within 4% of photo. Fit-test on a real 10K before big batch.",
       "have": ""
     }
   ],
