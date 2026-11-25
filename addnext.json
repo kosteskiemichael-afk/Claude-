@@ -911,6 +911,36 @@
       "price": 24.99,
       "cad": "✏️ Claude can make this. No file found. Need sizes of RDG5772ZC.",
       "have": ""
+    },
+    {
+      "group": "LATHE ACCESSORIES - FILE FOUND",
+      "title": "Atlas Craftsman 10\" 12\" Lathe Spindle Lock Back Gear Wedge Chuck Removal Tool HD PETG",
+      "their": "https://www.ebay.com/itm/125426957421",
+      "sold": 795,
+      "their_delivered": 12.99,
+      "price": 12.99,
+      "cad": "CC-BY file: Thingiverse thing:5155421 '12\" Atlas / Craftsman Back-Gear Lock' by kickit2 (credit in listing). Print 6 walls, 35% infill.",
+      "have": ""
+    },
+    {
+      "group": "LATHE ACCESSORIES - NEED SIZES",
+      "title": "Atlas 618 Craftsman 101 6\" Lathe Spindle Lock Wedge Stop Chuck Removal HD PETG",
+      "their": "https://www.ebay.com/itm/125238508023",
+      "sold": 567,
+      "their_delivered": 12.99,
+      "price": 12.99,
+      "cad": "✏️ Claude can make this. No sellable file. Needs 618 bull gear tooth size + headstock gap (hobby-machinist thread 'craftsman 101 07403 bull gear specs').",
+      "have": ""
+    },
+    {
+      "group": "LATHE ACCESSORIES - NEED SIZES",
+      "title": "South Bend 9\" 10K Lathe Cross Slide Dial Indicator Holder HD PETG",
+      "their": "https://www.ebay.com/itm/124319940278",
+      "sold": 147,
+      "their_delivered": 25.95,
+      "price": 22.99,
+      "cad": "✏️ Claude can make this. No sellable file. Needs South Bend 9/10K bed and cross-slide dimensions.",
+      "have": ""
     }
   ],
   "paused": [
