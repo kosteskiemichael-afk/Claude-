@@ -883,13 +883,13 @@
       "have": ""
     },
     {
-      "group": "GEARS - NEED SIZES",
+      "group": "READY TO LIST",
       "title": "Bosch 4100 4000 Table Saw Toothed Gear 2610996896 2-Pack Replacement",
       "their": "https://www.ebay.com/itm/155035317518",
       "sold": 158,
       "their_delivered": 16.45,
       "price": 14.99,
-      "cad": "✏️ Claude can make this once a real gear is measured. Researched: it's a 16-tooth straight bevel gear with a round center hole, plastic (photos on 155035317518). No sizes published anywhere (Bosch, eReplacementParts, eBay, Amazon). Competitor sells genuine Bosch gears, so price under $16.45/2-pack. Need: outside diameter, height, hole size/shape, hub size, and the gear it meshes with.",
+      "cad": "✅ Claude made it (Nov 24): Bosch_4100_Table_Saw_Gear_2610996896_16T.stl. 16T 45° miter bevel, OD 41, teeth 11 tall, hub 29x6.7, bore 9.6, 4.1 cross-pin hole. Sizes from aftermarket dimension drawing (Amazon B0DT623HQP). Two copies mesh at 90° with ~0.15mm backlash. Sell as 2-pack (saw uses 2).",
       "have": ""
     },
     {
